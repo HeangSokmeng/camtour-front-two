@@ -1,0 +1,205 @@
+/* Method 1: Google Fonts Khmer Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Khmer:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+Khmer:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Battambang:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Dangrek&display=swap');
+
+/* Method 2: Global Khmer Font Application */
+html, body {
+  font-family: 'Noto Sans Khmer', 'Khmer OS', 'Khmer OS System', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#app {
+  font-family: 'Noto Sans Khmer', 'Khmer OS', 'Khmer OS System', sans-serif;
+  line-height: 1.6;
+  font-size: 16px;
+}
+
+/* Method 3: Universal inheritance for Khmer */
+*, *::before, *::after {
+  font-family: inherit;
+}
+
+/* Method 4: CSS Variables for Khmer fonts */
+:root {
+  --font-khmer-sans: 'Noto Sans Khmer', 'Khmer OS', 'Khmer OS System', sans-serif;
+  --font-khmer-serif: 'Noto Serif Khmer', 'Khmer OS', serif;
+  --font-khmer-decorative: 'Battambang', 'Khmer OS', sans-serif;
+  --font-khmer-display: 'Dangrek', 'Khmer OS', sans-serif;
+  
+  /* Khmer-specific font sizes */
+  --font-size-khmer-small: 14px;
+  --font-size-khmer-base: 16px;
+  --font-size-khmer-large: 18px;
+  --font-size-khmer-xl: 20px;
+  
+  /* Line heights optimized for Khmer */
+  --line-height-khmer-tight: 1.4;
+  --line-height-khmer-normal: 1.6;
+  --line-height-khmer-relaxed: 1.8;
+}
+
+/* Method 5: Khmer font classes */
+.khmer-sans {
+  font-family: var(--font-khmer-sans);
+  line-height: var(--line-height-khmer-normal);
+}
+
+.khmer-serif {
+  font-family: var(--font-khmer-serif);
+  line-height: var(--line-height-khmer-normal);
+}
+
+.khmer-decorative {
+  font-family: var(--font-khmer-decorative);
+  line-height: var(--line-height-khmer-normal);
+}
+
+.khmer-display {
+  font-family: var(--font-khmer-display);
+  line-height: var(--line-height-khmer-tight);
+}
+
+/* Method 6: Mixed language support */
+.mixed-content {
+  font-family: 'Noto Sans Khmer', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* Khmer text specific styling */
+.khmer-text {
+  font-family: var(--font-khmer-sans);
+  font-size: var(--font-size-khmer-base);
+  line-height: var(--line-height-khmer-normal);
+  
+  /* Khmer-specific text rendering */
+  text-rendering: optimizeLegibility;
+  font-feature-settings: 'kern' 1;
+  word-break: keep-all;
+  overflow-wrap: break-word;
+}
+
+/* Method 7: Typography scale for Khmer */
+.khmer-h1 {
+  font-family: var(--font-khmer-display);
+  font-size: 2.5rem;
+  font-weight: 400;
+  line-height: var(--line-height-khmer-tight);
+  margin-bottom: 1rem;
+}
+
+.khmer-h2 {
+  font-family: var(--font-khmer-sans);
+  font-size: 2rem;
+  font-weight: 500;
+  line-height: var(--line-height-khmer-tight);
+  margin-bottom: 0.8rem;
+}
+
+.khmer-h3 {
+  font-family: var(--font-khmer-sans);
+  font-size: 1.5rem;
+  font-weight: 500;
+  line-height: var(--line-height-khmer-normal);
+  margin-bottom: 0.6rem;
+}
+
+.khmer-body {
+  font-family: var(--font-khmer-sans);
+  font-size: var(--font-size-khmer-base);
+  font-weight: 400;
+  line-height: var(--line-height-khmer-normal);
+}
+
+.khmer-caption {
+  font-family: var(--font-khmer-sans);
+  font-size: var(--font-size-khmer-small);
+  font-weight: 400;
+  line-height: var(--line-height-khmer-normal);
+}
+
+/* Method 8: Responsive Khmer typography */
+@media (max-width: 768px) {
+  :root {
+    --font-size-khmer-small: 13px;
+    --font-size-khmer-base: 15px;
+    --font-size-khmer-large: 17px;
+    --font-size-khmer-xl: 19px;
+  }
+  
+  .khmer-h1 {
+    font-size: 2rem;
+  }
+  
+  .khmer-h2 {
+    font-size: 1.6rem;
+  }
+  
+  .khmer-h3 {
+    font-size: 1.3rem;
+  }
+}
+
+@media (min-width: 1200px) {
+  :root {
+    --font-size-khmer-small: 15px;
+    --font-size-khmer-base: 17px;
+    --font-size-khmer-large: 19px;
+    --font-size-khmer-xl: 21px;
+  }
+}
+
+/* Method 9: Local Khmer fonts fallback */
+/* @font-face {
+  font-family: 'Khmer OS';
+  src: url('./assets/fonts/KhmerOS.woff2') format('woff2'),
+       url('./assets/fonts/KhmerOS.woff') format('woff'),
+       url('./assets/fonts/KhmerOS.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Khmer OS System';
+  src: url('./assets/fonts/KhmerOSsystem.woff2') format('woff2'),
+       url('./assets/fonts/KhmerOSsystem.woff') format('woff'),
+       url('./assets/fonts/KhmerOSsystem.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+} */
+
+/* Method 10: Input and form elements */
+input, textarea, select, button {
+  font-family: var(--font-khmer-sans);
+  font-size: var(--font-size-khmer-base);
+  line-height: var(--line-height-khmer-normal);
+}
+
+/* Special styling for Khmer numbers */
+.khmer-numbers {
+  font-variant-numeric: oldstyle-nums;
+  font-feature-settings: 'onum' 1;
+}
+
+/* Method 11: Print styles for Khmer */
+@media print {
+  body {
+    font-family: var(--font-khmer-serif);
+    font-size: 12pt;
+    line-height: 1.5;
+  }
+}
+
+/* Method 12: Dark mode adjustments */
+@media (prefers-color-scheme: dark) {
+  .khmer-text {
+    font-weight: 400; /* Maintain readability in dark mode */
+  }
+  
+  .khmer-h1, .khmer-h2, .khmer-h3 {
+    font-weight: 500; /* Slightly lighter for headings in dark mode */
+  }
+}
