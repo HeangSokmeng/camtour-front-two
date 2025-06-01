@@ -13,7 +13,7 @@ export const translations = {
     'signup': 'Register',
     'login': 'Login',
     'logout': 'Logout',
-
+    'my-orders' : 'My Orders',
     // Hero section
     'cambodia': 'CAMBODIA',
     'find-favorite-place': 'Find your Favorite place',
@@ -847,7 +847,7 @@ export const translations = {
 
     "easy-booking": "ធ្វើដំណើរយ៉ាងងាយស្រួល",
     "easy-booking-description": "រៀបចំដំណើរផ្សងព្រេងបន្ទាប់របស់អ្នកយ៉ាងងាយស្រួល ជាមួយប្រព័ន្ធកក់សេវា មានជម្រើសបង់ប្រាក់ទាន់ចិត្ត និងកញ្ចប់ឧបករណ៍នៅទីតែមួយ។",
-
+    'my-orders' : 'ការកម្មង់ផលិតផលរបស់ខ្ញុំ',
     // Shopping section
     'get-your-need': 'ទទួលបានអ្វីដែលអ្នកត្រូវការ',
     'shopping-description': 'រកអ្វីគ្រប់យ៉ាងដែលអ្នកត្រូវការសម្រាប់ការផ្សងព្រេងរបស់អ្នកនៅកម្ពុជាពីគ្រឿងបរិក្ខារជំរុំគុណភាពទៅរហូតដល់សម្ភារៈដំណើរចាំបាច់ទាំងអស់នៅតម្លៃមិនអាចឈ្នះបានជាមួយនឹងជម្រើសដឹកជញ្ជូនលឿន។',

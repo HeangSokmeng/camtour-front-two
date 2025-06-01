@@ -616,8 +616,6 @@
                 Explore exciting adventures and activities at this location
               </p>
             </div>
-
-            <!-- Placeholder content for activities -->
             <div class="activities-grid">
               <div class="activity-card">
                 <div class="activity-image">

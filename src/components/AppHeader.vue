@@ -153,7 +153,7 @@
                 class="dropdown-item"
                 @click="closeMenuOnNavigation"
               >
-                My Orders
+              {{ t("my-orders") }}
               </RouterLink>
             </li>
             <li>

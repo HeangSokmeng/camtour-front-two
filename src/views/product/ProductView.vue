@@ -1974,6 +1974,23 @@ onUnmounted(() => {
     justify-content: center;
   }
 }
+@media (max-width: 480px) {
+  .products-grid.list {
+    display: grid;
+    grid-template-columns: 1fr; /* One column */
+  }
+
+  .products-grid.list .product-card {
+    display: grid;
+    grid-template-columns: 1fr; /* One column inside the card */
+  }
+}
+@media (max-width: 576px) {
+  .products-grid.grid[data-v-7d24f6ca] {
+    grid-template-columns: 1fr; /* Exactly one column */
+    gap: 15px;
+  }
+}
 
 @media (max-width: 768px) {
   .products-grid.list {

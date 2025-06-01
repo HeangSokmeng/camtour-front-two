@@ -409,7 +409,7 @@
 /* Enhanced card_adv grid */
 .card_adv-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+  grid-template-columns: repeat(3, 1fr);
   gap: 30px;
 }
 
@@ -908,7 +908,8 @@
   
   .card_adv {
     margin: 0 auto;
-    max-width: 380px;
+    /* max-width: 380px; */
+    width:400px;
   }
   
   .card_adv img {

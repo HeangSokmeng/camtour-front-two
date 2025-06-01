@@ -23,7 +23,7 @@
       </div>
       <div class="hero-image">
         <img
-          src="https://scontent.fpnh11-2.fna.fbcdn.net/v/t39.30808-6/475851310_929971552579942_2710709983529107239_n.jpg?_nc_cat=104&ccb=1-7&_nc_sid=127cfc&_nc_eui2=AeF7IHhgIGSH9QCnSPqZBoudFXNd9ijdOsUVc132KN06xcYCrbcI-mgcriGjTzRdlY28VthIkdehTO2iZMhTfFoU&_nc_ohc=Nj0I_G_vJ7IQ7kNvwE9-p04&_nc_oc=Admp9vMhvjx9kcBsYu_0R8vCJ6vq0g4Cr_QRi3a02-YJciKH2lk4V0mEXCy8Gku-ErA&_nc_zt=23&_nc_ht=scontent.fpnh11-2.fna&_nc_gid=C03CsfFvEopMpyucCo1rRA&oh=00_AfIp1m9dQ8GXbAThlPcZ62q4FZJNxmejxFXSMMSCG6yOAg&oe=683B48FD"
+          src="https://scontent.fpnh11-1.fna.fbcdn.net/v/t39.30808-6/500409730_1009917414585355_1742149793144846234_n.jpg?_nc_cat=100&ccb=1-7&_nc_sid=127cfc&_nc_ohc=oYyNqbAaUUcQ7kNvwEvXSm_&_nc_oc=AdkWnieCgV66X8rzfRJ7LaSv_XOUbyxbQqHIeeIkC4IbhqfQ05uNrApdpYzCeyLLsG8&_nc_zt=23&_nc_ht=scontent.fpnh11-1.fna&_nc_gid=MdGVeVggXBMmW1-WFWUKxA&oh=00_AfL4Z07JDWmorAtYKpeFDjXYo-L_dLsPbPloG3767HpPaw&oe=68425954"
           :alt="t('hiking-adventure-alt')"
         />
       </div>
