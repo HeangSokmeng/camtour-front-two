@@ -9,6 +9,7 @@ import Home from '../views/home/HomeView.vue';
 import Checkout from '../views/product/CheckoutView.vue';
 import CheckoutComfirm from '../views/product/OrderConfirmationView.vue';
 import ProductDetail from '../views/product/ProductDetailView.vue';
+import OrderProduct from '../views/product/productOrderView.vue';
 import ProductView from '../views/product/ProductView.vue';
 import SiemReap from '../views/siem-reap/SiemReapView.vue';
 import DetailsView from '../views/travel/TravelDetailView.vue';
@@ -113,6 +114,15 @@ const routes = [
     path: '/product',
     name: 'product',
     component: ProductView,
+    meta: {
+      title: 'Products',
+      transition: 'slide-left',
+      headerType: 'product'  // Add this line
+    }
+  },{
+    path: '/order',
+    name: 'order',
+    component: OrderProduct,
     meta: {
       title: 'Products',
       transition: 'slide-left',

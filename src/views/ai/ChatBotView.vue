@@ -6,7 +6,6 @@
       id="chatbotButton"
       @mousedown="startDrag"
       @touchstart="startDrag"
-      @click="toggleChatbot"
     >
       <div class="pulse-ring"></div>
       <i><img class="iconchatbot" src="https://cdn-icons-png.flaticon.com/512/6008/6008363.png" alt="Travel Assistant" /></i>
@@ -152,6 +151,7 @@
           :placeholder="inputPlaceholder"
           @keypress.enter="sendMessage"
           :disabled="isTyping"
+          ref="messageInput"
         />
         <button @click="sendMessage" :disabled="isTyping || !userInput.trim()">
           <span v-if="!isTyping">
@@ -177,12 +177,15 @@ export default {
       userInput: "",
       messages: [],
       isDragging: false,
+      dragStarted: false,
+      dragTimeout: null,
       dragOffset: { x: 0, y: 0 },
       showingAllQuestions: false,
       isTyping: false,
       conversationContext: [],
       currentLocation: null,
       inputPlaceholder: "Ask about Camtour...",
+      scrollY: 0,
       allQuestions: [
         "Top attractions in Phnom Penh?",
         "Best time to visit Cambodia?",
@@ -237,10 +240,14 @@ export default {
   },
   mounted() {
     // Add event listeners for dragging
-    document.addEventListener("mousemove", this.handleDrag);
-    document.addEventListener("mouseup", this.stopDrag);
-    document.addEventListener("touchmove", this.handleDrag);
-    document.addEventListener("touchend", this.stopDrag);
+    document.addEventListener("mousemove", this.handleDrag, { passive: false });
+    document.addEventListener("mouseup", this.stopDrag, { passive: true });
+    document.addEventListener("touchmove", this.handleDrag, { passive: false });
+    document.addEventListener("touchend", this.stopDrag, { passive: true });
+
+    // Add orientation and resize listeners
+    window.addEventListener('orientationchange', this.handleOrientationChange);
+    window.addEventListener('resize', this.handleResize);
 
     // Set a timeout to automatically open chatbot after 5 seconds
     setTimeout(() => {
@@ -255,28 +262,88 @@ export default {
     document.removeEventListener("mouseup", this.stopDrag);
     document.removeEventListener("touchmove", this.handleDrag);
     document.removeEventListener("touchend", this.stopDrag);
+    window.removeEventListener('orientationchange', this.handleOrientationChange);
+    window.removeEventListener('resize', this.handleResize);
+
+    // Clear timeouts
+    if (this.dragTimeout) {
+      clearTimeout(this.dragTimeout);
+    }
+
+    // Remove body scroll lock if component unmounts while chatbot is open
+    this.removeBodyScrollLock();
   },
   methods: {
-    toggleChatbot() {
-      if (!this.isDragging) {
-        this.isChatbotActive = !this.isChatbotActive;
+    handleButtonClick(e) {
+      // Prevent the click if we just finished dragging
+      if (this.dragStarted) {
+        e.preventDefault();
+        return;
+      }
+      this.toggleChatbot();
+    },
 
-        // If this is the first time opening the chat, scroll to the bottom
-        if (this.isChatbotActive && this.messages.length === 0) {
-          this.$nextTick(() => {
-            this.scrollToBottom();
-          });
+    toggleChatbot() {
+      this.isChatbotActive = !this.isChatbotActive;
+      
+      // Handle body scroll lock for mobile
+      if (this.isChatbotActive) {
+        this.applyBodyScrollLock();
+      } else {
+        this.removeBodyScrollLock();
+      }
+
+      // If this is the first time opening the chat, scroll to the bottom
+      if (this.isChatbotActive) {
+        this.$nextTick(() => {
+          this.scrollToBottom();
+          // Focus input on desktop, but not on mobile to prevent keyboard issues
+          if (window.innerWidth > 768 && this.$refs.messageInput) {
+            this.$refs.messageInput.focus();
+          }
+        });
+      }
+    },
+
+    closeChatbot() {
+      this.isChatbotActive = false;
+      this.removeBodyScrollLock();
+      localStorage.setItem("chatbotDismissed", "true");
+    },
+
+    applyBodyScrollLock() {
+      if (window.innerWidth <= 768) {
+        this.scrollY = window.scrollY;
+        document.body.classList.add('chatbot-open');
+        document.body.style.position = 'fixed';
+        document.body.style.top = `-${this.scrollY}px`;
+        document.body.style.width = '100%';
+        document.body.style.overflow = 'hidden';
+      }
+    },
+
+    removeBodyScrollLock() {
+      if (document.body.classList.contains('chatbot-open')) {
+        document.body.classList.remove('chatbot-open');
+        document.body.style.position = '';
+        document.body.style.top = '';
+        document.body.style.width = '';
+        document.body.style.overflow = '';
+        if (window.innerWidth <= 768) {
+          window.scrollTo(0, this.scrollY);
         }
       }
     },
-    closeChatbot() {
-      this.isChatbotActive = false;
-      localStorage.setItem("chatbotDismissed", "true");
-    },
+
     startDrag(e) {
+      // Prevent dragging on multi-touch
+      if (e.touches && e.touches.length > 1) return;
+      
       this.isDragging = true;
-      const clientX = e.clientX || e.touches[0].clientX;
-      const clientY = e.clientY || e.touches[0].clientY;
+      this.dragStarted = false;
+      
+      const clientX = e.clientX || (e.touches && e.touches[0].clientX);
+      const clientY = e.clientY || (e.touches && e.touches[0].clientY);
 
       const button = document.getElementById("chatbotButton");
       const rect = button.getBoundingClientRect();
@@ -287,40 +354,130 @@ export default {
       };
 
       button.style.transition = "none";
-      e.preventDefault();
-    },
-    handleDrag(e) {
-      if (!this.isDragging) return;
-
-      const clientX = e.clientX || e.touches[0].clientX;
-      const clientY = e.clientY || e.touches[0].clientY;
-
-      const button = document.getElementById("chatbotButton");
-      const buttonWidth = button.offsetWidth;
-      const buttonHeight = button.offsetHeight;
-
-      let newX = clientX - this.dragOffset.x;
-      let newY = clientY - this.dragOffset.y;
-
-      // Constrain to window boundaries
-      newX = Math.max(0, Math.min(newX, window.innerWidth - buttonWidth));
-      newY = Math.max(0, Math.min(newY, window.innerHeight - buttonHeight));
-
-      button.style.left = newX + "px";
-      button.style.top = newY + "px";
-
+      
+      // Set a timeout to determine if this is a drag or tap
+      this.dragTimeout = setTimeout(() => {
+        if (this.isDragging) {
+          this.dragStarted = true;
+        }
+      }, 200); // Increased timeout for better detection
+      
+      // Only prevent default for touch events, not mouse events
       if (e.touches) {
         e.preventDefault();
       }
     },
-    stopDrag() {
-      this.isDragging = false;
-      const button = document.getElementById("chatbotButton");
-      button.style.transition = "all 0.3s ease";
+
+    handleDrag(e) {
+      if (!this.isDragging) return;
+
+      const clientX = e.clientX || (e.touches && e.touches[0].clientX);
+      const clientY = e.clientY || (e.touches && e.touches[0].clientY);
+
+      // Mark as drag started if moved enough
+      if (!this.dragStarted) {
+        const moveThreshold = 10;
+        const deltaX = Math.abs(clientX - (this.dragOffset.x + parseInt(document.getElementById("chatbotButton").style.left || 0)));
+        const deltaY = Math.abs(clientY - (this.dragOffset.y + parseInt(document.getElementById("chatbotButton").style.top || 0)));
+        
+        if (deltaX > moveThreshold || deltaY > moveThreshold) {
+          this.dragStarted = true;
+        }
+      }
+
+      if (this.dragStarted) {
+        const button = document.getElementById("chatbotButton");
+        const buttonWidth = button.offsetWidth;
+        const buttonHeight = button.offsetHeight;
+
+        let newX = clientX - this.dragOffset.x;
+        let newY = clientY - this.dragOffset.y;
+
+        // Add safe area padding for mobile devices
+        const safeAreaTop = 20;
+        const safeAreaBottom = 80; // Extra space for mobile UI
+        const safeAreaSides = 20;
+
+        // Constrain to window boundaries with safe areas
+        newX = Math.max(safeAreaSides, Math.min(newX, window.innerWidth - buttonWidth - safeAreaSides));
+        newY = Math.max(safeAreaTop, Math.min(newY, window.innerHeight - buttonHeight - safeAreaBottom));
+
+        button.style.left = newX + "px";
+        button.style.top = newY + "px";
+        button.style.right = "auto";
+        button.style.bottom = "auto";
+
+        // Prevent scrolling on mobile
+        if (e.touches) {
+          e.preventDefault();
+        }
+      }
     },
+
+    stopDrag() {
+      if (this.dragTimeout) {
+        clearTimeout(this.dragTimeout);
+        this.dragTimeout = null;
+      }
+      
+      // If we weren't dragging, this was a click/tap
+      const wasClick = this.isDragging && !this.dragStarted;
+      
+      this.isDragging = false;
+      
+      const button = document.getElementById("chatbotButton");
+      if (button) {
+        button.style.transition = "all 0.3s ease";
+      }
+      
+      // Handle click immediately if it wasn't a drag
+      if (wasClick) {
+        this.toggleChatbot();
+      }
+      
+      // Reset drag started after a short delay
+      setTimeout(() => {
+        this.dragStarted = false;
+      }, 50);
+    },
+
+    handleOrientationChange() {
+      // Recalculate button position if it's outside viewport
+      setTimeout(() => {
+        const button = document.getElementById("chatbotButton");
+        if (button) {
+          const rect = button.getBoundingClientRect();
+          
+          if (rect.right > window.innerWidth || rect.bottom > window.innerHeight || rect.left < 0 || rect.top < 0) {
+            button.style.right = "20px";
+            button.style.bottom = "20px";
+            button.style.left = "auto";
+            button.style.top = "auto";
+          }
+        }
+        
+        // Reapply scroll lock if chatbot is open
+        if (this.isChatbotActive) {
+          this.removeBodyScrollLock();
+          this.$nextTick(() => {
+            this.applyBodyScrollLock();
+          });
+        }
+      }, 300);
+    },
+
+    handleResize() {
+      if (this.isChatbotActive) {
+        this.$nextTick(() => {
+          this.scrollToBottom();
+        });
+      }
+    },
+
     toggleQuestions() {
       this.showingAllQuestions = !this.showingAllQuestions;
     },
+
     selectLocation(location) {
       this.currentLocation = location;
       this.inputPlaceholder = `Ask about ${location}...`;
@@ -337,10 +494,12 @@ export default {
 
       this.addBotMessage(locationMessages[location], this.locationSuggestions[location]);
     },
+
     handleQuickQuestion(question) {
       this.addMessage(question, true);
       this.processBotResponse(question);
     },
+
     sendMessage() {
       const message = this.userInput.trim();
       if (message && !this.isTyping) {
@@ -349,6 +508,7 @@ export default {
         this.processBotResponse(message);
       }
     },
+
     addMessage(text, isUser) {
       this.messages.push({
         text,
@@ -359,6 +519,7 @@ export default {
         this.scrollToBottom();
       });
     },
+
     addBotMessage(text, suggestions = []) {
       this.messages.push({
         text,
@@ -370,12 +531,14 @@ export default {
         this.scrollToBottom();
       });
     },
+
     scrollToBottom() {
       const container = this.$refs.messagesContainer;
       if (container) {
         container.scrollTop = container.scrollHeight;
       }
     },
+
     processBotResponse(userMessage) {
       // Start typing animation
       this.isTyping = true;
@@ -431,11 +594,12 @@ export default {
           }, 1000);
         });
     },
+
     formatBotMessage(text) {
       // Convert URLs to clickable links
       const urlRegex = /(https?:\/\/[^\s]+)/g;
       return text.replace(urlRegex, function (url) {
-        return `<a href="${url}" target="_blank">${url}</a>`;
+        return `<a href="${url}" target="_blank" rel="noopener noreferrer">${url}</a>`;
       });
     },
   },
@@ -452,6 +616,13 @@ export default {
   --light-color: #F7FFF7; /* Off-white for clean interface */
   --shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
   --border-radius: 16px;
+}
+
+/* Global body scroll lock for mobile */
+:global(body.chatbot-open) {
+  overflow: hidden !important;
+  position: fixed !important;
+  width: 100% !important;
 }
 
 .iconchatbot {
@@ -472,11 +643,16 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  cursor: move;
+  cursor: pointer;
   box-shadow: var(--shadow);
-  z-index: 1000;
+  z-index: 9999;
   transition: all 0.3s ease;
-  touch-action: none;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  border: none;
+  outline: none;
 }
 
 .pulse-ring {
@@ -487,6 +663,7 @@ export default {
   background-color: var(--primary-color);
   opacity: 0.6;
   animation: pulse 2s infinite;
+  pointer-events: none;
 }
 
 @keyframes pulse {
@@ -510,10 +687,15 @@ export default {
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
 }
 
+.chatbot-button:active {
+  transform: scale(0.95);
+}
+
 .chatbot-button i {
   font-size: 24px;
   pointer-events: none;
   z-index: 1;
+  position: relative;
 }
 
 /* Chatbot container */
@@ -532,9 +714,8 @@ export default {
   display: none;
   flex-direction: column;
   overflow: hidden;
-  z-index: 1001;
+  z-index: 10000;
   transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-  border-radius: 16px;
 }
 
 .chatbot-container.active {
@@ -556,7 +737,6 @@ export default {
 /* Chatbot header */
 .chatbot-header {
   background-color: #2ec4b5;
-  /* background-image: linear-gradient(to right, var(--primary-color)); */
   color: white;
   padding: 15px;
   display: flex;
@@ -564,6 +744,8 @@ export default {
   align-items: center;
   border-top-left-radius: var(--border-radius);
   border-top-right-radius: var(--border-radius);
+  position: relative;
+  z-index: 1;
 }
 
 .header-content {
@@ -598,10 +780,13 @@ export default {
   cursor: pointer;
   line-height: 0.8;
   transition: transform 0.2s;
+  padding: 5px;
+  border-radius: 50%;
 }
 
 .close-btn:hover {
   transform: scale(1.2);
+  background-color: rgba(255, 255, 255, 0.1);
 }
 
 /* Messages container with travel-themed background */
@@ -610,7 +795,6 @@ export default {
   padding: 15px;
   overflow-y: auto;
   background-color: var(--light-color);
-  /* background-image: url('../../assets/bg/cambodia-map-bg.png'); */
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
@@ -618,6 +802,7 @@ export default {
   background-opacity: 0.1;
   scrollbar-width: thin;
   scrollbar-color: #ddd #f5f5f5;
+  -webkit-overflow-scrolling: touch;
 }
 
 .chatbot-messages::-webkit-scrollbar {
@@ -675,14 +860,15 @@ export default {
 
 .bot-indicator {
   margin-right: 10px;
+  flex-shrink: 0;
 }
 
-/* .guide-avatar {
-  width: 50px;
-  height: 50px;
+.guide-avatar {
+  width: 30px;
+  height: 30px;
   border-radius: 50%;
   border: 2px solid var(--secondary-color);
-} */
+}
 
 /* Welcome message styling with photo cards */
 .welcome-message {
@@ -710,7 +896,7 @@ export default {
   border: none;
   border-radius: 12px;
   overflow: hidden;
-  width: calc(33.33% - 10px);
+  width: calc(33.33% - 8px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   transition: all 0.3s;
   cursor: pointer;
@@ -722,11 +908,16 @@ export default {
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
 }
 
+.location-card:active {
+  transform: scale(0.98);
+}
+
 .location-image {
   height: 120px;
   background-size: cover;
   background-position: center;
   position: relative;
+  background-color: #ddd;
 }
 
 .location-image::after {
@@ -799,6 +990,12 @@ export default {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
+.quick-question:active {
+  transform: scale(0.98);
+  background-color: var(--primary-color);
+  color: white;
+}
+
 .show-more-btn {
   background-color: transparent;
   color: var(--secondary-color);
@@ -855,6 +1052,12 @@ export default {
   transform: translateY(-2px);
 }
 
+.suggestion-button:active {
+  transform: scale(0.98);
+  background-color: var(--secondary-color);
+  color: white;
+}
+
 /* Typing indicator */
 .typing-indicator {
   display: flex;
@@ -906,6 +1109,8 @@ export default {
   padding: 15px;
   border-top: 1px solid #eee;
   background-color: white;
+  position: relative;
+  z-index: 1;
 }
 
 .chatbot-input input {
@@ -920,7 +1125,7 @@ export default {
 }
 
 .chatbot-input input:focus {
-  border-color: var(--secondary-color);
+  /* border-color: var(--secondary-color); */
   box-shadow: 0 0 0 3px rgba(46, 196, 182, 0.15);
 }
 
@@ -937,6 +1142,7 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
+  min-width: 60px;
 }
 
 .chatbot-input button:hover:not(:disabled) {
@@ -948,6 +1154,7 @@ export default {
 .chatbot-input button:disabled {
   background-color: #ddd;
   cursor: not-allowed;
+  transform: none;
 }
 
 .send-icon {
@@ -962,11 +1169,10 @@ export default {
   right: 0;
   bottom: 0;
   background-color: rgba(0, 0, 0, 0.5);
-  /* background-image: url('../../assets/bg/cambodia-bg.jpg'); */
   background-size: cover;
   background-position: center;
   background-blend-mode: multiply;
-  z-index: 1000;
+  z-index: 9999;
   display: none;
   backdrop-filter: blur(8px);
   transition: opacity 0.3s;
@@ -1000,34 +1206,7 @@ export default {
   transform: translateX(30px);
 }
 
-/* Responsive adjustments */
-@media (max-width: 768px) {
-  .chatbot-container {
-    width: 100%;
-    height: 100%;
-    max-width: 100%;
-    max-height: 100%;
-    border-radius: 0;
-    top: 0;
-    left: 0;
-    transform: none;
-  }
-
-  .location-card {
-    width: 100%;
-    margin-bottom: 10px;
-  }
-
-  .location-image {
-    height: 100px;
-  }
-
-  .chatbot-header {
-    border-radius: 0;
-  }
-}
-
-/* Additional travel-themed styling */
+/* Bot content styling */
 .bot-content {
   line-height: 1.6;
 }
@@ -1044,47 +1223,321 @@ export default {
   text-decoration: none;
 }
 
-/* Custom content styling - add travel icons to specific content */
-.bot-content:contains("hotel"), 
-.bot-content:contains("stay") {
-  background-image: url('../../assets/icons/hotel-icon.png');
-  background-repeat: no-repeat;
-  background-position: right bottom;
-  background-size: 20px;
-  padding-right: 25px;
+/* MOBILE RESPONSIVE STYLES */
+@media (max-width: 768px) {
+  .chatbot-button {
+    width: 60px;
+    height: 60px;
+    bottom: 20px;
+    right: 20px;
+    z-index: 9999;
+  }
+
+  .iconchatbot {
+    width: 50px;
+    height: 50px;
+  }
+
+  /* Full screen chatbot on mobile */
+  .chatbot-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    max-width: 100%;
+    max-height: 100%;
+    border-radius: 0;
+    transform: none;
+    z-index: 10000;
+  }
+
+  .chatbot-container.active {
+    display: flex;
+    animation: slideInMobile 0.3s ease;
+  }
+
+  @keyframes slideInMobile {
+    from {
+      opacity: 0;
+      transform: translateY(100%);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .chatbot-overlay {
+    z-index: 9999;
+  }
+
+  .chatbot-header {
+    border-radius: 0;
+    padding: 15px;
+    /* Add safe area for mobile notch */
+    padding-top: max(15px, env(safe-area-inset-top, 15px));
+  }
+
+  .chatbot-header h3 {
+    font-size: 18px;
+  }
+
+  .header-logo {
+    width: 28px;
+    height: 28px;
+  }
+
+  .chatbot-messages {
+    padding: 10px;
+    /* Adjust for mobile safe areas */
+    padding-left: max(10px, env(safe-area-inset-left, 10px));
+    padding-right: max(10px, env(safe-area-inset-right, 10px));
+  }
+
+  /* Location cards in mobile - horizontal layout */
+  .location-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin: 15px 0;
+  }
+
+  .location-card {
+    width: 100%;
+    flex-direction: row;
+    height: 80px;
+    margin-bottom: 0;
+  }
+
+  .location-image {
+    width: 80px;
+    height: 80px;
+    flex-shrink: 0;
+  }
+
+  .location-info {
+    flex: 1;
+    padding: 15px;
+    justify-content: center;
+    align-items: flex-start;
+    text-align: left;
+  }
+
+  .location-name {
+    font-size: 16px;
+    text-align: left;
+  }
+
+  /* Input area mobile adjustments */
+  .chatbot-input {
+    padding: 15px;
+    /* Add safe area for mobile home indicator */
+    padding-bottom: max(15px, env(safe-area-inset-bottom, 15px));
+  }
+
+  .chatbot-input input {
+    padding: 12px 16px;
+    font-size: 16px; /* Prevents zoom on iOS */
+    border-radius: 20px;
+  }
+
+  .chatbot-input button {
+    margin-left: 8px;
+    padding: 0 16px;
+    min-width: 60px;
+    border-radius: 20px;
+  }
+
+  /* Message adjustments for mobile */
+  .message {
+    margin-bottom: 15px;
+    max-width: 90%;
+  }
+
+  .message-content {
+    padding: 10px 14px;
+    font-size: 14px;
+    line-height: 1.4;
+  }
+
+  .bot-indicator {
+    margin-right: 8px;
+  }
+
+  .guide-avatar {
+    width: 25px;
+    height: 25px;
+  }
+
+  /* Quick questions mobile layout */
+  .quick-questions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 10px 0;
+  }
+
+  .quick-question {
+    padding: 8px 12px;
+    font-size: 12px;
+    border-radius: 15px;
+    flex: 1;
+    min-width: calc(50% - 3px);
+    text-align: center;
+  }
+
+  /* Suggestion buttons mobile layout */
+  .suggestion-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+  }
+
+  .suggestion-button {
+    padding: 6px 10px;
+    font-size: 11px;
+    flex: 1;
+    min-width: calc(50% - 2.5px);
+    text-align: center;
+  }
+
+  .message-suggestions {
+    margin-left: 15px;
+  }
 }
 
-.bot-content:contains("food"),
-.bot-content:contains("restaurant") {
-  background-image: url('../../assets/icons/food-icon.png');
-  background-repeat: no-repeat;
-  background-position: right bottom;
-  background-size: 20px;
-  padding-right: 25px;
+/* Very small mobile screens */
+@media (max-width: 480px) {
+  .chatbot-button {
+    width: 55px;
+    height: 55px;
+    bottom: 15px;
+    right: 15px;
+  }
+
+  .iconchatbot {
+    width: 45px;
+    height: 45px;
+  }
+
+  .chatbot-header {
+    padding: 12px 15px;
+    padding-top: max(12px, env(safe-area-inset-top, 12px));
+  }
+
+  .chatbot-header h3 {
+    font-size: 16px;
+  }
+
+  .header-logo {
+    width: 24px;
+    height: 24px;
+  }
+
+  .chatbot-messages {
+    padding: 8px;
+  }
+
+  .message-content {
+    padding: 8px 12px;
+    font-size: 13px;
+  }
+
+  .location-card {
+    height: 70px;
+  }
+
+  .location-image {
+    width: 70px;
+    height: 70px;
+  }
+
+  .location-info {
+    padding: 10px;
+  }
+
+  .location-name {
+    font-size: 14px;
+  }
+
+  .quick-question {
+    padding: 6px 10px;
+    font-size: 11px;
+  }
+
+  .chatbot-input {
+    padding: 12px;
+    padding-bottom: max(12px, env(safe-area-inset-bottom, 12px));
+  }
+
+  .chatbot-input input {
+    padding: 10px 14px;
+    font-size: 16px;
+  }
+
+  .chatbot-input button {
+    padding: 0 12px;
+    min-width: 50px;
+  }
 }
 
-.bot-content:contains("temple"),
-.bot-content:contains("Angkor") {
-  background-image: url('../../assets/icons/temple-icon.png');
-  background-repeat: no-repeat;
-  background-position: right bottom;
-  background-size: 20px;
-  padding-right: 25px;
+/* Touch device optimizations */
+@media (hover: none) and (pointer: coarse) {
+  .chatbot-button:active {
+    transform: scale(0.95);
+  }
+
+  .quick-question:active,
+  .suggestion-button:active,
+  .location-card:active {
+    transform: scale(0.98);
+    background-color: var(--primary-color);
+    color: white;
+  }
+
+  .close-btn:active {
+    background-color: rgba(255, 255, 255, 0.2);
+  }
 }
 
-/* Add a subtle pattern to the chatbot container */
-.chatbot-container::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  /* background-image: url('../../assets/patterns/cambodia-pattern.png'); */
-  background-repeat: repeat;
-  background-size: 200px;
-  opacity: 0.03;
-  pointer-events: none;
-  z-index: -1;
+/* iOS Safari specific fixes */
+@supports (-webkit-touch-callout: none) {
+  .chatbot-container {
+    height: -webkit-fill-available;
+  }
+  
+  .chatbot-input input {
+    /* Prevent zoom on focus in iOS */
+    font-size: 16px;
+  }
+}
+
+/* Landscape orientation adjustments */
+@media (max-width: 768px) and (orientation: landscape) {
+  .location-cards {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .location-card {
+    width: calc(50% - 5px);
+    height: 60px;
+  }
+
+  .location-image {
+    width: 60px;
+    height: 60px;
+  }
+
+  .chatbot-messages {
+    padding: 5px 10px;
+  }
+
+  .chatbot-input {
+    padding: 10px 15px;
+  }
 }
 </style>

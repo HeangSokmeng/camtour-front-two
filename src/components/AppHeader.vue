@@ -50,9 +50,21 @@
               </RouterLink>
             </li>
           </ul>
+          
+          <!-- Auth buttons inside navigation for mobile -->
+          <div class="auth-buttons mobile-nav" v-if="!isAuthenticated">
+            <RouterLink to="/register" class="auth-btn" @click="closeMenuOnNavigation">
+              {{ t("signup") }}
+            </RouterLink>
+            <RouterLink to="/login" class="auth-btn" @click="closeMenuOnNavigation">
+              {{ t("login") }}
+            </RouterLink>
+          </div>
         </nav>
       </div>
-      <div class="auth-buttons" :class="{ open: menuOpen }" v-if="!isAuthenticated">
+      
+      <!-- Auth buttons for desktop -->
+      <div class="auth-buttons desktop-auth" v-if="!isAuthenticated">
         <RouterLink to="/register" class="auth-btn" @click="closeMenuOnNavigation">
           {{ t("signup") }}
         </RouterLink>
@@ -60,6 +72,7 @@
           {{ t("login") }}
         </RouterLink>
       </div>
+      
       <div class="user-profile" :class="{ open: menuOpen }" v-else>
         <div class="wishlist-btn-container">
           <RouterLink
@@ -136,6 +149,15 @@
             </li>
             <li>
               <RouterLink
+                to="/order"
+                class="dropdown-item"
+                @click="closeMenuOnNavigation"
+              >
+                My Orders
+              </RouterLink>
+            </li>
+            <li>
+              <RouterLink
                 to="/settings"
                 class="dropdown-item"
                 @click="closeMenuOnNavigation"
@@ -153,6 +175,8 @@
         </div>
       </div>
     </header>
+    
+    <!-- Rest of your modals... -->
     <div class="modal-overlay" v-if="showLogoutModal" @click="cancelLogout">
       <div class="modal-content sad-animation" @click.stop>
         <div class="modal-header">
@@ -206,6 +230,7 @@ import {
   watch,
 } from "vue";
 import { useRouter } from "vue-router";
+// const cartStore = useCartStore();
 const router = useRouter();
 const globalStore = useGlobalStore();
 const { currentLanguage, setLanguage, t } = useTranslation();
@@ -370,8 +395,7 @@ const resetAutoSlide = () => {
   stopAutoSlide();
   startAutoSlide();
 };
-const handleProfileUpdated = () => {
-};
+const handleProfileUpdated = () => {};
 const changeLanguage = () => {
   setLanguage(currentLanguage.value);
   notifyLanguageChange();

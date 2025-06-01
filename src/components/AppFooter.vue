@@ -507,4 +507,5 @@ onUnmounted(() => {
     justify-content: center;
   }
 }
+
 </style>

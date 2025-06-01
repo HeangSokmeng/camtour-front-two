@@ -1828,6 +1828,7 @@ textarea {
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   gap: 20px;
   margin-top: 20px;
+  margin-bottom: 40px;
 }
 
 /* Product Card (for related products) */
