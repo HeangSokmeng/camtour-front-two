@@ -1,43 +1,42 @@
 <template>
-  <button 
-    :class="['wishlist-btn', { 
-      'is-favorited': isInWishlist, 
-      'is-loading': isLoading,
-      'btn-small': size === 'small',
-      'btn-large': size === 'large'
-    }]"
+  <button
+    :class="[
+      'wishlist-btn',
+      {
+        'is-favorited': isInWishlist,
+        'is-loading': isLoading,
+        'btn-small': size === 'small',
+        'btn-large': size === 'large',
+      },
+    ]"
     @click.prevent.stop="toggleWishlist"
     :disabled="isLoading"
     :title="isInWishlist ? 'Remove from wishlist' : 'Add to wishlist'"
   >
     <div class="btn-content">
       <!-- Heart icon -->
-      <svg 
-        class="heart-icon" 
+      <svg
+        class="heart-icon"
         :class="{ filled: isInWishlist }"
-        xmlns="http://www.w3.org/2000/svg" 
-        width="20" 
-        height="20" 
-        viewBox="0 0 24 24" 
-        fill="none" 
-        stroke="currentColor" 
-        stroke-width="2" 
-        stroke-linecap="round" 
+        xmlns="http://www.w3.org/2000/svg"
+        width="20"
+        height="20"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
         stroke-linejoin="round"
       >
-        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+        <path
+          d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"
+        ></path>
       </svg>
-      
-      <!-- Loading spinner -->
       <div v-if="isLoading" class="loading-spinner"></div>
-      
-      <!-- Text label (optional) -->
       <span v-if="showText" class="btn-text">
-        {{ isInWishlist ? 'Saved' : 'Save' }}
+        {{ isInWishlist ? "Saved" : "Save" }}
       </span>
     </div>
-    
-    <!-- Success animation -->
     <div v-if="showSuccessAnimation" class="success-animation">
       <div class="success-checkmark">✓</div>
     </div>
@@ -45,71 +44,58 @@
 </template>
 
 <script setup>
-import { computed, defineEmits, defineProps, ref, watch } from 'vue';
-
-// Props
+import { computed, defineEmits, defineProps, ref, watch } from "vue";
 const props = defineProps({
   item: {
     type: Object,
     required: true,
     validator: (item) => {
       return item && (item.id !== undefined || item.product_id !== undefined);
-    }
+    },
   },
   size: {
     type: String,
-    default: 'medium',
-    validator: (value) => ['small', 'medium', 'large'].includes(value)
+    default: "medium",
+    validator: (value) => ["small", "medium", "large"].includes(value),
   },
   showText: {
     type: Boolean,
-    default: false
+    default: false,
   },
   variant: {
     type: String,
-    default: 'default',
-    validator: (value) => ['default', 'outline', 'ghost'].includes(value)
-  }
+    default: "default",
+    validator: (value) => ["default", "outline", "ghost"].includes(value),
+  },
 });
 
-// Emits
-const emit = defineEmits(['added', 'removed', 'error']);
-
-// State
+const emit = defineEmits(["added", "removed", "error"]);
 const isLoading = ref(false);
 const showSuccessAnimation = ref(false);
-
-// Computed
 const itemId = computed(() => {
   return props.item.id || props.item.product_id;
 });
 
 const isInWishlist = computed(() => {
-  // Dynamic check to avoid early initialization
   try {
-    const WishlistService = require('@/stores/WishlistService').default;
+    const WishlistService = require("@/stores/WishlistService").default;
     return WishlistService.isInWishlist(itemId.value);
   } catch (error) {
-    // Fallback to localStorage check if service not available
     try {
-      const storageKey = 'camtour_wishlist_guest';
+      const storageKey = "camtour_wishlist_guest";
       const stored = localStorage.getItem(storageKey);
       const items = stored ? JSON.parse(stored) : [];
-      return items.some(item => item.id === itemId.value);
+      return items.some((item) => item.id === itemId.value);
     } catch {
       return false;
     }
   }
 });
 
-// Methods
 const toggleWishlist = async () => {
   if (isLoading.value) return;
-  
   isLoading.value = true;
-  
   try {
-    // Prepare item data for wishlist
     const wishlistItem = {
       id: itemId.value,
       name: getItemName(),
@@ -119,96 +105,80 @@ const toggleWishlist = async () => {
       rating: props.item.rate_star || props.item.rating || 0,
       views: props.item.total_view || props.item.views || 0,
       type: determineItemType(),
-      ...props.item
+      ...props.item,
     };
-    
     const wasInWishlist = isInWishlist.value;
-    
-    // Import WishlistService dynamically to avoid initialization issues
-    const { default: WishlistService } = await import('@/stores/WishlistService');
+    const { default: WishlistService } = await import("@/stores/WishlistService");
     const success = await WishlistService.toggleItem(wishlistItem);
-    
     if (success) {
-      // Show success animation
       showSuccessAnimation.value = true;
       setTimeout(() => {
         showSuccessAnimation.value = false;
       }, 1000);
-      
-      // Emit appropriate event
       if (wasInWishlist) {
-        emit('removed', itemId.value);
+        emit("removed", itemId.value);
       } else {
-        emit('added', wishlistItem);
+        emit("added", wishlistItem);
       }
-      
-      // Show toast notification (optional)
       showNotification(wasInWishlist);
-      
     } else {
-      emit('error', 'Failed to update wishlist');
+      emit("error", "Failed to update wishlist");
     }
-    
   } catch (error) {
-    console.error('Error toggling wishlist:', error);
-    emit('error', error.message);
+    console.error("Error toggling wishlist:", error);
+    emit("error", error.message);
   } finally {
     isLoading.value = false;
   }
 };
 
 const getItemName = () => {
-  return props.item.name || 
-         props.item.product_name || 
-         props.item.title || 
-         'Unknown Item';
+  return props.item.name || props.item.product_name || props.item.title || "Unknown Item";
 };
-
 const getItemLocation = () => {
-  return props.item.location || 
-         props.item.name_local || 
-         props.item.description || 
-         '';
+  return props.item.location || props.item.name_local || props.item.description || "";
 };
 
 const getItemImage = () => {
-  return props.item.is_thumbnail || 
-         props.item.image || 
-         props.item.thumbnail || 
-         'https://placehold.co/400x300/19ADCF/ffffff?text=Camtour';
+  return (
+    props.item.is_thumbnail ||
+    props.item.image ||
+    props.item.thumbnail ||
+    "https://placehold.co/400x300/19ADCF/ffffff?text=Camtour"
+  );
 };
 
 const determineItemType = () => {
   if (props.item.product_id || props.item.product_name) {
-    return 'product';
+    return "product";
   }
-  return 'location';
+  return "location";
 };
 
 const showNotification = (wasRemoved) => {
-  // You can implement a toast notification system here
-  const message = wasRemoved 
+  const message = wasRemoved
     ? `Removed "${getItemName()}" from wishlist`
     : `Added "${getItemName()}" to wishlist`;
-    
-  console.log(message);
-  
-  // Example: dispatch custom event for toast notifications
-  window.dispatchEvent(new CustomEvent('show-toast', {
-    detail: {
-      message,
-      type: wasRemoved ? 'info' : 'success',
-      duration: 3000
-    }
-  }));
+  window.dispatchEvent(
+    new CustomEvent("show-toast", {
+      detail: {
+        message,
+        type: wasRemoved ? "info" : "success",
+        duration: 3000,
+      },
+    })
+  );
 };
 
-// Watch for external changes to the item
-watch(() => props.item, (newItem) => {
-  if (!newItem || (!newItem.id && !newItem.product_id)) {
-    console.warn('WishlistButton: Invalid item prop', newItem);
-  }
-}, { immediate: true });
+watch(
+  () => props.item,
+  (newItem) => {
+    if (!newItem || (!newItem.id && !newItem.product_id)) {
+      console.warn("WishlistButton: Invalid item prop", newItem);
+    }
+  },
+  { immediate: true }
+);
 </script>
 
 <style scoped>
@@ -330,28 +300,38 @@ watch(() => props.item, (newItem) => {
 
 /* Animations */
 @keyframes heartBeat {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.2); }
-  100% { transform: scale(1); }
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+  }
 }
 
 @keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 @keyframes checkmarkPop {
-  0% { 
-    transform: scale(0) rotate(45deg); 
-    opacity: 0; 
+  0% {
+    transform: scale(0) rotate(45deg);
+    opacity: 0;
   }
-  50% { 
-    transform: scale(1.2) rotate(45deg); 
-    opacity: 1; 
+  50% {
+    transform: scale(1.2) rotate(45deg);
+    opacity: 1;
   }
-  100% { 
-    transform: scale(1) rotate(45deg); 
-    opacity: 0; 
+  100% {
+    transform: scale(1) rotate(45deg);
+    opacity: 0;
   }
 }
 
@@ -384,7 +364,7 @@ watch(() => props.item, (newItem) => {
     min-width: 36px;
     min-height: 36px;
   }
-  
+
   .btn-text {
     display: none;
   }

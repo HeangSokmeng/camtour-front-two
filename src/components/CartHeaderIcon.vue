@@ -25,22 +25,6 @@ const toggleCart = () => {
 </script>
 
 <style>
-/* .cart-header-icon {
-  position: relative;
-  width: 28px;
-  height: 28px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #ffffff;
-  transition: color 0.2s;
-}
-
-.cart-header-icon:hover {
-  color: #19adcf;
-} */
-
 .cart-count {
   position: absolute;
   top: -8px;

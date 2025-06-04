@@ -568,6 +568,7 @@ h2:after {
   grid-column: span 2;
   display: grid;
   grid-template-columns: 1fr 1fr;
+  width: 100%;
 }
 
 .destination-image {
@@ -1308,4 +1309,5 @@ h2:after {
     order: 2;
   }
 }
+
 </style>

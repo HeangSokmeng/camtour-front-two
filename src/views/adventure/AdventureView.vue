@@ -29,19 +29,16 @@
       </div>
     </section>
 
-    <!-- Header Section -->
     <div class="header3">
       <span class="tag">{{ t("adventure-tourism-tag") }}</span>
       <h1>{{ t("ready-to-hiking-title") }}</h1>
     </div>
 
-    <!-- Mobile Filter Toggle -->
     <button class="mobile-filter-toggle" @click="toggleMobileFilters" v-if="isMobile">
       <i class="fas fa-filter"></i>
       {{ t("filter-options") }}
     </button>
 
-    <!-- Sidebar Overlay for Mobile -->
     <div
       class="sidebar-overlay"
       :class="{ active: showMobileFilters }"
@@ -49,9 +46,7 @@
     ></div>
 
     <div class="containerAdv">
-      <!-- Sidebar -->
       <aside class="sidebar" :class="{ active: showMobileFilters }">
-        <!-- Mobile Close Button -->
         <button class="reset-filter-btn" @click="resetFilters" v-if="isFiltered">
           <i class="fas fa-undo"></i> {{ t("reset-filters") }}
         </button>
@@ -68,8 +63,6 @@
             />
           </svg>
         </button>
-
-        <!-- Search Filter -->
         <div class="filter-section">
           <h3></h3>
           <input
@@ -80,8 +73,6 @@
             @input="debounceSearch"
           />
         </div>
-
-        <!-- Province Filter -->
         <div class="filter-section">
           <h3>
             <svg
@@ -112,8 +103,6 @@
             </li>
           </ul>
         </div>
-
-        <!-- District Filter (shown only when province is selected) -->
         <div class="filter-section" v-if="selectedProvinceId && districts.length > 0">
           <h4><i class="fas fa-map-marker-alt"></i> {{ t("select-district") }}</h4>
           <ul class="popular-list">
@@ -134,7 +123,6 @@
           </ul>
         </div>
 
-        <!-- Commune Filter (shown only when district is selected) -->
         <div class="filter-section" v-if="selectedDistrictId && communes.length > 0">
           <h4><i class="fas fa-building"></i> {{ t("select-commune") }}</h4>
           <ul class="popular-list">
@@ -154,8 +142,6 @@
             </li>
           </ul>
         </div>
-
-        <!-- Village Filter (shown only when commune is selected) -->
         <div class="filter-section" v-if="selectedCommuneId && villages.length > 0">
           <h4><i class="fas fa-home"></i> {{ t("select-village") }}</h4>
           <ul class="popular-list">
@@ -175,8 +161,6 @@
             </li>
           </ul>
         </div>
-
-        <!-- Category Filter -->
         <div class="filter-section" v-if="categories.length > 0">
           <h4>
             <svg
@@ -210,7 +194,6 @@
           </ul>
         </div>
 
-        <!-- Star Rating Filter -->
         <div class="filter-section">
           <h4>
             <svg
@@ -249,17 +232,13 @@
         </div>
       </aside>
 
-      <!-- Main Content -->
       <main class="main-content">
-        <!-- Filter Summary -->
         <div class="filter-summary" v-if="isFiltered">
           <p>
             {{ t("showing-filtered-results") }}: {{ totalResults }}
             {{ t("locations-found") }}
           </p>
         </div>
-
-        <!-- Empty State -->
         <div v-if="locations.length === 0" class="empty-state">
           <div class="empty-state-icon">
             <i
@@ -270,8 +249,6 @@
           <p>{{ t("no-locations-found") }}</p>
           <p class="empty-state-subtitle">{{ t("try-adjusting-filters") }}</p>
         </div>
-
-        <!-- card_advs Grid -->
         <div class="card_adv-grid" v-else>
           <div
             class="card_adv"
@@ -322,8 +299,6 @@
             </div>
           </div>
         </div>
-
-        <!-- Pagination -->
         <div
           class="pagination-containerAdv"
           v-if="pagination && pagination.last_page > 1"
@@ -338,7 +313,6 @@
               <i class="fas fa-chevron-left"></i>
               <span v-if="!isMobile">{{ t("prev") }}</span>
             </button>
-
             <button
               v-for="page in getPageNumbers()"
               :key="page"
@@ -351,7 +325,6 @@
             >
               {{ page }}
             </button>
-
             <button
               v-if="pagination.current_page < pagination.last_page"
               @click="changePage(pagination.current_page + 1)"
@@ -375,33 +348,21 @@ import { useGlobalStore } from "@/stores/global";
 import axios from "axios";
 import { computed, onMounted, onUnmounted, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
-
-// Translation setup
 const { currentLanguage, t } = useTranslation();
-
-// Router and route
 const router = useRouter();
 const route = useRoute();
-
-// State variables
 const isLoading = ref(true);
 const locations = ref([]);
 const topViewLocations = ref([]);
 const pagination = ref(null);
 const totalResults = ref(0);
-
-// Location hierarchy data
 const provinces = ref([]);
 const districts = ref([]);
 const communes = ref([]);
 const villages = ref([]);
 const categories = ref([]);
-
-// Mobile responsive states
 const isMobile = ref(false);
 const showMobileFilters = ref(false);
-
-// Filter state
 const searchQuery = ref("");
 const selectedProvinceId = ref(null);
 const selectedDistrictId = ref(null);
@@ -409,11 +370,7 @@ const selectedCommuneId = ref(null);
 const selectedVillageId = ref(null);
 const selectedCategoryId = ref(null);
 const selectedStar = ref(null);
-
-// Debounce timer for search
 let searchDebounceTimer = null;
-
-// Computed values
 const isFiltered = computed(() => {
   return (
     searchQuery.value ||
@@ -429,11 +386,8 @@ const isFiltered = computed(() => {
 const isKhmerLanguage = computed(() => {
   return currentLanguage.value === "km";
 });
-
-// Placeholder image for error handling
 const placeholderImage = "https://placehold.co/400x300/0085FF/FFFFFF?text=Camtour";
 
-// Check if device is mobile
 const checkMobile = () => {
   isMobile.value = window.innerWidth <= 768;
   if (!isMobile.value) {
@@ -441,7 +395,6 @@ const checkMobile = () => {
   }
 };
 
-// Mobile filter functions
 const toggleMobileFilters = () => {
   showMobileFilters.value = !showMobileFilters.value;
   if (showMobileFilters.value) {
@@ -456,15 +409,11 @@ const closeMobileFilters = () => {
   document.body.style.overflow = "";
 };
 
-// Localization helper functions
 const getLocalizedName = (item, type) => {
   if (!item) return "";
-
   if (isKhmerLanguage.value && item.local_name) {
     return item.local_name;
   }
-
-  // Fallback to translation key approach for English
   const key = `${type}-${item.name.toLowerCase().replace(/\s+/g, "-")}`;
   const translated = t(key);
   return translated !== key ? translated : item.name;
@@ -472,11 +421,9 @@ const getLocalizedName = (item, type) => {
 
 const getLocationDisplayName = (location) => {
   if (!location) return "";
-
   if (isKhmerLanguage.value && location.name_local) {
     return location.name_local;
   }
-
   return location.name;
 };
 
@@ -484,50 +431,40 @@ const getLocationCategoryName = (location) => {
   if (!location || !location.category) {
     return t("adventure-category-default");
   }
-
   if (location.category.name_km) {
     return location.category.name_km;
   }
-
-  // Fallback to translation or original name
   const key = `category-${location.category.name.toLowerCase().replace(/\s+/g, "-")}`;
   const translated = t(key);
   return translated !== key ? translated : location.category.name;
 };
 
-// Debounced search function
 const debounceSearch = () => {
   if (searchDebounceTimer) {
     clearTimeout(searchDebounceTimer);
   }
-
   searchDebounceTimer = setTimeout(() => {
     fetchAdventureData(1);
   }, 500);
 };
 
-// Format date based on current language
 const formatDate = (date) => {
   const locale = currentLanguage.value === "km" ? "km-KH" : "en-US";
-
   try {
     const options = { year: "numeric", month: "long", day: "numeric" };
     return date.toLocaleDateString(locale, options);
   } catch (error) {
-    // Fallback to English if Khmer locale is not available
     const options = { year: "numeric", month: "long", day: "numeric" };
     return date.toLocaleDateString("en-US", options);
   }
 };
 
-// Fetch provinces
 const fetchProvinces = async () => {
   try {
     const globalStore = useGlobalStore();
     const response = await axios.get("/api/web/view/location/provinces", {
       ...globalStore.getAxiosHeader(),
     });
-
     if (response.data.result) {
       provinces.value = response.data.data || [];
     }
@@ -536,7 +473,6 @@ const fetchProvinces = async () => {
   }
 };
 
-// Fetch districts based on selected province
 const fetchDistricts = async (provinceId) => {
   if (!provinceId) {
     districts.value = [];
@@ -544,7 +480,6 @@ const fetchDistricts = async (provinceId) => {
     villages.value = [];
     return;
   }
-
   try {
     const globalStore = useGlobalStore();
     const response = await axios.get(
@@ -559,27 +494,22 @@ const fetchDistricts = async (provinceId) => {
     console.error("Failed to fetch districts:", error);
     districts.value = [];
   }
-
-  // Reset dependent selections
   communes.value = [];
   villages.value = [];
 };
 
-// Fetch communes based on selected district
 const fetchCommunes = async (districtId) => {
   if (!districtId) {
     communes.value = [];
     villages.value = [];
     return;
   }
-
   try {
     const globalStore = useGlobalStore();
     const response = await axios.get(`/api/web/view/location/communes/${districtId}`, {
       params: { lang: currentLanguage.value },
       ...globalStore.getAxiosHeader(),
     });
-
     if (response.data.result) {
       communes.value = response.data.data || [];
     }
@@ -587,25 +517,20 @@ const fetchCommunes = async (districtId) => {
     console.error("Failed to fetch communes:", error);
     communes.value = [];
   }
-
-  // Reset dependent selections
   villages.value = [];
 };
 
-// Fetch villages based on selected commune
 const fetchVillages = async (communeId) => {
   if (!communeId) {
     villages.value = [];
     return;
   }
-
   try {
     const globalStore = useGlobalStore();
     const response = await axios.get(`/api/web/view/location/villages/${communeId}`, {
       params: { lang: currentLanguage.value },
       ...globalStore.getAxiosHeader(),
     });
-
     if (response.data.result) {
       villages.value = response.data.data || [];
     }
@@ -615,7 +540,6 @@ const fetchVillages = async (communeId) => {
   }
 };
 
-// Fetch categories
 const fetchCategories = async () => {
   try {
     const globalStore = useGlobalStore();
@@ -632,44 +556,30 @@ const fetchCategories = async () => {
   }
 };
 
-// Fetch data with filters and language support
 const fetchAdventureData = async (page = 1) => {
-  // isLoading.value = true;
-
-  // Get the global store
   const globalStore = useGlobalStore();
-
-  // Prepare query parameters
   const params = {
     page,
     lang: currentLanguage.value,
   };
-
-  // Add filters if selected
   if (searchQuery.value) {
     params.search = searchQuery.value;
   }
-
   if (selectedProvinceId.value) {
     params.province_id = selectedProvinceId.value;
   }
-
   if (selectedDistrictId.value) {
     params.district_id = selectedDistrictId.value;
   }
-
   if (selectedCommuneId.value) {
     params.commune_id = selectedCommuneId.value;
   }
-
   if (selectedVillageId.value) {
     params.village_id = selectedVillageId.value;
   }
-
   if (selectedCategoryId.value) {
     params.category_id = selectedCategoryId.value;
   }
-
   if (selectedStar.value) {
     params.star = selectedStar.value;
   }
@@ -679,28 +589,14 @@ const fetchAdventureData = async (page = 1) => {
       params,
       ...globalStore.getAxiosHeader(),
     });
-
     if (response.data.result) {
-      console.log("Adventure data fetched successfully");
       const data = response.data.data;
-
-      // Set locations
       locations.value = data.locations || [];
-
-      // Set top view locations
       topViewLocations.value = data.top_view_location || [];
-
-      // Set pagination
       pagination.value = data.pagination || null;
       totalResults.value = pagination.value?.total || 0;
-
-      // Reset document body overflow in case it was set by another component
       document.body.style.overflow = "";
-
-      // Update page title with translation
       document.title = `${t("camtour-brand")} - ${t("adventure-page-title")}`;
-
-      // Close mobile filters on successful load
       if (isMobile.value) {
         closeMobileFilters();
       }
@@ -709,18 +605,14 @@ const fetchAdventureData = async (page = 1) => {
     }
   } catch (error) {
     console.error("Failed to fetch adventure data:", error);
-
-    // Handle API errors using the global store
     await globalStore.onCheckError(error);
   } finally {
     isLoading.value = false;
   }
 };
 
-// Format location address with localization support
 const formatLocationAddress = (location) => {
   const parts = [];
-
   if (location.village) {
     if (isKhmerLanguage.value && location.village.local_name) {
       parts.push(location.village.local_name);
@@ -740,26 +632,21 @@ const formatLocationAddress = (location) => {
   if (location.district) {
     parts.push(getLocalizedName(location.district, "district"));
   }
-
   if (location.province) {
     parts.push(getLocalizedName(location.province, "province"));
   }
-
   return parts.length > 0 ? parts.join(", ") : t("cambodia");
 };
 
-// Handle image loading errors
 const handleImageError = (event) => {
   event.target.src = placeholderImage;
 };
 
-// Filter functions
 const filterByProvince = async (provinceId) => {
   selectedProvinceId.value = provinceId;
   selectedDistrictId.value = null;
   selectedCommuneId.value = null;
   selectedVillageId.value = null;
-
   if (provinceId) {
     await fetchDistricts(provinceId);
   } else {
@@ -767,7 +654,6 @@ const filterByProvince = async (provinceId) => {
     communes.value = [];
     villages.value = [];
   }
-
   fetchAdventureData(1);
 };
 
@@ -775,14 +661,12 @@ const filterByDistrict = async (districtId) => {
   selectedDistrictId.value = districtId;
   selectedCommuneId.value = null;
   selectedVillageId.value = null;
-
   if (districtId) {
     await fetchCommunes(districtId);
   } else {
     communes.value = [];
     villages.value = [];
   }
-
   fetchAdventureData(1);
 };
 
@@ -795,7 +679,6 @@ const filterByCommune = async (communeId) => {
   } else {
     villages.value = [];
   }
-
   fetchAdventureData(1);
 };
 
@@ -828,7 +711,6 @@ const resetFilters = () => {
   fetchAdventureData(1);
 };
 
-// Pagination
 const changePage = (page) => {
   if (page > 0 && (!pagination.value || page <= pagination.value.last_page)) {
     fetchAdventureData(page);
@@ -838,12 +720,10 @@ const changePage = (page) => {
 
 const getPageNumbers = () => {
   if (!pagination.value) return [];
-
   const pages = [];
   const totalPages = pagination.value.last_page;
   const currentPage = pagination.value.current_page;
   const maxVisible = isMobile.value ? 3 : 5;
-
   if (totalPages <= maxVisible) {
     for (let i = 1; i <= totalPages; i++) {
       pages.push(i);
@@ -853,19 +733,15 @@ const getPageNumbers = () => {
     let start = Math.max(2, currentPage - Math.floor(maxVisible / 2));
     let end = Math.min(totalPages - 1, start + maxVisible - 3);
     start = Math.max(2, end - maxVisible + 3);
-
     if (start > 2) {
       pages.push("...");
     }
-
     for (let i = start; i <= end; i++) {
       pages.push(i);
     }
-
     if (end < totalPages - 1) {
       pages.push("...");
     }
-
     if (totalPages > 1) {
       pages.push(totalPages);
     }
@@ -874,72 +750,48 @@ const getPageNumbers = () => {
   return pages;
 };
 
-// View location details
 const viewLocation = (locationId) => {
   router.push(`/location/detail/${locationId}`);
 };
 
-// Language change handler
-const handleLanguageChange = (event) => {
-  console.log("Adventure: Language changed to", event.detail.language);
+const handleLanguageChange = () => {
   document.title = `${t("camtour-brand")} - ${t("adventure-page-title")}`;
-
-  // Refetch data with new language
   loadInitialData();
 };
 
-// Load all initial data
 const loadInitialData = async () => {
   await Promise.all([fetchProvinces(), fetchCategories()]);
-
   fetchAdventureData();
 };
 
-// Handle window resize
 const handleResize = () => {
   checkMobile();
 };
 
-// Handle escape key to close mobile filters
 const handleKeydown = (event) => {
   if (event.key === "Escape" && showMobileFilters.value) {
     closeMobileFilters();
   }
 };
 
-// Watch for language changes
-watch(currentLanguage, (newLanguage) => {
-  console.log("Adventure page language changed to:", newLanguage);
+watch(currentLanguage, () => {
   document.title = `${t("camtour-brand")} - ${t("adventure-page-title")}`;
-
-  // Refetch data when language changes
   loadInitialData();
 });
 
-// Lifecycle hooks
 onMounted(() => {
-  console.log("Adventure component mounted with language:", currentLanguage.value);
-
   document.body.style.overflow = "";
   checkMobile();
-
-  // Add event listeners
   window.addEventListener("resize", handleResize);
   window.addEventListener("language-changed", handleLanguageChange);
   document.addEventListener("keydown", handleKeydown);
-
-  // Load data
   loadInitialData();
-
   document.title = `${t("camtour-brand")} - ${t("adventure-page-title")}`;
 });
 
-// Watch for route changes to reload data
 watch(
   () => route.query,
   (newQuery) => {
-    console.log("Route query changed:", newQuery);
-
     if (newQuery.province_id) {
       selectedProvinceId.value = parseInt(newQuery.province_id);
       fetchDistricts(selectedProvinceId.value);
@@ -976,11 +828,7 @@ watch(
   { deep: true }
 );
 
-// Clean up on component unmount
 onUnmounted(() => {
-  console.log("Adventure component unmounting");
-
-  // Clear debounce timer
   if (searchDebounceTimer) {
     clearTimeout(searchDebounceTimer);
   }
@@ -995,10 +843,6 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
-/* Sidebar Enhancements */
-/* Enhanced Province Select Styles */
-
-/* Province Filter Section */
 .filter-section {
   margin-bottom: 30px;
   position: relative;

@@ -13,7 +13,7 @@ export const translations = {
     'signup': 'Register',
     'login': 'Login',
     'logout': 'Logout',
-    'my-orders' : 'My Orders',
+    'my-orders': 'My Orders',
     // Hero section
     'cambodia': 'CAMBODIA',
     'find-favorite-place': 'Find your Favorite place',
@@ -91,7 +91,7 @@ export const translations = {
     'no-locations-found': 'No Locations Found',
     'adding-new-locations-soon': 'We\'re adding new exciting locations soon!',
     'more': 'More',
-       'showing-filtered-results': 'The results of filtered',
+    'showing-filtered-results': 'The results of filtered',
     'locations-found': 'locations',
     'all-categories': 'All Categoris',
     // Features section
@@ -568,7 +568,8 @@ export const translations = {
 
     'affordable-adventure': 'Affordable Adventure',
     'affordable-description': 'Experience world-class hiking at a fraction of the cost compared to other Southeast Asian destinations, with budget-friendly accommodations and local guides.',
-
+    'try-adjusting-filters' : 'Try Adjusting Filters',
+    
     // Mission & Values
     'mission-values': 'Our Mission & Values',
     'sustainable-tourism': 'Sustainable Tourism',
@@ -620,12 +621,12 @@ export const translations = {
 
 
     //siemreap
-     'siem-reap-page-title': 'Siem Reap - Gateway to Angkor',
+    'siem-reap-page-title': 'Siem Reap - Gateway to Angkor',
     'gateway-to-angkor': 'Gateway to Angkor',
     'ancient-sites': 'Ancient Sites',
     'temples': 'Temples',
     'explore-siem-reap': 'Explore Siem Reap',
-    
+
     // About Siem Reap Section
     'about-siem-reap': 'About Siem Reap',
     'population': 'Population',
@@ -642,7 +643,7 @@ export const translations = {
     'november-to-march': 'November to March (Cool & Dry Season)',
     'angkor-wat-complex': 'Angkor Wat Temple Complex & Ancient Khmer Architecture',
     'tropical-monsoon-climate': 'Tropical monsoon climate with wet season (May-October) and dry season (November-April). Average temperature 25-35°C.',
-    
+
     // Filter Section
     'filter-by-location': 'Filter by Location',
     'district': 'District',
@@ -653,70 +654,70 @@ export const translations = {
     'all-villages': 'All Villages',
     'rating-filter': 'Rating Filter',
     'minimum-views': 'Minimum Views',
-    
+
     // Star Ratings
     'stars-plus': '+ Stars',
     'all-ratings': 'All Ratings',
-    
+
     // Cultural Heritage
     'cultural-heritage-siem-reap': 'Cultural Heritage of Siem Reap',
     'angkor-wat': 'Angkor Wat',
     'angkor-wat-description': 'The world\'s largest religious monument and UNESCO World Heritage Site, representing the pinnacle of Khmer architecture.',
     '12th-century': '12th Century',
     'hindu-temple-complex': 'Hindu Temple Complex',
-    
+
     'bayon-temple': 'Bayon Temple',
     'bayon-description': 'Famous for its serene and massive stone faces, this temple sits at the center of Angkor Thom.',
     'late-12th-century': 'Late 12th Century',
     'buddhist-temple': 'Buddhist Temple',
-    
+
     'ta-prohm': 'Ta Prohm',
     'ta-prohm-description': 'The \'Tomb Raider Temple\' where ancient stones and jungle roots create a mystical atmosphere.',
     'buddhist-monastery': 'Buddhist Monastery',
     'banteay-srei-description': 'Known as the \'Lady Temple\' for its intricate pink sandstone carvings and delicate artistry.',
     '10th-century': '10th Century',
     'hindu-temple': 'Hindu Temple',
-    
+
     // Most Popular Destinations
     'most-popular-destinations': 'Most Popular Destinations',
-    
+
     // Local Cuisine
     'siem-reap-local-cuisine': 'Siem Reap Local Cuisine',
     'fish-amok': 'Fish Amok',
     'fish-amok-description': 'Cambodia\'s national dish - a creamy coconut curry with fish steamed in banana leaves.',
     'main-course': 'Main Course',
     'price-range-3-8': '$3-8',
-    
+
     'lok-lak': 'Lok Lak',
     'lok-lak-description': 'Cambodian beef stir-fry served with rice and a tangy lime-pepper dipping sauce.',
     'price-range-4-10': '$4-10',
-    
+
     'nom-banh-chok': 'Nom Banh Chok',
     'nom-banh-chok-description': 'Traditional Khmer noodles with fish-based green curry sauce, often eaten for breakfast.',
     'breakfast-light-meal': 'Breakfast/Light Meal',
     'price-range-1-3': '$1-3',
-    
+
     'prahok-ktiss': 'Prahok Ktiss',
     'prahok-ktiss-description': 'Traditional fermented fish dip served with fresh vegetables and rice.',
     'appetizer': 'Appetizer',
     'price-range-2-5': '$2-5',
     'select-province': 'Select Province',
-    
+
     // All Tourist Destinations
     'all-tourist-destinations': 'All Tourist Destinations',
     'amazing-places-found': 'amazing places found',
     'loading-amazing-destinations': 'Loading amazing destinations...',
-    'cta-description-about' : "Join thousands of hikers who have discovered Cambodia's hidden gems. Your next great adventure awaits!",
+    'cta-description-about': "Join thousands of hikers who have discovered Cambodia's hidden gems. Your next great adventure awaits!",
     // Travel Tips
     'travel-tips-siem-reap': 'Travel Tips for Siem Reap',
     'getting-around': 'Getting Around',
     'getting-around-tips': [
       'Rent a bicycle for temple exploration',
-      'Tuk-tuks are perfect for short distances', 
+      'Tuk-tuks are perfect for short distances',
       'Hire a car with driver for day trips',
       'Download offline maps before exploring'
     ],
-    
+
     'temple-visits': 'Temple Visits',
     'temple-visits-tips': [
       'Buy 3-day pass for better temple exploration',
@@ -724,7 +725,7 @@ export const translations = {
       'Dress modestly (cover shoulders and knees)',
       'Bring plenty of water and sunscreen'
     ],
-    
+
     'local-etiquette': 'Local Etiquette',
     'local-etiquette-tips': [
       'Remove shoes when entering temples',
@@ -732,7 +733,7 @@ export const translations = {
       'Don\'t touch monks or Buddha statues',
       'Respect local customs and photography rules'
     ],
-    
+
     'money-shopping': 'Money & Shopping',
     'money-shopping-tips': [
       'USD widely accepted alongside Riel',
@@ -740,11 +741,11 @@ export const translations = {
       'Visit Old Market and Night Market for souvenirs',
       'Tip 10% at restaurants, $1-2 for tuk-tuk drivers'
     ],
-    
+
     // Recommended Gear
     'recommended-gear-cambodia': 'Recommended Gear for Cambodia',
     'left': 'left',
-    'select-category':'Select Location Cagetory',
+    'select-category': 'Select Location Cagetory',
 
   },
 
@@ -847,7 +848,7 @@ export const translations = {
 
     "easy-booking": "ធ្វើដំណើរយ៉ាងងាយស្រួល",
     "easy-booking-description": "រៀបចំដំណើរផ្សងព្រេងបន្ទាប់របស់អ្នកយ៉ាងងាយស្រួល ជាមួយប្រព័ន្ធកក់សេវា មានជម្រើសបង់ប្រាក់ទាន់ចិត្ត និងកញ្ចប់ឧបករណ៍នៅទីតែមួយ។",
-    'my-orders' : 'ការកម្មង់ផលិតផលរបស់ខ្ញុំ',
+    'my-orders': 'ការកម្មង់ផលិតផលរបស់ខ្ញុំ',
     // Shopping section
     'get-your-need': 'ទទួលបានអ្វីដែលអ្នកត្រូវការ',
     'shopping-description': 'រកអ្វីគ្រប់យ៉ាងដែលអ្នកត្រូវការសម្រាប់ការផ្សងព្រេងរបស់អ្នកនៅកម្ពុជាពីគ្រឿងបរិក្ខារជំរុំគុណភាពទៅរហូតដល់សម្ភារៈដំណើរចាំបាច់ទាំងអស់នៅតម្លៃមិនអាចឈ្នះបានជាមួយនឹងជម្រើសដឹកជញ្ជូនលឿន។',
@@ -1342,15 +1343,15 @@ export const translations = {
 
 
     //siem reap
-     // Siem Reap Page Specific
+    // Siem Reap Page Specific
     'siem-reap-page-title': 'សៀមរាប',
     'home-page-title': 'ទំព័រដើម',
-    
+
     'gateway-to-angkor': 'ទ្វារចូលទៅអង្គរ',
     'ancient-sites': 'បុរាណដ្ឋាន',
     'temples': 'ប្រាសាទ',
     'explore-siem-reap': 'ស្វែងរកសៀមរាប',
-    
+
     // About Siem Reap Section
     'about-siem-reap': 'អំពីសៀមរាប',
     'population': 'ចំនួនប្រជាជន',
@@ -1367,7 +1368,7 @@ export const translations = {
     'november-to-march': 'វិច្ឆិកាដល់មីនា (រដូវត្រជាក់ និងស្ងួត)',
     'angkor-wat-complex': 'ប្រាសាទអង្គរវត្ត និងស្ថាបត្យកម្មខ្មែរបុរាណ',
     'tropical-monsoon-climate': 'អាកាសធាតុត្រូពិចម៉ានស៊ុនជាមួយរដូវវស្សា (ឧសភា-តុលា) និងរដូវស្ងួត (វិច្ឆិកា-មេសា)។ សីតុណ្ហភាពជាមធ្យម ២៥-៣៥ អង្សាសេ។',
-    
+
     // Filter Section
     'filter-by-location': 'តម្រងតាមទីតាំង',
     'district': 'ស្រុក',
@@ -1378,60 +1379,60 @@ export const translations = {
     'all-villages': 'ភូមិទាំងអស់',
     'rating-filter': 'តម្រងការវាយតម្លៃ',
     'minimum-views': 'ចំនួនអ្នកមើលអប្បបរមា',
-    
+
     // Star Ratings
     'stars-plus': '+ ផ្កាយ',
     'all-ratings': 'ការវាយតម្លៃទាំងអស់',
-    
+
     // Cultural Heritage
     'cultural-heritage-siem-reap': 'បេតិកភណ្ឌវប្បធម៌សៀមរាប',
     'angkor-wat': 'អង្គរវត្ត',
     'angkor-wat-description': 'វិហារសាសនាធំបំផុតនៅលើពិភពលោក និងជាបេតិកភណ្ឌពិភពលោករបស់យូណេស្កូ ដែលតំណាងឱ្យកំពូលនៃស្ថាបត្យកម្មខ្មែរ។',
     '12th-century': 'សតវត្សទី១២',
     'hindu-temple-complex': 'ប្រាសាទហិណ្ឌូ',
-    
+
     'bayon-temple': 'ប្រាសាទបាយ័ន',
     'bayon-description': 'ល្បីសម្រាប់មុខថ្មធំៗដ៏ស្ងប់ស្ងាត់ ប្រាសាទនេះស្ថិតនៅកណ្តាលអង្គរធំ។',
     'late-12th-century': 'ចុងសតវត្សទី១២',
     'buddhist-temple': 'ប្រាសាទព្រះពុទ្ធសាសនា',
-    
+
     'ta-prohm': 'តាព្រហ្ម',
     'ta-prohm-description': '\'ប្រាសាទ Tomb Raider\' ដែលថ្មបុរាណ និងឫសគើធ្វើឱ្យមានបរិយាកាសអាថ៌កំបាំង។',
     'buddhist-monastery': 'វត្តព្រះពុទ្ធសាសនា',
-    
+
     'banteay-srei-description': 'ត្រូវបានគេស្គាល់ថាជា \'ប្រាសាទស្ត្រី\' សម្រាប់ការចារិកថ្មភក់ស្រទាប់ៗ និងសិល្បៈយ៉ាងល្អិត។',
     '10th-century': 'សតវត្សទី១០',
     'hindu-temple': 'ប្រាសាទហិណ្ឌូ',
-    
+
     // Most Popular Destinations
     'most-popular-destinations': 'គោលដៅពេញនិយមបំផុត',
-    
+
     // Local Cuisine
     'siem-reap-local-cuisine': 'មុខម្ហូបក្នុងស្រុកសៀមរាប',
     'fish-amok': 'អាមុកត្រី',
     'fish-amok-description': 'មុខម្ហូបជាតិរបស់កម្ពុជា - ការ៉ីដូងគ្រឿងក្រមក្រឡុកជាមួយត្រីចំហុយក្នុងស្លឹកចេក។',
     'main-course': 'មុខម្ហូបសំខាន់',
     'price-range-3-8': '៛ ១២០០០​​ - ៣២០០០',
-    
+
     'lok-lak': 'លុកឡាក់',
     'lok-lak-description': 'សាច់គោឆាកម្ពុជាបរិភោគជាមួយបាយ និងទឹកជ្រលក់ម្រេចកន្ត្រោបជូរ។',
     'price-range-4-10': '៛ ១៦០០០ - ៤០០០០',
-    
+
     'nom-banh-chok': 'នំបញ្ចុក',
     'nom-banh-chok-description': 'មីខ្មែរប្រពៃណីជាមួយទឹកស៊ុបពណ៌បៃតងដែលមានមូលដ្ឋានលើត្រី តែងតែបរិភោគសម្រាប់អាហារពេលព្រឹក។',
     'breakfast-light-meal': 'អាហារពេលព្រឹក/អាហារស្រាល',
     'price-range-1-3': '៛ ៤០០០ - ១២០០០',
-    'cta-description-about' : "ចូលរួមជាមួយអ្នកដើរលេងរាប់ពាន់នាក់ដែលបានរកឃើញត្បូងលាក់កំបាំងរបស់កម្ពុជា។ ការផ្សងព្រេងដ៏អស្ចារ្យបន្ទាប់របស់អ្នកកំពុងរង់ចាំ!",
+    'cta-description-about': "ចូលរួមជាមួយអ្នកដើរលេងរាប់ពាន់នាក់ដែលបានរកឃើញត្បូងលាក់កំបាំងរបស់កម្ពុជា។ ការផ្សងព្រេងដ៏អស្ចារ្យបន្ទាប់របស់អ្នកកំពុងរង់ចាំ!",
     'prahok-ktiss': 'ប្រហុកក្ដីស',
     'prahok-ktiss-description': 'ទឹកជ្រលក់ត្រីចំរុះប្រពៃណីបរិភោគជាមួយបន្លែស្រស់ និងបាយ។',
     'appetizer': 'ម្ហូបសម្រន់',
     'price-range-2-5': '៛ ៨០០០ - ២០០០០',
-    
+
     // All Tourist Destinations
     'all-tourist-destinations': 'គោលដៅទេសចរណ៍ទាំងអស់',
     'amazing-places-found': 'កន្លែងអស្ចារ្យដែលរកឃើញ',
     'loading-amazing-destinations': 'កំពុងផ្ទុកគោលដៅអស្ចារ្យ...',
-    
+
     // Travel Tips
     'travel-tips-siem-reap': 'គន្លឹះទេសចរណ៍សម្រាប់សៀមរាប',
     'getting-around': 'ការធ្វើដំណើរ',
@@ -1441,7 +1442,7 @@ export const translations = {
       'ជួលឡានជាមួយអ្នកបើកបរសម្រាប់ដំណើរមួយថ្ងៃ',
       'ទាញយកផែនទីបិទអ៊ីនធឺណិតមុនពេលរុករក'
     ],
-    
+
     'temple-visits': 'ការទស្សនាប្រាសាទ',
     'temple-visits-tips': [
       'ទិញសំបុត្រ៣ថ្ងៃសម្រាប់ការរុករកប្រាសាទបានល្អប្រសើរ',
@@ -1449,7 +1450,7 @@ export const translations = {
       'ស្លៀកពាក់សមរម្យ (គ្របស្មា និងជង្គង់)',
       'យកទឹក និងក្រែមការពារពន្លឺថ្ងៃច្រើន'
     ],
-    
+
     'local-etiquette': 'សុជីវធម៌ក្នុងស្រុក',
     'local-etiquette-tips': [
       'ដោះស្បែកជើងពេលចូលប្រាសាទ',
@@ -1457,7 +1458,7 @@ export const translations = {
       'កុំប៉ះព្រះសង្ឃ ឬរូបព្រះពុទ្ធ',
       'គោរពផ្នត់គំនិតក្នុងស្រុក និងច្បាប់ថតរូប'
     ],
-    
+
     'money-shopping': 'លុយកាក់ និងការទិញទំនិញ',
     'money-shopping-tips': [
       'ដុល្លារអាមេរិកត្រូវបានទទួលយ៉ាងទូលំទូលាយជាមួយរៀល',
@@ -1465,10 +1466,11 @@ export const translations = {
       'ទស្សនាផ្សារចាស់ និងផ្សារយប់សម្រាប់អនុស្សាវរីយ៍',
       'ផ្តល់ព្យាបាល១០% នៅភោជនីយដ្ឋាន $១-២ សម្រាប់អ្នកបើកតុកតុក'
     ],
-    
+
     // Recommended Gear
     'recommended-gear-cambodia': 'គ្រឿងបរិក្ខារណែនាំសម្រាប់កម្ពុជា',
     'left': 'នៅសល់',
+    'try-adjusting-filters' : 'សូមធ្វើការស្វែងរកឡើងវិញ',
   }
 };
 

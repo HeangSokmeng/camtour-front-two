@@ -9,20 +9,26 @@
           </svg>
         </div>
         <h1>Ordering Confirmed!</h1>
-        <p>Thank you for your Ordering. We've received your order and will process it right away.</p>
+        <p>
+          Thank you for your Ordering. We've received your order and will process it right
+          away.
+        </p>
       </div>
-      
+
       <div class="order-details">
         <div class="order-number">
           <span>Order Number:</span>
           <strong>{{ orderId }}</strong>
         </div>
-        
+
         <div class="confirmation-message">
-          <p>A confirmation email has been sent to <strong>{{ email }}</strong> with all your Ordering details.</p>
+          <p>
+            A confirmation email has been sent to <strong>{{ email }}</strong> with all
+            your Ordering details.
+          </p>
         </div>
       </div>
-      
+
       <div class="next-steps">
         <h2>What's Next?</h2>
         <div class="steps-container">
@@ -37,10 +43,13 @@
             </div>
             <div class="step-content">
               <h3>Prepare for Your Trip</h3>
-              <p>Make sure your travel documents are ready and check our travel guides for useful tips.</p>
+              <p>
+                Make sure your travel documents are ready and check our travel guides for
+                useful tips.
+              </p>
             </div>
           </div>
-          
+
           <div class="step">
             <div class="step-icon">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -52,10 +61,13 @@
             </div>
             <div class="step-content">
               <h3>Meet Your Guide</h3>
-              <p>Our travel guide will contact you a few days before your trip with specific details.</p>
+              <p>
+                Our travel guide will contact you a few days before your trip with
+                specific details.
+              </p>
             </div>
           </div>
-          
+
           <div class="step">
             <div class="step-icon">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -70,7 +82,7 @@
           </div>
         </div>
       </div>
-      
+
       <div class="recommended-items">
         <h2>You Might Also Like</h2>
         <div class="recommended-grid">
@@ -90,7 +102,7 @@
           </div>
         </div>
       </div>
-      
+
       <div class="confirmation-actions">
         <router-link to="/" class="home-btn">Return to Home</router-link>
         <router-link to="/product" class="browse-more-btn">Browse More Tours</router-link>
@@ -100,97 +112,71 @@
 </template>
 
 <script setup>
-import { useGlobalStore } from '@/stores/global';
-import { computed, onMounted, ref } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
+import { useGlobalStore } from "@/stores/global";
+import { computed, onMounted, ref } from "vue";
+import { useRoute, useRouter } from "vue-router";
 
 const route = useRoute();
 const router = useRouter();
 const globalStore = useGlobalStore();
-
-// Order details
-const orderId = ref(route.query.order_id || 'ORD-123456');
-const userEmail = ref('');
-
-// Computed email based on authentication status
+const orderId = ref(route.query.order_id || "ORD-123456");
+const userEmail = ref("");
 const email = computed(() => {
   if (globalStore.getIsAuthenticated && globalStore.profile?.email) {
     return globalStore.profile.email;
   }
-  return userEmail.value || 'your email address';
+  return userEmail.value || "your email address";
 });
-
-// Recommended tours
 const recommendedTours = ref([
   {
     id: 1,
-    name: 'Angkor Wat Sunrise Tour',
+    name: "Angkor Wat Sunrise Tour",
     price: 79,
-    duration: '1 Day',
-    image: 'https://placehold.co/300x200/19ADCF/ffffff?text=Angkor+Wat+Sunrise'
+    duration: "1 Day",
+    image: "https://placehold.co/300x200/19ADCF/ffffff?text=Angkor+Wat+Sunrise",
   },
   {
     id: 2,
-    name: 'Phnom Penh City Tour',
+    name: "Phnom Penh City Tour",
     price: 59,
-    duration: '1 Day',
-    image: 'https://placehold.co/300x200/19ADCF/ffffff?text=Phnom+Penh+City'
+    duration: "1 Day",
+    image: "https://placehold.co/300x200/19ADCF/ffffff?text=Phnom+Penh+City",
   },
   {
     id: 3,
-    name: 'Tonle Sap Lake Cruise',
+    name: "Tonle Sap Lake Cruise",
     price: 65,
-    duration: '5 Hours',
-    image: 'https://placehold.co/300x200/19ADCF/ffffff?text=Tonle+Sap+Lake'
-  }
+    duration: "5 Hours",
+    image: "https://placehold.co/300x200/19ADCF/ffffff?text=Tonle+Sap+Lake",
+  },
 ]);
 
-// Placeholder image for error handling
 const placeholderImage = "https://placehold.co/300x200/19ADCF/ffffff?text=Cambodia+Tour";
 
-// Handle image loading errors
 const handleImageError = (event) => {
   event.target.src = placeholderImage;
 };
 
 onMounted(() => {
-  // If no order ID is provided, redirect to home
-  if (!route.query.order_id && !localStorage.getItem('lastOrderId')) {
-    console.log('No order ID found, redirecting to home');
-    router.push('/');
+  if (!route.query.order_id && !localStorage.getItem("lastOrderId")) {
+    console.log("No order ID found, redirecting to home");
+    router.push("/");
     return;
   }
-  
-  // Get order ID from local storage if not in query params
-  if (!route.query.order_id && localStorage.getItem('lastOrderId')) {
-    orderId.value = localStorage.getItem('lastOrderId');
+  if (!route.query.order_id && localStorage.getItem("lastOrderId")) {
+    orderId.value = localStorage.getItem("lastOrderId");
   }
-  
-  // Try to get user email from localStorage
-  const storedEmail = localStorage.getItem('checkoutEmail');
+  const storedEmail = localStorage.getItem("checkoutEmail");
   if (storedEmail) {
     userEmail.value = storedEmail;
   }
-  
-  // Fetch recommended tours from API (simulated here with static data)
-  // In a real app, you would make an API call here
   fetchRecommendedTours();
 });
-
-// Fetch recommended tours based on previous purchases
 const fetchRecommendedTours = async () => {
   try {
-    // This would be an API call in a real application
-    // For now, we're using the static data defined above
-    console.log('Fetching recommended tours...');
-    
-    // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 500));
-    
-    // In a real app, you would update recommendedTours with the API response
-    // recommendedTours.value = apiResponse.data;
+    await new Promise((resolve) => setTimeout(resolve, 500));
   } catch (error) {
-    console.error('Error fetching recommended tours:', error);
+    console.error("Error fetching recommended tours:", error);
   }
 };
 </script>
@@ -260,7 +246,7 @@ const fetchRecommendedTours = async () => {
 
 .order-number strong {
   margin-left: 0.5rem;
-  color: #19ADCF;
+  color: #19adcf;
   font-weight: 700;
 }
 
@@ -304,7 +290,7 @@ const fetchRecommendedTours = async () => {
   width: 50px;
   height: 50px;
   background-color: #e1f5fa;
-  color: #19ADCF;
+  color: #19adcf;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -403,7 +389,7 @@ const fetchRecommendedTours = async () => {
 
 .tour-price {
   font-weight: 700;
-  color: #19ADCF;
+  color: #19adcf;
 }
 
 .confirmation-actions {
@@ -413,7 +399,8 @@ const fetchRecommendedTours = async () => {
   margin-top: 2rem;
 }
 
-.home-btn, .browse-more-btn {
+.home-btn,
+.browse-more-btn {
   padding: 0.75rem 1.5rem;
   border-radius: 4px;
   font-weight: 600;
@@ -432,7 +419,7 @@ const fetchRecommendedTours = async () => {
 }
 
 .browse-more-btn {
-  background-color: #19ADCF;
+  background-color: #19adcf;
   color: white;
 }
 
@@ -444,17 +431,18 @@ const fetchRecommendedTours = async () => {
   .steps-container {
     grid-template-columns: 1fr;
   }
-  
+
   .recommended-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .confirmation-actions {
     flex-direction: column;
     gap: 1rem;
   }
-  
-  .home-btn, .browse-more-btn {
+
+  .home-btn,
+  .browse-more-btn {
     text-align: center;
   }
 }

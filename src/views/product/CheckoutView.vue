@@ -664,38 +664,26 @@
 </template>
 
 <script setup>
-// Import statements for the script setup section
 import { useCartStore } from "@/stores/cart";
 import { useGlobalStore } from "@/stores/global";
-import axios from "axios"; // Make sure axios is imported
+import axios from "axios";
 import { computed, onMounted, reactive, ref } from "vue";
 import { useRouter } from "vue-router";
-
-// Router, stores, and utility functions
 const router = useRouter();
 const cartStore = useCartStore();
 const globalStore = useGlobalStore();
-
-// Placeholder image for error handling
 const placeholderImage = "https://placehold.co/400x300/19ADCF/FFFFFF?text=Cambodia+Tours";
-
-// Authentication state
 const isAuthenticated = computed(() => globalStore.getIsAuthenticated);
 const userData = computed(() => globalStore.profile || {});
 const isLoggingIn = ref(false);
-
-// Login form
 const loginEmail = ref("");
 const loginPassword = ref("");
-
-// Guest checkout form
 const checkoutMode = ref("guest");
 const guestEmail = ref("");
 const guestFirstName = ref("");
 const guestLastName = ref("");
 const guestPhone = ref("");
 
-// Shipping address information
 const shippingAddress = reactive({
   street: '',
   city: 'Phnom Penh',
@@ -704,7 +692,6 @@ const shippingAddress = reactive({
   country: 'KH'
 });
 
-// Payment method selection
 const selectedPaymentMethod = ref("credit_card");
 const paymentMethods = [
   {
@@ -729,7 +716,6 @@ const paymentMethods = [
   }
 ];
 
-// Payment details
 const paymentDetails = reactive({
   cardHolder: "",
   cardNumber: "",
@@ -742,43 +728,13 @@ const cashPaymentDetails = reactive({
   currency: "USD",
 });
 
-// Generate expiry years (current year + 10 years)
 const currentYear = new Date().getFullYear();
 const expiryYears = Array.from({ length: 11 }, (_, i) => (currentYear + i).toString().substr(-2));
-
-// Traveler information tracking
 const travelers = ref([]);
-// const totalTravelers = computed(() => {
-//   let count = 0;
-//   cartStore.items.forEach(item => {
-//     count += item.quantity;
-//   });
-//   return count > 0 ? count : 1;
-// });
-
-// // Initialize or get a single traveler's data
-// const initSingleTraveler = (index) => {
-//   if (!travelers.value[index - 1]) {
-//     travelers.value[index - 1] = {
-//       firstName: '',
-//       lastName: '',
-//       passport: '',
-//       nationality: '',
-//       dob: '',
-//       specialRequirements: ''
-//     };
-//   }
-//   return travelers.value[index - 1];
-// };
-
-// Promo code
 const promoCode = ref("");
 const isApplyingPromo = ref(false);
 const discountAmount = ref(0);
-
-// Price calculations
-const taxRate = 10; // 10% tax
-
+const taxRate = 10;
 const subtotalPrice = computed(() => {
   return cartStore.items.reduce((total, item) => {
     return total + (item.price * item.quantity);
@@ -793,11 +749,8 @@ const totalPrice = computed(() => {
   return subtotalPrice.value + taxAmount.value - discountAmount.value;
 });
 
-// Validation functions
 const isGuestInfoValid = computed(() => {
   if (checkoutMode.value !== "guest") return false;
-
-  // Simple validation - can be enhanced
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   return (
     emailRegex.test(guestEmail.value) &&
@@ -807,9 +760,7 @@ const isGuestInfoValid = computed(() => {
 });
 
 const isTravelersInfoValid = computed(() => {
-  // Check if we have at least the required information for the first traveler
   if (travelers.value.length === 0) return false;
-  
   const primaryTraveler = travelers.value[0];
   return (
     primaryTraveler.firstName?.trim() !== '' &&
@@ -828,12 +779,9 @@ const isPaymentValid = computed(() => {
   if (!(isAuthenticated.value || (checkoutMode.value === 'guest' && isGuestInfoValid.value))) {
     return false;
   }
-  
   if (!isTravelersInfoValid.value || !isAddressValid.value) {
     return false;
   }
-  
-  // For credit card, validate card details
   if (selectedPaymentMethod.value === 'credit_card') {
     return (
       paymentDetails.cardHolder.trim() !== '' &&
@@ -843,24 +791,19 @@ const isPaymentValid = computed(() => {
       paymentDetails.cvv.length >= 3
     );
   }
-  
-  // For other payment methods, no additional validation needed
   return true;
 });
 
-// Utility functions
 const formatCardNumber = (event) => {
   let input = event.target.value.replace(/\D/g, '');
   let formatted = '';
-  
   for (let i = 0; i < input.length; i++) {
     if (i > 0 && i % 4 === 0) {
       formatted += ' ';
     }
     formatted += input[i];
   }
-  
-  paymentDetails.cardNumber = formatted.substring(0, 19); // Limit to 16 digits + 3 spaces
+  paymentDetails.cardNumber = formatted.substring(0, 19);
 };
 
 const handleImageError = (event) => {
@@ -870,40 +813,24 @@ const handleImageError = (event) => {
 const selectPaymentMethod = (methodId) => {
   selectedPaymentMethod.value = methodId;
 };
-
-// Login functionality
 const handleLogin = async () => {
   if (isLoggingIn.value) return;
-  
   isLoggingIn.value = true;
-  
   try {
-    // Basic validation
     if (!loginEmail.value || !loginPassword.value) {
       alert('Please enter both email and password');
       isLoggingIn.value = false;
       return;
     }
-    
-    // Use axios directly for the login API call instead of relying on globalStore.login
     const response = await axios.post('/api/auth/login', {
       email: loginEmail.value,
       password: loginPassword.value
-    });
-    
+    }); 
     if (response.data && response.data.result) {
-      console.log('Login successful');
-      
-      // Extract token and update the globalStore manually
       const token = response.data.data.token;
       globalStore.updateToken(token);
-      
-      // Wait for profile to be fetched
       await globalStore.fetchUserProfile();
-      
-      // If we have traveler data from the user profile, pre-fill it
       if (globalStore.profile) {
-        // Pre-fill shipping address if available
         if (globalStore.profile.address) {
           shippingAddress.street = globalStore.profile.address.street || '';
           shippingAddress.city = globalStore.profile.address.city || 'Phnom Penh';
@@ -911,8 +838,6 @@ const handleLogin = async () => {
           shippingAddress.zipCode = globalStore.profile.address.zip_code || '';
           shippingAddress.country = globalStore.profile.address.country || 'KH';
         }
-        
-        // Pre-fill first traveler with user data if none exists
         if (travelers.value.length === 0) {
           travelers.value.push({
             firstName: globalStore.profile.first_name || '',
@@ -925,14 +850,11 @@ const handleLogin = async () => {
         }
       }
     } else {
-      // Show error message
       const errorMessage = response.data?.message || 'Login failed. Please check your credentials.';
       alert(errorMessage);
     }
   } catch (error) {
     console.error('Login error:', error);
-    
-    // Use the existing error handler in the globalStore
     if (globalStore.onCheckError && typeof globalStore.onCheckError === 'function') {
       await globalStore.onCheckError(error);
     } else {
@@ -943,7 +865,6 @@ const handleLogin = async () => {
   }
 };
 
-// Apply promo code functionality
 const applyPromoCode = async () => {
   if (!promoCode.value || isApplyingPromo.value) return;
   
@@ -1029,56 +950,31 @@ const placeOrder = async () => {
       status: "pending",
       items: orderItems
     };
-
-    console.log('Sending order payload:', orderPayload);
-
-    // Try to send the API request
     try {
       const response = await axios.post(
         '/api/web/product/order', 
         orderPayload,
         globalStore.getAxiosHeader()
       );
-      
-      // Handle successful response
-      // The API might return "Created" as a message in the response
       if (response.data === "Created" || 
           (response.data && response.data.message === "Created") ||
           response.statusText === "Created") {
-        // This is actually a success case
-        console.log('Order created successfully!');
-        
-        // Generate an order ID if not provided in response
         const orderId = "ORD-" + Math.floor(100000 + Math.random() * 900000);
         localStorage.setItem("lastOrderId", orderId);
-        
-        // Clear cart
         cartStore.clearCart();
-        
-        // Redirect to confirmation page
         setTimeout(() => {
           router.push({
             path: "/order-confirmation",
             query: { order_id: orderId },
           });
         }, 300);
-        
-        return; // Exit early on success
+        return;
       }
-      
-      // Standard response handling
       if (response.data && response.data.result) {
         const orderResult = response.data.data;
-        console.log('Order created successfully:', orderResult);
-
-        // Clear cart
         cartStore.clearCart();
-
-        // Save order ID for confirmation page
         const orderId = orderResult.id || orderResult.order_id || "ORD-" + Math.floor(100000 + Math.random() * 900000);
         localStorage.setItem("lastOrderId", orderId);
-
-        // Redirect to confirmation page with a small delay to ensure cart is cleared
         setTimeout(() => {
           router.push({
             path: "/order-confirmation",
@@ -1089,29 +985,18 @@ const placeOrder = async () => {
         throw new Error(response.data?.message || 'Order creation failed');
       }
     } catch (apiError) {
-      // Special case for "Created" error that is actually a success
       if (apiError.message === "Created") {
-        console.log('Order created successfully despite error!');
-        
-        // Generate an order ID
         const orderId = "ORD-" + Math.floor(100000 + Math.random() * 900000);
         localStorage.setItem("lastOrderId", orderId);
-        
-        // Clear cart
         cartStore.clearCart();
-        
-        // Redirect to confirmation page
         setTimeout(() => {
           router.push({
             path: "/order-confirmation",
             query: { order_id: orderId },
           });
         }, 300);
-        
-        return; // Exit early on success
+        return;
       }
-      
-      // For other API errors, create a mock success response for demo purposes
       console.warn("API call failed, using mock response for demo:", apiError);
       const mockResponse = {
         data: {
@@ -1123,15 +1008,9 @@ const placeOrder = async () => {
           }
         }
       };
-      
-      // Clear cart
       cartStore.clearCart();
-
-      // Save order ID for confirmation page from mock response
       const orderId = mockResponse.data.data.id;
       localStorage.setItem("lastOrderId", orderId);
-
-      // Redirect to confirmation page
       setTimeout(() => {
         router.push({
           path: "/order-confirmation",
@@ -1141,30 +1020,18 @@ const placeOrder = async () => {
     }
   } catch (error) {
     console.error("Error processing order:", error);
-    
-    // Check if the error message is "Created" which actually indicates success
     if (error.message === "Created") {
-      console.log('Order created successfully despite error!');
-      
-      // Generate an order ID
       const orderId = "ORD-" + Math.floor(100000 + Math.random() * 900000);
       localStorage.setItem("lastOrderId", orderId);
-      
-      // Clear cart
       cartStore.clearCart();
-      
-      // Redirect to confirmation page
       setTimeout(() => {
         router.push({
           path: "/order-confirmation",
           query: { order_id: orderId },
         });
       }, 300);
-      
-      return; // Exit early on success
+      return;
     }
-    
-    // Standard error handling for other errors
     if (globalStore.onCheckError && typeof globalStore.onCheckError === 'function') {
       try {
         globalStore.onCheckError(error);
@@ -1180,14 +1047,8 @@ const placeOrder = async () => {
   }
 };
 
-// Additional CSS class for the address section
-// const addressSectionClass = "address-section";
-
-// Component initialization
 onMounted(() => {
-  // Pre-fill form with user data if authenticated
   if (isAuthenticated.value && userData.value) {
-    // If the user has an existing shipping address, pre-fill it
     if (userData.value.address) {
       shippingAddress.street = userData.value.address.street || '';
       shippingAddress.city = userData.value.address.city || 'Phnom Penh';
@@ -1195,8 +1056,6 @@ onMounted(() => {
       shippingAddress.zipCode = userData.value.address.zip_code || '';
       shippingAddress.country = userData.value.address.country || 'KH';
     }
-    
-    // If the user has a name, pre-fill the first traveler
     if (userData.value.first_name && travelers.value.length === 0) {
       travelers.value.push({
         firstName: userData.value.first_name || '',
@@ -1211,7 +1070,6 @@ onMounted(() => {
 });
 </script>
 <style>
-/* Checkout Page Styles */
 .checkout-container {
   max-width: 1200px;
   margin: 0 auto;

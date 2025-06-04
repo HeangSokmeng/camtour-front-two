@@ -367,39 +367,48 @@ const handleWishlistUpdate = async (event) => {
     await fetchWishlistCount();
   }
 };
+
 const refreshWishlistCount = async () => {
   if (isAuthenticated.value) {
     await fetchWishlistCount();
   }
 };
+
 const openProfileModal = () => {
   showProfileModal.value = true;
   closeMenuOnNavigation();
 };
+
 const nextImage = () => {
   currentImageIndex.value = (currentImageIndex.value + 1) % heroImages.value.length;
   resetAutoSlide();
 };
+
 const startAutoSlide = () => {
   autoSlideInterval = setInterval(() => {
     nextImage();
   }, 5000);
 };
+
 const stopAutoSlide = () => {
   if (autoSlideInterval) {
     clearInterval(autoSlideInterval);
     autoSlideInterval = null;
   }
 };
+
 const resetAutoSlide = () => {
   stopAutoSlide();
   startAutoSlide();
 };
+
 const handleProfileUpdated = () => {};
+
 const changeLanguage = () => {
   setLanguage(currentLanguage.value);
   notifyLanguageChange();
 };
+
 const toggleMenu = () => {
   menuOpen.value = !menuOpen.value;
   if (menuOpen.value && profileMenuOpen.value) {
@@ -409,21 +418,25 @@ const toggleMenu = () => {
     isHeaderHidden.value = false;
   }
 };
+
 const toggleProfileMenu = () => {
   profileMenuOpen.value = !profileMenuOpen.value;
   if (profileMenuOpen.value) {
     isHeaderHidden.value = false;
   }
 };
+
 const closeMenuOnNavigation = () => {
   menuOpen.value = false;
   profileMenuOpen.value = false;
 };
+
 const notifyLanguageChange = () => {
   window.dispatchEvent(
     new CustomEvent("language-changed", { detail: { language: currentLanguage.value } })
   );
 };
+
 const handleDocumentClick = (e) => {
   const profileEl = document.querySelector(".user-profile");
   const menuToggleEl = document.querySelector(".menu-toggle");
@@ -439,6 +452,7 @@ const handleDocumentClick = (e) => {
     menuOpen.value = false;
   }
 };
+
 const fetchUserData = async () => {
   isLoading.value = true;
   try {
@@ -463,15 +477,19 @@ const fetchUserData = async () => {
     isLoading.value = false;
   }
 };
+
 const handleProfileImageError = () => {
   profileImageLoaded.value = false;
 };
+
 const handleLogout = () => {
   showLogoutModal.value = true;
 };
+
 const cancelLogout = () => {
   showLogoutModal.value = false;
 };
+
 const confirmLogout = async () => {
   isLoggingOut.value = true;
   try {
@@ -501,6 +519,7 @@ const confirmLogout = async () => {
     isLoggingOut.value = false;
   }
 };
+
 const clearAuthData = () => {
   isAuthenticated.value = false;
   wishlistCount.value = 0;
@@ -524,15 +543,9 @@ const clearAuthData = () => {
       .replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
   });
 };
-const debugWishlistState = () => {
-  // console.log("Wishlist Debug Info:", {
-  //   isAuthenticated: isAuthenticated.value,
-  //   wishlistCount: wishlistCount.value,
-  //   userId: userData.value.id,
-  //   hasToken: !!globalStore.token,
-  //   profileId: globalStore.profile?.id,
-  // });
-};
+
+const debugWishlistState = () => {};
+
 watch(
   () => globalStore.getIsAuthenticated,
   async (newValue) => {

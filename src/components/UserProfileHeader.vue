@@ -151,23 +151,16 @@
 import { useGlobalStore } from "@/stores/global";
 import { onMounted, onUnmounted, ref } from "vue";
 import { useRouter } from "vue-router";
-
 const router = useRouter();
 const globalStore = useGlobalStore();
-
-// Reactive state
 const isMenuOpen = ref(false);
 const selectedLanguage = ref("en");
 const profileButton = ref(null);
 const profileMenu = ref(null);
-
-// Methods
 const toggleMenu = () => {
   isMenuOpen.value = !isMenuOpen.value;
 };
-
 const closeMenu = (event) => {
-  // Check if click is outside the profile menu
   if (
     isMenuOpen.value &&
     profileButton.value &&
@@ -185,22 +178,15 @@ const logout = async () => {
   router.push("/");
 };
 
-// Lifecycle hooks
 onMounted(() => {
-  // Get selected language from localStorage
   selectedLanguage.value = localStorage.getItem("selectedLanguage") || "en";
-
-  // Add click event listener to close menu when clicking outside
   document.addEventListener("click", closeMenu);
-
-  // If we have a token but no user profile, fetch it
   if (globalStore.token && !globalStore.profile) {
     globalStore.fetchUserProfile();
   }
 });
 
 onUnmounted(() => {
-  // Remove event listener when component is destroyed
   document.removeEventListener("click", closeMenu);
 });
 </script>

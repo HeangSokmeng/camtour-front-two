@@ -29,56 +29,38 @@ const route = useRoute();
 const isVisible = ref(true);
 const scrollingUp = ref(false);
 const lastScrollY = ref(0);
-const scrollThreshold = 50; // Minimum scroll amount before showing/hiding
-
-// Computed property to get cart item count
+const scrollThreshold = 50;
 const cartItemCount = computed(() => cartStore.cartItemCount);
 
-// Computed property to check if current route should hide button
 const shouldHideOnCurrentPage = computed(() => {
   return props.hideOnPages.some(page => 
     route.path.includes(page) || route.name === page
   );
 });
 
-// Open cart drawer
 const openCart = () => {
   cartStore.toggleCartDrawer();
 };
 
-// Handle scroll to show/hide button
 const handleScroll = () => {
   const currentScrollY = window.scrollY;
-  
-  // Calculate if scrolling up or down
   if (Math.abs(currentScrollY - lastScrollY.value) > scrollThreshold) {
     scrollingUp.value = currentScrollY < lastScrollY.value;
     lastScrollY.value = currentScrollY;
   }
-  
-  // Only show on scroll up or at the top of the page
   isVisible.value = scrollingUp.value || currentScrollY < 100;
-  
-  // Always hide on certain pages
   if (shouldHideOnCurrentPage.value) {
     isVisible.value = false;
   }
 };
 
-// Watch for route changes to update visibility
 onMounted(() => {
-  // Initialize last scroll position
   lastScrollY.value = window.scrollY;
-  
-  // Check initially if should be hidden based on current page
   isVisible.value = !shouldHideOnCurrentPage.value;
-  
-  // Add scroll event listener
   window.addEventListener('scroll', handleScroll, { passive: true });
 });
 
 onUnmounted(() => {
-  // Remove scroll event listener
   window.removeEventListener('scroll', handleScroll);
 });
 </script>

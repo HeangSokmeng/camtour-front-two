@@ -1,6 +1,5 @@
 <template>
   <div class="hiking-page-container">
-    <!-- Hero Header with Background Image -->
     <section class="hero-header">
       <div class="hero-background">
         <img 
@@ -9,13 +8,8 @@
           class="hero-bg-image"
         />
         <div class="hero-overlay"></div>
-      </div>
-      
+      </div>     
       <div class="hero-content">
-        <!-- Siem Reap Introduction -->
-        <!-- <div class="adventure-tag">{{ t('gateway-to-angkor') }}</div> -->
-        
-        <!-- Quick Stats -->
         <div class="hero-stats">
           <div class="stat-item">
             <span class="stat-number">{{ siemReapInfo.totalDestinations }}</span>
@@ -30,12 +24,9 @@
             <span class="stat-label">{{ t('years-of-history') }}</span>
           </div>
         </div>
-        
         <h1>{{ getLocalizedText('title') }}</h1>
         <p>{{ getLocalizedText('description') }}</p>
         <div class="underline"></div>
-        
-        <!-- Siem Reap Quick Facts -->
         <div class="quick-facts">
           <div class="fact-item">
             <strong>{{ t('best-time-to-visit') }}:</strong> {{ t('november-to-march') }}
@@ -48,19 +39,11 @@
           </div>
         </div>
       </div>
-      
-      <!-- Scroll Down Indicator -->
       <div class="scroll-indicator" @click="scrollToContent">
-        <!-- <div class="scroll-arrow"></div>
-        <span style="color:white">{{ t('explore-siem-reap') }}</span> -->
       </div>
     </section>
-
-    <!-- Add id="content" to the main container -->
     <div class="main-container" id="content">
-      <!-- Sidebar Filters -->
       <aside class="filters-sidebar">
-        <!-- About Siem Reap Section -->
         <div class="filter-section siem-reap-info">
           <h3>🏛️ {{ t('about-siem-reap') }}</h3>
           <div class="info-content">
@@ -74,11 +57,8 @@
             </div>
           </div>
         </div>
-
         <div class="filter-section">
           <h3>🗺️ {{ t('filter-by-location') }}</h3>
-          
-          <!-- District Filter -->
           <div class="filter-group">
             <label>{{ t('district') }}</label>
             <select v-model="selectedDistrict" @change="onDistrictChange" class="filter-select">
@@ -88,8 +68,6 @@
               </option>
             </select>
           </div>
-
-          <!-- Commune Filter -->
           <div class="filter-group" v-if="selectedDistrict">
             <label>{{ t('commune') }}</label>
             <select v-model="selectedCommune" @change="onCommuneChange" class="filter-select">
@@ -99,8 +77,6 @@
               </option>
             </select>
           </div>
-
-          <!-- Village Filter -->
           <div class="filter-group" v-if="selectedCommune">
             <label>{{ t('village') }}</label>
             <select v-model="selectedVillage" @change="fetchLocations" class="filter-select">
@@ -111,7 +87,6 @@
             </select>
           </div>
         </div>
-
         <div class="filter-section">
           <h4>⭐ {{ t('rating-filter') }}</h4>
           <div class="star-rating-filters">
@@ -151,10 +126,7 @@
           </div>
         </div>
       </aside>
-
-      <!-- Main Content -->
       <main class="content-area">
-         <!-- Top Viewed Locations -->
         <section v-if="topViewLocations.length > 0" class="top-destinations">
           <h2>🔥 {{ t('most-popular-destinations') }}</h2>
           <div class="top-locations-grid">
@@ -181,7 +153,6 @@
             </div>
           </div>
         </section>
-        <!-- Cultural Heritage Section -->
         <section class="cultural-heritage">
           <h2>🏛️ {{ t('cultural-heritage-siem-reap') }}</h2>
           <div class="heritage-grid">
@@ -204,22 +175,14 @@
             </div>
           </div>
         </section>
-
-        <!-- Loading State -->
         <div v-if="isLoading" class="loading-container">
           <div class="loading-spinner"></div>
           <p>{{ t('loading-amazing-destinations') }}</p>
         </div>
-
-        <!-- Error State -->
         <div v-else-if="error" class="error-container">
           <p>{{ error }}</p>
           <button @click="fetchLocations" class="retry-btn">{{ t('try-again') }}</button>
         </div>
-
-       
-
-        <!-- Local Cuisine Section -->
         <section class="local-cuisine">
           <h2>🍜 {{ t('siem-reap-local-cuisine') }}</h2>
           <div class="cuisine-grid">
@@ -242,14 +205,11 @@
             </div>
           </div>
         </section>
-
-        <!-- All Locations -->
         <section class="all-destinations">
           <div class="section-header">
             <h2>{{ t('all-tourist-destinations') }}</h2>
             <p class="results-count">{{ pagination.total }} {{ t('amazing-places-found') }}</p>
           </div>
-
           <div class="locations-grid">
             <div 
               v-for="location in locations" 
@@ -280,8 +240,6 @@
               </div>
             </div>
           </div>
-
-          <!-- Pagination -->
           <div v-if="pagination.total_page > 1" class="pagination">
             <button 
               @click="changePage(pagination.page_no - 1)"
@@ -304,8 +262,6 @@
             </button>
           </div>
         </section>
-
-        <!-- Travel Tips Section -->
         <section class="travel-tips">
           <h2>✈️ {{ t('travel-tips-siem-reap') }}</h2>
           <div class="tips-grid">
@@ -322,8 +278,6 @@
             </div>
           </div>
         </section>
-
-        <!-- Related Products -->
         <section v-if="relatedProducts.length > 0" class="related-products">
           <h2>🎒 {{ t('recommended-gear-cambodia') }}</h2>
           <div class="products-grid">
@@ -351,19 +305,19 @@
 </template>
 
 <script setup>
+import angkorWatImg from '@/assets/siemreaps/angkorWat.png'
+import banteaySreiImg from '@/assets/siemreaps/banteay-srei.png'
+import bayonImg from '@/assets/siemreaps/bayon.png'
+import amokFoodImg from '@/assets/siemreaps/foods/fish-amok.png'
+import lokLakFoodImg from '@/assets/siemreaps/foods/lok-lak.png'
+import monBanhChokFoodImg from '@/assets/siemreaps/foods/nom-banh-chok.png'
+import prahokKtissFoodImg from '@/assets/siemreaps/foods/prahok-ktiss.png'
+import taProhmImg from '@/assets/siemreaps/taProhm.png'
 import { useTranslation } from '@/components/useTranslation'
 import { useGlobalStore } from '@/stores/global'
 import axios from 'axios'
 import { onMounted, onUnmounted, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
-import angkorWatImg from '@/assets/siemreaps/angkorWat.png';
-import bayonImg from '@/assets/siemreaps/bayon.png';
-import taProhmImg from '@/assets/siemreaps/taProhm.png';
-import banteaySreiImg from '@/assets/siemreaps/banteay-srei.png';
-import amokFoodImg from '@/assets/siemreaps/foods/fish-amok.png';
-import monBanhChokFoodImg from '@/assets/siemreaps/foods/nom-banh-chok.png';
-import prahokKtissFoodImg from '@/assets/siemreaps/foods/prahok-ktiss.png';
-import lokLakFoodImg from '@/assets/siemreaps/foods/lok-lak.png';
 // Translation setup
 const { currentLanguage, t } = useTranslation()
 
@@ -534,14 +488,10 @@ const getLocalizedTravelTips = () => {
   return tips
 }
 
-// Language change handler
-const handleLanguageChange = (event) => {
-  console.log('Siem Reap: Language changed to', event.detail.language)
-  // Update page title when language changes
+const handleLanguageChange = () => {
   document.title = `${t('camtour-brand')} - ${t('siem-reap-page-title')}`
 }
 
-// Smooth scroll to content - Fixed function
 const scrollToContent = () => {
   const contentElement = document.getElementById('content');
   if (contentElement) {
@@ -550,7 +500,6 @@ const scrollToContent = () => {
       block: 'start'
     });
   } else {
-    // Fallback: scroll to main container
     const mainContainer = document.querySelector('.main-container');
     if (mainContainer) {
       mainContainer.scrollIntoView({ 
@@ -561,33 +510,20 @@ const scrollToContent = () => {
   }
 };
 
-// Fetch initial data
 onMounted(async () => {
-  console.log("Siem Reap component mounted with language:", currentLanguage.value)
-  
-  // Add language change listener
   window.addEventListener('language-changed', handleLanguageChange)
-  
   await fetchDistricts()
   await fetchLocations()
-  
-  // Set initial page title
   document.title = `${t('camtour-brand')} - ${t('siem-reap-page-title')}`
 })
 
-// Watch for language changes
-watch(currentLanguage, (newLanguage) => {
-  console.log('Siem Reap page language changed to:', newLanguage)
-  // Update page title
+watch(currentLanguage, () => {
   document.title = `${t('camtour-brand')} - ${t('siem-reap-page-title')}`
-  
-  // Update error message if there's an error
   if (error.value) {
     error.value = t('error-loading-products')
   }
 })
 
-// Fetch districts
 const fetchDistricts = async () => {
   try {
     const response = await axios.get('/api/web/view/location/districts/8', {
@@ -604,13 +540,11 @@ const fetchDistricts = async () => {
   }
 }
 
-// Fetch communes when district changes
 const onDistrictChange = async () => {
   selectedCommune.value = ''
   selectedVillage.value = ''
   communes.value = []
   villages.value = []
-  
   if (selectedDistrict.value) {
     try {
       const response = await axios.get(`/api/web/view/location/communes/${selectedDistrict.value}`, {
@@ -626,15 +560,12 @@ const onDistrictChange = async () => {
       await globalStore.onCheckError(err)
     }
   }
-  
   await fetchLocations()
 }
 
-// Fetch villages when commune changes
 const onCommuneChange = async () => {
   selectedVillage.value = ''
   villages.value = []
-  
   if (selectedCommune.value) {
     try {
       const response = await axios.get(`/api/web/view/location/villages/${selectedCommune.value}`, {
@@ -650,35 +581,25 @@ const onCommuneChange = async () => {
       await globalStore.onCheckError(err)
     }
   }
-  
   await fetchLocations()
 }
 
-// Fetch locations with filters
 const fetchLocations = async () => {
   isLoading.value = true
-  error.value = null
-  
+  error.value = null;
   try {
-    // Build query parameters
     const params = {
       page: currentPage.value,
-      per_page: 8 // Show 8 items to have 4x2 grid
+      per_page: 8
     }
-    
-    // Add search query
     if (searchQuery.value.trim()) {
       params.search = searchQuery.value.trim()
     }
-    
-    // Add filters if selected
     if (selectedDistrict.value) params.district_id = selectedDistrict.value
     if (selectedCommune.value) params.commune_id = selectedCommune.value
     if (selectedVillage.value) params.village_id = selectedVillage.value
     if (selectedRating.value) params.star = selectedRating.value
     if (minViews.value) params.min_total_view = minViews.value
-    
-    // Make API request
     const response = await axios.get('/api/web/view/siemreap', {
       params,
       ...globalStore.getAxiosHeader(),
@@ -688,8 +609,6 @@ const fetchLocations = async () => {
       locations.value = data.locations || []
       topViewLocations.value = data.top_view_location || []
       relatedProducts.value = data.product_relates || []
-      
-      // Set up pagination data - adapt to your API structure
       pagination.value = {
         total: data.pagination?.total || 0,
         per_page: data.pagination?.per_page || 8,
@@ -710,34 +629,28 @@ const fetchLocations = async () => {
     locations.value = []
     topViewLocations.value = []
     relatedProducts.value = []
-    
-    // Use global error handler
     await globalStore.onCheckError(err)
   } finally {
     isLoading.value = false
   }
 }
 
-// Select rating function
 const selectRating = (rating) => {
   selectedRating.value = rating.toString()
   fetchLocations()
 }
 
-// Change page - Enhanced with scroll
 const changePage = (page) => {
   if (page >= 1 && page <= pagination.value.total_page) {
     currentPage.value = page
     fetchLocations().then(() => {
-      // Scroll to content after data is loaded
       setTimeout(() => {
         scrollToContent();
-      }, 100); // Small delay to ensure content is rendered
+      }, 100);
     });
   }
 }
 
-// Navigation functions
 const goToLocationDetail = (id) => {
   router.push(`/location/detail/${id}`)
 }
@@ -746,7 +659,6 @@ const goToProductDetail = (id) => {
   router.push(`/product/detail/${id}`)
 }
 
-// Helper function to format address
 const formatAddress = (location) => {
   const parts = []
   if (location.village) {
@@ -764,11 +676,7 @@ const formatAddress = (location) => {
   return parts.join(', ')
 }
 
-// Cleanup on unmount
 onUnmounted(() => {
-  console.log("Siem Reap component unmounting")
-  
-  // Remove event listeners
   window.removeEventListener('language-changed', handleLanguageChange)
 })
 </script>
@@ -785,7 +693,6 @@ onUnmounted(() => {
   color: #1e293b;
 }
 
-/* Enhanced Hero Header with Background Image */
 .hero-header {
   position: relative;
   height: 100vh;

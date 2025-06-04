@@ -495,16 +495,12 @@ import { useGlobalStore } from "@/stores/global";
 import axios from "axios";
 import { computed, inject, onMounted, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
-
-// Route and store setup
 const route = useRoute();
 const router = useRouter();
 const globalStore = useGlobalStore();
 const cartStore = useCartStore();
 const showSuccessNotification = inject("showSuccessNotification", null);
 const showErrorNotification = inject("showErrorNotification", null);
-
-// State variables
 const product = ref(null);
 const relatedProducts = ref([]);
 const isLoading = ref(true);
@@ -519,19 +515,10 @@ const selectedVariantPrice = ref(null);
 const showAddedMessage = ref(false);
 const activeTab = ref(0);
 const tabs = [{ name: "Description" }, { name: "Specifications" }, { name: "Reviews" }];
-
-// Review functionality
 const userRating = ref(0);
 const userComment = ref("");
 const isSubmittingReview = ref(false);
-
-// Computed properties
 const isLoggedIn = computed(() => globalStore.isLogin);
-
-// const isFavorite = computed(() => {
-//   return favorites.value.includes(product.value?.id);
-// });
-
 const averageRating = computed(() => {
   if (!product.value?.stars || product.value.stars.length === 0) {
     return 0;
@@ -557,13 +544,9 @@ const mainImage = computed(() => {
 
 const productImages = computed(() => {
   const images = [];
-
-  // Add main thumbnail image if available
   if (product.value?.thumbnail) {
     images.push(product.value.thumbnail);
   }
-
-  // Add additional images if available
   if (product.value?.images && product.value.images.length > 0) {
     product.value.images.forEach((img) => {
       if (img.image_url) {
@@ -571,8 +554,6 @@ const productImages = computed(() => {
       }
     });
   }
-
-  // Return placeholder if no images
   if (images.length === 0) {
     images.push(placeholderImage);
   }
@@ -584,8 +565,6 @@ const maxQuantity = computed(() => {
   if (selectedVariant.value) {
     return selectedVariant.value.qty || 0;
   }
-
-  // If no variant is selected, use the first variant or default to 20
   const variant = product.value?.variants?.[0];
   return variant ? variant.qty : 20;
 });
@@ -608,42 +587,29 @@ const canAddToCart = computed(() => {
   return maxQuantity.value > 0 && quantity.value <= maxQuantity.value;
 });
 
-// Placeholder image for error handling
 const placeholderImage = "https://placehold.co/400x300/E9967A/ffffff?text=Hiking+Gear";
-
-// Methods
 const fetchProductData = async () => {
   const productId = route.params.id;
   if (!productId) {
     router.push("/product");
     return;
   }
-
   isLoading.value = true;
   error.value = null;
-
   try {
     const response = await axios.get(`/api/web/view/product/${productId}`, {
       ...globalStore.getAxiosHeader(),
     });
-
     if (response.data.result) {
-      // Update the data structure to match our expected format
       product.value = response.data.data.product || response.data.data;
-
-      // Set default selected options
       if (product.value.colors && product.value.colors.length > 0) {
         selectColor(product.value.colors[0].id);
       }
-
       if (product.value.sizes && product.value.sizes.length > 0) {
         selectSize(product.value.sizes[0].id);
       } else {
-        // If no sizes, just update the selected variant
         updateSelectedVariant();
       }
-
-      // Fetch related products from response or make a separate call
       if (response.data.data.related_products) {
         relatedProducts.value = response.data.data.related_products;
       } else {
@@ -663,7 +629,6 @@ const fetchProductData = async () => {
 
 const fetchRelatedProducts = async () => {
   if (!product.value || !product.value.category_id) return;
-
   try {
     const response = await axios.get("/api/web/view/product", {
       params: {
@@ -673,7 +638,6 @@ const fetchRelatedProducts = async () => {
       },
       ...globalStore.getAxiosHeader(),
     });
-
     if (response.data.result) {
       relatedProducts.value = response.data.data || [];
     }
@@ -684,9 +648,7 @@ const fetchRelatedProducts = async () => {
 
 const submitReview = async () => {
   if (!isLoggedIn.value || !canSubmitReview.value) return;
-
   isSubmittingReview.value = true;
-
   try {
     const response = await axios.post(
       `/api/web/product/reviews/${product.value.id}`,
@@ -700,11 +662,9 @@ const submitReview = async () => {
     );
 
     if (response.data.result) {
-      // Add the new review to the product.stars array
       if (!product.value.stars) {
         product.value.stars = [];
       }
-
       product.value.stars.push({
         id: response.data.data?.id || Date.now(),
         product_id: product.value.id,
@@ -714,11 +674,8 @@ const submitReview = async () => {
         rater_name: globalStore.user?.name || "User",
         created_at: new Date(),
       });
-
-      // Reset form
       userRating.value = 0;
       userComment.value = "";
-
       if (showSuccessNotification) {
         showSuccessNotification("Your review has been submitted successfully!");
       }
@@ -759,13 +716,11 @@ const formatDate = (dateString) => {
 };
 
 const getProductImage = (item) => {
-  // Use image_url property if available
   if (item.thumbnail_url) {
     return item.thumbnail_url;
   } else if (item.thumbnail) {
     return item.thumbnail;
   }
-  // Fall back to placeholder
   return placeholderImage;
 };
 
@@ -793,23 +748,18 @@ const updateSelectedVariant = () => {
     selectedVariantPrice.value = product.value?.price || null;
     return;
   }
-
-  // Find a variant that matches both color and size if possible
   const matchingVariant = product.value.variants.find((variant) => {
     const colorMatch = !selectedColor.value || variant.color_id === selectedColor.value;
     const sizeMatch = !selectedSize.value || variant.size_id === selectedSize.value;
     return colorMatch && sizeMatch;
   });
-
-  // Update the selected variant and its price
   selectedVariant.value = matchingVariant || product.value.variants[0];
   selectedVariantPrice.value = selectedVariant.value?.price || product.value.price;
-
-  // Reset quantity if it's greater than available stock
   if (quantity.value > maxQuantity.value) {
     quantity.value = Math.max(1, maxQuantity.value);
   }
 };
+
 const incrementQuantity = () => {
   if (quantity.value < maxQuantity.value) {
     quantity.value++;
@@ -822,23 +772,7 @@ const decrementQuantity = () => {
   }
 };
 
-// const toggleFavorite = () => {
-//   const productId = product.value?.id;
-//   if (!productId) return;
-
-//   const index = favorites.value.indexOf(productId);
-//   if (index === -1) {
-//     favorites.value.push(productId);
-//   } else {
-//     favorites.value.splice(index, 1);
-//   }
-
-//   // Store favorites in local storage
-//   localStorage.setItem("hikingFavorites", JSON.stringify(favorites.value));
-// };
-
 const addToCart = () => {
-  // Create a product object with all the necessary information
   const productItem = {
     id: product.value.id,
     name: product.value.name,
@@ -857,13 +791,8 @@ const addToCart = () => {
     pcategory: product.value.pcategory?.name,
     maxQuantity: maxQuantity.value,
   };
-
-  // Use the cart store to add the product
   const result = cartStore.addToCart(productItem);
-
-  // Show notification based on the result
   if (result.success) {
-    // Show the added message
     showAddedMessage.value = true;
     setTimeout(() => {
       showAddedMessage.value = false;
@@ -879,7 +808,6 @@ const addToCart = () => {
   }
 };
 
-// Helper functions to get selected option names
 const getSelectedColorName = () => {
   if (!selectedColor.value || !product.value?.colors) return null;
   const color = product.value.colors.find((c) => c.id === selectedColor.value);
@@ -892,15 +820,7 @@ const getSelectedSizeName = () => {
   return size ? size.size : null;
 };
 
-// Debug helper function
 const checkLoginStatus = () => {
-  console.log("Global store:", globalStore);
-  console.log("User object:", globalStore.user);
-  console.log("Auth token:", globalStore.getAuth());
-  console.log("Is logged in computed:", isLoggedIn.value);
-
-  // You can call this from browser console: app.__vue__.checkLoginStatus()
-  // Add the component to window for easy debugging
   if (typeof window !== "undefined") {
     window.productDetailComponent = {
       checkLogin: checkLoginStatus,
@@ -908,7 +828,6 @@ const checkLoginStatus = () => {
       isLoggedIn,
     };
   }
-
   return {
     user: globalStore.user,
     isLoggedIn: isLoggedIn.value,
@@ -916,29 +835,18 @@ const checkLoginStatus = () => {
   };
 };
 
-// Lifecycle hooks
 onMounted(() => {
-  // Debug login status
-  console.log("Global store user:", globalStore.user);
-  console.log("Is logged in computed:", isLoggedIn.value);
-
-  // Load favorites from localStorage
   const storedFavorites = localStorage.getItem("hikingFavorites");
   if (storedFavorites) {
     favorites.value = JSON.parse(storedFavorites);
   }
-
-  // Fetch product data
   fetchProductData();
 });
-
-// Watch for route changes
 watch(
   () => route.params.id,
   (newId) => {
     if (newId) {
       fetchProductData();
-      // Reset the active tab and user review inputs
       activeTab.value = 0;
       userRating.value = 0;
       userComment.value = "";

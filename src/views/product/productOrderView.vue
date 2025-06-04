@@ -1,6 +1,5 @@
 <template>
   <div class="product-orders-page">
-    <!-- Page Header -->
     <div class="page-header">
       <div class="container">
         <h1 class="page-title">My Product Orders</h1>
@@ -8,23 +7,17 @@
       </div>
     </div>
 
-    <!-- Main Content -->
     <div class="container">
-      <!-- Loading State -->
       <div v-if="state.isLoading" class="loading-section">
         <div class="loading-spinner"></div>
         <p>Loading your orders...</p>
       </div>
-
-      <!-- Error State -->
       <div v-else-if="state.error" class="error-section">
         <div class="error-icon">⚠️</div>
         <h3>Error Loading Orders</h3>
         <p>{{ state.error }}</p>
         <button class="retry-btn" @click="fetchOrders">Try Again</button>
       </div>
-
-      <!-- Empty State -->
       <div v-else-if="!hasItems" class="empty-section">
         <div class="empty-icon">
           <svg
@@ -45,8 +38,6 @@
         <p>You haven't placed any orders yet</p>
         <button class="browse-btn" @click="browseTours">Browse Tour Packages</button>
       </div>
-
-      <!-- Orders Content -->
       <div v-else class="orders-content">
         <!-- Filter Section -->
         <div class="filter-section">
@@ -70,8 +61,6 @@
             </div>
           </div>
         </div>
-
-        <!-- Orders Grid -->
         <div class="orders-grid">
           <div
             v-for="item in filteredItems"
@@ -80,7 +69,6 @@
             :class="getOrderStatusClass(item.orderStatus)"
           >
             <router-link :to="`/product/detail/${item.product_id}`">
-              <!-- Order Header -->
               <div class="order-header">
                 <div class="order-info">
                   <h3 class="order-number">Order #{{ item.orderNo }}</h3>
@@ -102,8 +90,6 @@
                   </button>
                 </div>
               </div>
-
-              <!-- Product Details -->
               <div class="product-details">
                 <div class="product-image">
                   <img
@@ -131,7 +117,6 @@
                 </div>
               </div>
             </router-link>
-            <!-- Price Section -->
             <div class="price-section">
               <div class="price-details">
                 <div class="price-row">
@@ -149,8 +134,6 @@
             </div>
           </div>
         </div>
-
-        <!-- Summary Section -->
         <div class="summary-section">
           <div class="summary-card">
             <h3>Order Summary</h3>
@@ -171,7 +154,6 @@
           </div>
         </div>
 
-        <!-- Action Buttons -->
         <div class="page-actions">
           <button @click="browseTours" class="primary-btn">Browse More Tours</button>
           <button
@@ -186,7 +168,6 @@
       </div>
     </div>
 
-    <!-- Notification Modal -->
     <div
       class="notification-modal-wrapper"
       v-if="showNotification"
@@ -235,26 +216,20 @@ import { useRouter } from "vue-router";
 const router = useRouter();
 const globalStore = useGlobalStore();
 const placeholderImage = "https://placehold.co/200x150/19ADCF/ffffff?text=Cambodia+Tour";
-
-// Component state
 const statusFilter = ref("");
 const showNotification = ref(false);
 const notificationType = ref("success");
 const notificationTitle = ref("");
 const notificationMessage = ref("");
 const cancellingOrders = ref([]);
-
-// Data state
 const state = reactive({
   users: [],
   isLoading: false,
   error: null,
 });
 
-// Transform order data to match display format
 const items = computed(() => {
   const allItems = [];
-
   state.users.forEach((user) => {
     if (user.orders && user.orders.length > 0) {
       user.orders.forEach((order) => {
@@ -288,10 +263,8 @@ const items = computed(() => {
       });
     }
   });
-
   return allItems.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 });
-
 const filteredItems = computed(() => {
   if (!statusFilter.value) return items.value;
   return items.value.filter((item) => item.orderStatus === statusFilter.value);
@@ -311,7 +284,6 @@ const formattedTotal = computed(() => {
   return `$${total.toFixed(2)}`;
 });
 
-// Utility functions
 const capitalizeStatus = (status) => {
   if (!status) return "";
   return status.charAt(0).toUpperCase() + status.slice(1);
@@ -348,7 +320,6 @@ const handleImageError = (event) => {
   event.target.src = placeholderImage;
 };
 
-// API functions
 const fetchOrders = async () => {
   state.isLoading = true;
   state.error = null;
@@ -375,18 +346,14 @@ const cancelOrder = async (item) => {
   if (!confirm(`Are you sure you want to cancel order #${item.orderNo}?`)) {
     return;
   }
-
   cancellingOrders.value.push(item.orderId);
-
   try {
     const res = await axios.put(
       `/api/web/product/order/update/status/${item.orderId}`,
       { status: "cancelled" },
       globalStore.getAxiosHeader()
     );
-
     if (res.data.error === false) {
-      // Update the order status in the local state
       const user = state.users.find((u) =>
         u.orders.some((o) => o.order_id === item.orderId)
       );
@@ -396,7 +363,6 @@ const cancelOrder = async (item) => {
           order.status = "cancelled";
         }
       }
-
       showNotificationMessage(
         "success",
         "Order Cancelled",
@@ -417,10 +383,7 @@ const cancelOrder = async (item) => {
   }
 };
 
-// UI functions
-const applyFilter = () => {
-  // Filtering is handled by computed property
-};
+const applyFilter = () => {};
 
 const browseTours = () => {
   router.push("/product");
@@ -435,7 +398,6 @@ const showNotificationMessage = (type, title, message) => {
   notificationTitle.value = title;
   notificationMessage.value = message;
   showNotification.value = true;
-
   setTimeout(() => {
     closeNotification();
   }, 5000);
@@ -444,7 +406,6 @@ const showNotificationMessage = (type, title, message) => {
 const closeNotification = () => {
   showNotification.value = false;
 };
-
 // Lifecycle
 onMounted(() => {
   fetchOrders();
@@ -455,7 +416,7 @@ onMounted(() => {
 .product-orders-page {
   min-height: 100vh;
   background-color: #f8fafc;
-  padding-top: 80px; /* Account for fixed header */
+  padding-top: 80px;
 }
 
 .container {
@@ -464,7 +425,6 @@ onMounted(() => {
   padding: 0 1rem;
 }
 
-/* Page Header */
 .page-header {
   background: linear-gradient(135deg, #19adcf 0%, #148da8 100%);
   color: white;
@@ -484,7 +444,6 @@ onMounted(() => {
   opacity: 0.9;
 }
 
-/* Loading, Error, Empty States */
 .loading-section,
 .error-section,
 .empty-section {
@@ -566,7 +525,6 @@ onMounted(() => {
   background-color: #148da8;
 }
 
-/* Filter Section */
 .filter-section {
   background: white;
   padding: 1.5rem;
@@ -831,7 +789,6 @@ onMounted(() => {
   font-weight: 600;
 }
 
-/* Summary Section */
 .summary-section {
   margin-bottom: 2rem;
 }
@@ -877,7 +834,6 @@ onMounted(() => {
   font-size: 1.125rem;
 }
 
-/* Page Actions */
 .page-actions {
   display: flex;
   gap: 1rem;
@@ -919,7 +875,6 @@ onMounted(() => {
   cursor: not-allowed;
 }
 
-/* Notification Modal */
 .notification-modal-wrapper {
   position: fixed;
   top: 0;
@@ -1028,7 +983,6 @@ onMounted(() => {
   }
 }
 
-/* Mobile Responsive */
 @media (max-width: 768px) {
   .page-title {
     font-size: 2rem;

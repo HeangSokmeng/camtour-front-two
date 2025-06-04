@@ -23,10 +23,6 @@ const props = defineProps({
     type: Object,
     required: true
   },
-  // variant: {
-  //   type: Object,
-  //   default: null
-  // },
   quantity: {
     type: Number,
     default: 1
@@ -61,21 +57,16 @@ const props = defineProps({
   },
   variant: {
     type: String,
-    default: 'primary', // primary, secondary, small, text
+    default: 'primary',
     validator: (value) => ['primary', 'secondary', 'small', 'text'].includes(value)
   }
 });
 
 const emit = defineEmits(['added-to-cart', 'add-error']);
-
-// Optional injections from parent components
 const showSuccessNotification = inject('showSuccessNotification', null);
 const showErrorNotification = inject('showErrorNotification', null);
-
 const cartStore = useCartStore();
 const isLoading = ref(false);
-
-// Compute button classes based on variant prop
 const buttonClasses = computed(() => {
   return {
     'add-to-cart-btn': true,
@@ -90,7 +81,6 @@ const addToCart = async () => {
   isLoading.value = true;
   
   try {
-    // Create tour package object with needed information
     const tourPackage = {
       id: props.product.id,
       name: props.product.name,
@@ -110,10 +100,7 @@ const addToCart = async () => {
       maxQuantity: props.variant?.qty || props.product.quantity || 20
     };
     
-    // Use the cart store to add the item
     const result = cartStore.addToCart(tourPackage);
-    
-    // Show notification if available
     if (result.success) {
       if (showSuccessNotification) {
         showSuccessNotification(result.message);
@@ -127,8 +114,6 @@ const addToCart = async () => {
     }
   } catch (error) {
     console.error('Error adding to cart:', error);
-    
-    // Show error notification if available
     if (showErrorNotification) {
       showErrorNotification('Failed to add item to cart');
     }

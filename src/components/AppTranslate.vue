@@ -24,7 +24,6 @@ export default {
     },
   },
   mounted() {
-    // Load saved language preference
     const savedLanguage = localStorage.getItem('selectedLanguage') || 'en';
     this.selectedLanguage = savedLanguage;
     this.$emit('language-changed', savedLanguage);

@@ -296,11 +296,8 @@ export default {
   },
   emits: ["close", "updated"],
   setup(props, { emit }) {
-    // Global store and translation
     const globalStore = useGlobalStore();
     const { t } = useTranslation();
-
-    // Form data
     const formData = reactive({
       first_name: "",
       last_name: "",
@@ -309,15 +306,11 @@ export default {
       gender: "0",
       image: "",
     });
-
-    // Password change data
     const passwordData = reactive({
       current_password: "",
       new_password: "",
       new_password_confirmation: "",
     });
-
-    // UI states
     const isSubmitting = ref(false);
     const isSubmittingPassword = ref(false);
     const showPasswordSection = ref(false);
@@ -327,8 +320,6 @@ export default {
     const profileImageLoaded = ref(true);
     const statusMessage = ref("");
     const statusType = ref("success");
-
-    // Form errors
     const errors = reactive({
       first_name: "",
       last_name: "",
@@ -341,7 +332,6 @@ export default {
       new_password_confirmation: "",
     });
 
-    // Computed properties
     const fullName = computed(() => {
       if (formData.first_name && formData.last_name) {
         return `${formData.first_name} ${formData.last_name}`;
@@ -357,8 +347,6 @@ export default {
       }
       return "T";
     });
-
-    // Watch for show prop to load user data
     watch(
       () => props.show,
       (newValue) => {
@@ -367,24 +355,17 @@ export default {
         }
       }
     );
-
-    // Methods
     function loadUserData() {
       const userData = globalStore.profile;
       if (userData) {
-        // Reset form data
         Object.keys(formData).forEach((key) => {
           if (userData[key] !== undefined) {
             formData[key] = userData[key];
           }
         });
-
-        // Convert gender to string if it's numeric
         if (typeof formData.gender === "number") {
           formData.gender = formData.gender.toString();
         }
-
-        // Check if profile has image
         if (formData.image) {
           profileImageLoaded.value = true;
         } else {
@@ -393,17 +374,11 @@ export default {
       } else {
         fetchUserData();
       }
-
-      // Reset password data
       passwordData.current_password = "";
       passwordData.new_password = "";
       passwordData.new_password_confirmation = "";
-
-      // Reset UI states
       showPasswordSection.value = false;
       statusMessage.value = "";
-
-      // Reset errors
       Object.keys(errors).forEach((key) => {
         errors[key] = "";
       });
@@ -415,23 +390,16 @@ export default {
           "/api/web/auth/me",
           globalStore.getAxiosHeader()
         );
-
         if (response.data.result) {
           const userData = response.data.data;
-
-          // Update form data
           Object.keys(formData).forEach((key) => {
             if (userData[key] !== undefined) {
               formData[key] = userData[key];
             }
           });
-
-          // Convert gender to string if it's numeric
           if (typeof formData.gender === "number") {
             formData.gender = formData.gender.toString();
           }
-
-          // Check if profile has image
           if (formData.image) {
             profileImageLoaded.value = true;
           } else {
@@ -444,12 +412,9 @@ export default {
       } catch (error) {
         console.error("Error fetching user data:", error);
         showStatusMessage("error", t("error-fetching-profile"));
-        
-        // Use global error handler
         await globalStore.onCheckError(error);
       }
     }
-
     function handleProfileImageError() {
       profileImageLoaded.value = false;
     }
@@ -457,20 +422,14 @@ export default {
     function handleImageUpload(event) {
       const file = event.target.files[0];
       if (!file) return;
-
-      // Check file type
       if (!file.type.match("image.*")) {
         showStatusMessage("error", t("invalid-image-format"));
         return;
       }
-
-      // Check file size (max 5MB)
       if (file.size > 5 * 1024 * 1024) {
         showStatusMessage("error", t("image-too-large"));
         return;
       }
-
-      // Preview image
       const reader = new FileReader();
       reader.onload = (e) => {
         formData.image = e.target.result;
@@ -478,12 +437,9 @@ export default {
       };
       reader.readAsDataURL(file);
     }
-
     function showStatusMessage(type, message) {
       statusType.value = type;
       statusMessage.value = message;
-
-      // Auto-hide message after 5 seconds
       setTimeout(() => {
         statusMessage.value = "";
       }, 5000);
@@ -491,45 +447,33 @@ export default {
 
     function validateForm() {
       let isValid = true;
-
-      // Reset errors
       Object.keys(errors).forEach((key) => {
         errors[key] = "";
       });
-
-      // Validate fields
       if (!formData.first_name.trim()) {
         errors.first_name = t("first-name-required");
         isValid = false;
       }
-
       if (!formData.last_name.trim()) {
         errors.last_name = t("last-name-required");
         isValid = false;
       }
-
       if (!formData.phone.trim()) {
         errors.phone = t("phone-required");
         isValid = false;
       }
-
       return isValid;
     }
 
     function validatePasswordForm() {
       let isValid = true;
-
-      // Reset password-related errors
       errors.current_password = "";
       errors.new_password = "";
       errors.new_password_confirmation = "";
-
-      // Validate password fields
       if (!passwordData.current_password) {
         errors.current_password = t("current-password-required");
         isValid = false;
       }
-
       if (!passwordData.new_password) {
         errors.new_password = t("new-password-required");
         isValid = false;
@@ -537,7 +481,6 @@ export default {
         errors.new_password = t("password-min-length");
         isValid = false;
       }
-
       if (!passwordData.new_password_confirmation) {
         errors.new_password_confirmation = t("confirm-password-required");
         isValid = false;
@@ -545,105 +488,60 @@ export default {
         errors.new_password_confirmation = t("passwords-dont-match");
         isValid = false;
       }
-
       return isValid;
     }
 
     async function updateProfile() {
       if (!validateForm()) return;
-
       isSubmitting.value = true;
-
       try {
-        // Create FormData object for multipart/form-data
         const formDataToSend = new FormData();
-        
-        // Add Laravel method spoofing for PUT request
         formDataToSend.append("_method", "PUT");
-        
         formDataToSend.append("first_name", formData.first_name);
         formDataToSend.append("last_name", formData.last_name);
         formDataToSend.append("phone", formData.phone);
         formDataToSend.append("gender", formData.gender);
-
-        // Add image if it's a File object or base64 data
         if (formData.image) {
-          // If it's a base64 string from the preview
           if (
             typeof formData.image === "string" &&
             formData.image.startsWith("data:image")
           ) {
             try {
-              // Convert base64 to file
               const response = await fetch(formData.image);
               const blob = await response.blob();
               const file = new File([blob], "profile-image.jpg", { type: blob.type });
               formDataToSend.append("image", file);
-              console.log("Added base64 image to form data");
             } catch (imgError) {
               console.error("Error converting base64 to file:", imgError);
             }
-          }
-          // If it's a file object directly
-          else if (formData.image instanceof File) {
+          } else if (formData.image instanceof File) {
             formDataToSend.append("image", formData.image);
-            console.log("Added File object to form data");
-          }
-          // If it's a URL, don't change it
-          else if (
-            typeof formData.image === "string" &&
-            !formData.image.startsWith("data:")
-          ) {
-            console.log("Image is a URL, not adding to form data");
-            // Don't append anything - keep existing image
-          }
+          } else
+            typeof formData.image === "string" && !formData.image.startsWith("data:");
         }
-
-        // Use POST request with method spoofing for file uploads
-        const response = await axios.post(
-          "/api/web/customer/update",
-          formDataToSend,
-          {
-            ...globalStore.getAxiosHeader(),
-            headers: {
-              ...globalStore.getAxiosHeader().headers,
-              "Content-Type": "multipart/form-data",
-            },
-          }
-        );
-
+        const response = await axios.post("/api/web/customer/update", formDataToSend, {
+          ...globalStore.getAxiosHeader(),
+          headers: {
+            ...globalStore.getAxiosHeader().headers,
+            "Content-Type": "multipart/form-data",
+          },
+        });
         if (response.data.result) {
-          console.log("Profile updated successfully:", response.data);
-
-          // Force refresh user profile in global store
           await globalStore.fetchUserProfile();
-
-          // Check if the image was updated correctly
-          console.log("Updated profile data:", globalStore.profile);
-
           showStatusMessage("success", t("profile-updated-successfully"));
-
-          // Emit updated event
           emit("updated");
-
-          // Auto-close modal after successful update with a small delay
           setTimeout(() => {
             closeModal();
-          }, 1500); // 1.5 second delay to show success message
-
+          }, 1500);
         } else {
           showStatusMessage("error", response.data.message || t("update-failed"));
         }
       } catch (error) {
         console.error("Profile update error:", error);
-
-        // Log detailed error information
         if (error.response) {
           console.error("Error response data:", error.response.data);
           console.error("Error response status:", error.response.status);
         }
-
-        // Handle validation errors from API
         if (error.response && error.response.data && error.response.data.errors) {
           const apiErrors = error.response.data.errors;
           Object.keys(apiErrors).forEach((key) => {
@@ -652,10 +550,7 @@ export default {
             }
           });
         }
-
         showStatusMessage("error", error.response?.data?.message || t("update-failed"));
-
-        // Use global error handler
         await globalStore.onCheckError(error);
       } finally {
         isSubmitting.value = false;
@@ -664,40 +559,27 @@ export default {
 
     async function updatePassword() {
       if (!validatePasswordForm()) return;
-
       isSubmittingPassword.value = true;
-
       try {
-        // Prepare data for password update
         const passwordFormData = {
           current_password: passwordData.current_password,
           new_password: passwordData.new_password,
           new_password_confirmation: passwordData.new_password_confirmation,
         };
-
-        // Make API call to the password update endpoint
         const response = await axios.post(
           "/api/profile/pass",
           passwordFormData,
           globalStore.getAxiosHeader()
         );
-
         if (response.data.result) {
           showStatusMessage("success", t("password-updated-successfully"));
-
-          // Reset password form
           passwordData.current_password = "";
           passwordData.new_password = "";
           passwordData.new_password_confirmation = "";
-
-          // Hide password section
           showPasswordSection.value = false;
-
-          // Auto-close modal after successful password update with a small delay
           setTimeout(() => {
             closeModal();
-          }, 1500); // 1.5 second delay to show success message
-
+          }, 1500);
         } else {
           showStatusMessage(
             "error",
@@ -706,8 +588,6 @@ export default {
         }
       } catch (error) {
         console.error("Password update error:", error);
-
-        // Handle validation errors from API
         if (error.response && error.response.data && error.response.data.errors) {
           const apiErrors = error.response.data.errors;
           Object.keys(apiErrors).forEach((key) => {
@@ -716,23 +596,18 @@ export default {
             }
           });
         }
-
         showStatusMessage(
           "error",
           error.response?.data?.message || t("password-update-failed")
         );
-
-        // Use global error handler
         await globalStore.onCheckError(error);
       } finally {
         isSubmittingPassword.value = false;
       }
     }
-
     function closeModal() {
       emit("close");
     }
-
     return {
       formData,
       passwordData,

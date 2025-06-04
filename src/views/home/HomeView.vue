@@ -9,8 +9,6 @@ import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from "vue"
 import { useRoute, useRouter } from "vue-router";
 const router = useRouter();
 const route = useRoute();
-
-// Basic reactive variables
 const currentImageIndex = ref(0);
 const searchQuery = ref("");
 const isLoading = ref(true);
@@ -27,24 +25,16 @@ const searchSuggestions = ref([]);
 const suggestionDebounceTimeout = ref(null);
 const activeSearchTab = ref("all");
 const totalResults = ref(0);
-
 const searchCategory = ref("");
 const searchLocation = ref("");
-
-// Dynamic categories and brands from API
 const apiCategories = ref([]);
 const apiBrands = ref([]);
 const isLoadingCategories = ref(false);
 const isLoadingBrands = ref(false);
-
-// Wishlist sync configuration
 const wishlistUpdateKey = ref(0);
 const wishlistCount = ref(0);
 const wishlistItems = ref([]);
-
 let autoSlideInterval = null;
-
-// Hero images data
 const heroImages = ref([
   {
     src: homeBannerImg,
@@ -67,11 +57,7 @@ const heroImages = ref([
     description: "Pink sandstone temple",
   },
 ]);
-
-// Translation setup
 const { currentLanguage, t } = useTranslation();
-
-// State variables
 const topViewLocations = ref([]);
 const locations = ref([]);
 const products = ref([]);
@@ -82,21 +68,14 @@ const cardsRowRef = ref(null);
 const autoScrollInterval = ref(null);
 const isAutoScrolling = ref(true);
 const scrollDistance = ref(300);
-
-// Toast notification state
 const showToast = ref(false);
 const toastMessage = ref("");
 const toastType = ref("success");
 let toastTimeout;
-
-// Category and filter states
 const selectedCategory = ref("all");
 const selectedProductCategory = ref("all");
-
-// Computed properties for dynamic categories
 const categories = computed(() => {
   const baseCategories = [{ key: "all", translationKey: "all", name: t("all") }];
-
   if (apiCategories.value.length > 0) {
     const dynamicCategories = apiCategories.value.map((category) => ({
       key: category.id.toString(),
@@ -107,8 +86,6 @@ const categories = computed(() => {
     }));
     return [...baseCategories, ...dynamicCategories];
   }
-
-  // Fallback to static categories if API fails
   return [
     ...baseCategories,
     { key: "heritage", translationKey: "heritage", name: t("heritage") },
@@ -132,8 +109,6 @@ const productCategories = computed(() => {
     }));
     return [...baseCategories, ...dynamicBrands];
   }
-
-  // Fallback to static categories if API fails
   return [
     ...baseCategories,
     { key: "camping", translationKey: "camping", name: t("camping") },
@@ -143,10 +118,8 @@ const productCategories = computed(() => {
   ];
 });
 
-// Additional computed properties
 const selectedCategoryInfo = computed(() => {
   if (selectedCategory.value === "all") return null;
-
   const categoryId = parseInt(selectedCategory.value);
   if (!isNaN(categoryId)) {
     return apiCategories.value.find((cat) => cat.id === categoryId);
@@ -187,17 +160,12 @@ const chatbotFeatures = ref([
   },
 ]);
 
-// Placeholder image for error handling
 const placeholderImage = "https://placehold.co/400x300/19ADCF/ffffff?text=Camtour";
-
-// Computed properties for filtered data
 const filteredLocations = computed(() => {
   if (selectedCategory.value === "all") {
     return locations.value;
   }
-
   const categoryId = parseInt(selectedCategory.value);
-
   if (!isNaN(categoryId)) {
     const filtered = locations.value.filter((location) => {
       const matches =
@@ -205,10 +173,8 @@ const filteredLocations = computed(() => {
         location.categoryId === categoryId ||
         (location.category && location.category.id === categoryId) ||
         (location.category && parseInt(location.category) === categoryId);
-
       return matches;
     });
-
     return filtered;
   } else {
     const filtered = locations.value.filter((location) => {
@@ -217,7 +183,6 @@ const filteredLocations = computed(() => {
         location.type?.toLowerCase() === selectedCategory.value
       );
     });
-
     return filtered;
   }
 });
@@ -226,9 +191,7 @@ const filteredProducts = computed(() => {
   if (selectedProductCategory.value === "all") {
     return products.value;
   }
-
   const brandId = parseInt(selectedProductCategory.value);
-
   if (!isNaN(brandId)) {
     const filtered = products.value.filter((product) => {
       const matches =
@@ -239,7 +202,6 @@ const filteredProducts = computed(() => {
 
       return matches;
     });
-
     return filtered;
   } else {
     const filtered = products.value.filter((product) => {
@@ -252,7 +214,6 @@ const filteredProducts = computed(() => {
   }
 });
 
-// Helper functions for localized content
 const getLocalizedName = (location) => {
   if (currentLanguage.value === "km") {
     return location.name_local || location.name;
@@ -288,11 +249,9 @@ const getLocalizedBrandName = (brand) => {
   return brand.name;
 };
 
-// API functions to fetch categories and brands
 const fetchCategories = async () => {
   isLoadingCategories.value = true;
   const globalStore = useGlobalStore();
-
   try {
     const response = await axios.get("/api/web/view/categories", {
       ...globalStore.getAxiosHeader(),
@@ -304,7 +263,6 @@ const fetchCategories = async () => {
     }
   } catch (error) {
     apiCategories.value = [];
-
     if (typeof globalStore.onCheckError === "function") {
       await globalStore.onCheckError(error);
     }
@@ -320,7 +278,6 @@ const fetchBrands = async () => {
     const response = await axios.get("/api/web/view/brands", {
       ...globalStore.getAxiosHeader(),
     });
-
     if (response.data.result && response.data.data) {
       apiBrands.value = response.data.data;
     } else {
@@ -328,7 +285,6 @@ const fetchBrands = async () => {
     }
   } catch (error) {
     apiBrands.value = [];
-
     if (typeof globalStore.onCheckError === "function") {
       await globalStore.onCheckError(error);
     }
@@ -337,11 +293,9 @@ const fetchBrands = async () => {
   }
 };
 
-// Search functionality
 const performSearch = async (query, category = "", page = 1) => {
   isLoading.value = true;
   const globalStore = useGlobalStore();
-
   try {
     const params = {
       page,
@@ -351,7 +305,6 @@ const performSearch = async (query, category = "", page = 1) => {
     if (query.trim()) {
       params.search = query.trim();
     }
-
     if (category) {
       const categoryId = parseInt(category);
       if (!isNaN(categoryId)) {
@@ -360,21 +313,17 @@ const performSearch = async (query, category = "", page = 1) => {
         params.category = category;
       }
     }
-
     const response = await axios.get("/api/web/view/location", {
       params,
       ...globalStore.getAxiosHeader(),
     });
-
     if (response.data.result) {
       const data = response.data.data;
-
       searchResults.value = {
         locations: data.locations || [],
         products: data.product || [],
         top_view_location: data.top_view_location || [],
       };
-
       searchPagination.value = data.pagination;
       totalResults.value = (data.locations?.length || 0) + (data.product?.length || 0);
       isSearchActive.value = true;
@@ -391,13 +340,11 @@ const handleSearch = async () => {
   if (searchQuery.value.trim()) {
     hideSuggestions();
     await performSearch(searchQuery.value, searchCategory.value);
-
     const newQuery = { ...route.query };
     newQuery.search = searchQuery.value.trim();
     if (searchCategory.value) {
       newQuery.category = searchCategory.value;
     }
-
     router.replace({ query: newQuery });
   }
 };
@@ -410,15 +357,12 @@ const clearSearch = () => {
   currentSearchTerm.value = "";
   searchResults.value = { locations: [], products: [], top_view_location: [] };
   totalResults.value = 0;
-
   selectedCategory.value = "all";
   selectedProductCategory.value = "all";
-
   const newQuery = { ...route.query };
   delete newQuery.search;
   delete newQuery.category;
   router.replace({ query: newQuery });
-
   fetchHomeData();
 };
 
@@ -432,15 +376,12 @@ const goToSearchPage = (page) => {
   }
 };
 
-// Search suggestions
 const fetchSearchSuggestions = async (query) => {
   if (!query.trim() || query.length < 2) {
     searchSuggestions.value = [];
     return;
   }
-
   const globalStore = useGlobalStore();
-
   try {
     const response = await axios.get("/api/web/view/location", {
       params: {
@@ -449,11 +390,9 @@ const fetchSearchSuggestions = async (query) => {
       },
       ...globalStore.getAxiosHeader(),
     });
-
     if (response.data.result) {
       const data = response.data.data;
       const suggestions = [];
-
       if (data.locations) {
         data.locations.slice(0, 3).forEach((location) => {
           suggestions.push({
@@ -467,7 +406,6 @@ const fetchSearchSuggestions = async (query) => {
           });
         });
       }
-
       if (data.product) {
         data.product.slice(0, 2).forEach((product) => {
           suggestions.push({
@@ -479,7 +417,6 @@ const fetchSearchSuggestions = async (query) => {
           });
         });
       }
-
       searchSuggestions.value = suggestions;
     }
   } catch (error) {
@@ -491,7 +428,6 @@ const onSearchInput = () => {
   if (suggestionDebounceTimeout.value) {
     clearTimeout(suggestionDebounceTimeout.value);
   }
-
   suggestionDebounceTimeout.value = setTimeout(() => {
     if (searchQuery.value.trim().length >= 2) {
       fetchSearchSuggestions(searchQuery.value);
@@ -505,7 +441,6 @@ const onSearchInput = () => {
 const selectSuggestion = (suggestion) => {
   searchQuery.value = suggestion.name;
   hideSuggestions();
-
   if (suggestion.type === "location") {
     router.push(`/location/detail/${suggestion.data.id}`);
   } else if (suggestion.type === "product") {
@@ -518,14 +453,12 @@ const hideSuggestions = () => {
   searchSuggestions.value = [];
 };
 
-// WISHLIST CONFIGURATION - Enhanced event handlers
 const onWishlistAdded = async (item) => {
   showToastNotification(`Added "${item.name}" to wishlist`, "success");
   await refreshWishlistState();
 };
 
 const onWishlistRemoved = async (item) => {
-  // Since your service clears all items, show appropriate message
   if (wishlistCount.value === 0) {
     showToastNotification("Wishlist cleared", "info");
   } else {
@@ -538,24 +471,16 @@ const onWishlistError = () => {
   showToastNotification("Error updating wishlist", "error");
 };
 
-// WISHLIST CONFIGURATION - Enhanced update handler
 const handleWishlistUpdate = async (event) => {
   const { count, items } = event.detail;
-
-  // Update local state
   wishlistCount.value = count;
   wishlistItems.value = items || [];
-
-  // Force re-render of all wishlist buttons
   wishlistUpdateKey.value++;
-
-  // Show notification for clear action
   if (count === 0 && wishlistCount.value > 0) {
     showToastNotification("Wishlist cleared", "info");
   }
 };
 
-// WISHLIST CONFIGURATION - Refresh wishlist state
 const refreshWishlistState = async () => {
   try {
     const [count, items] = await Promise.all([
@@ -567,40 +492,34 @@ const refreshWishlistState = async () => {
     wishlistItems.value = items;
     wishlistUpdateKey.value++;
   } catch (error) {
-    // Silent fail for wishlist refresh
+    console.error(error)
   }
 };
 
-// WISHLIST CONFIGURATION - Initialize wishlist state
 const initializeWishlistState = async () => {
   try {
     await WishlistService.initialize();
     await refreshWishlistState();
   } catch (error) {
-    // Silent fail for wishlist initialization
+    console.error(error);
   }
 };
 
-// Toast notification helper
 const showToastNotification = (message, type = "success") => {
   toastMessage.value = message;
   toastType.value = type;
   showToast.value = true;
-
   if (toastTimeout) {
     clearTimeout(toastTimeout);
   }
-
   toastTimeout = setTimeout(() => {
     showToast.value = false;
   }, 3000);
 };
 
-// Listen for toast events from other components
 const handleToastEvent = (event) => {
   const { message, type, duration } = event.detail;
   showToastNotification(message, type);
-
   if (duration && duration !== 3000) {
     if (toastTimeout) {
       clearTimeout(toastTimeout);
@@ -611,7 +530,6 @@ const handleToastEvent = (event) => {
   }
 };
 
-// Category selection functions
 const selectCategory = (categoryKey) => {
   selectedCategory.value = categoryKey;
 };
@@ -650,35 +568,27 @@ const fetchHomeData = async (page = 1) => {
   }
 };
 
-// Handle image load errors
 const handleImageError = (event) => {
   event.target.src = placeholderImage;
 };
 
-// Legacy function for backward compatibility - Updated for your service behavior
 const toggleFavorite = async (locationId) => {
   const location = [...topViewLocations.value, ...locations.value].find(
     (loc) => loc.id === locationId
   );
-
   if (location) {
     try {
       const success = await WishlistService.toggleItem(location);
       if (success) {
-        // Since your service clears all items on remove, check final state
         const finalCount = await WishlistService.getCount();
         const isNowInWishlist =
           finalCount > 0 && WishlistService.isInWishlist(locationId);
-
         const message = isNowInWishlist
           ? `Added "${getLocalizedName(location)}" to wishlist`
           : finalCount === 0
           ? "Wishlist cleared"
           : `Removed "${getLocalizedName(location)}" from wishlist`;
-
         showToastNotification(message, isNowInWishlist ? "success" : "info");
-
-        // Force re-render of wishlist buttons
         await refreshWishlistState();
       }
     } catch (error) {
@@ -686,7 +596,6 @@ const toggleFavorite = async (locationId) => {
     }
   }
 
-  // Keep legacy favorites functionality
   const index = favorites.value.indexOf(locationId);
   if (index === -1) {
     favorites.value.push(locationId);
@@ -696,12 +605,10 @@ const toggleFavorite = async (locationId) => {
   localStorage.setItem("favorites", JSON.stringify(favorites.value));
 };
 
-// Auto-scrolling functionality
 const startAutoScroll = () => {
   if (autoScrollInterval.value) {
     clearInterval(autoScrollInterval.value);
   }
-
   if (topViewLocations.value.length > 1) {
     autoScrollInterval.value = setInterval(() => {
       scrollNext();
@@ -723,14 +630,12 @@ const resetAutoScroll = () => {
   }
 };
 
-// Scroll functions
 const scrollNext = () => {
   if (cardsRowRef.value) {
     cardsRowRef.value.scrollBy({
       left: scrollDistance.value,
       behavior: "smooth",
     });
-
     setTimeout(() => {
       if (cardsRowRef.value) {
         const isAtEnd =
@@ -754,7 +659,6 @@ const scrollPrev = () => {
   }
 };
 
-// Hero slider functions
 const changeImage = (index) => {
   currentImageIndex.value = index;
   resetAutoSlide();
@@ -764,14 +668,6 @@ const nextImage = () => {
   currentImageIndex.value = (currentImageIndex.value + 1) % heroImages.value.length;
   resetAutoSlide();
 };
-
-// const previousImage = () => {
-//   currentImageIndex.value =
-//     currentImageIndex.value === 0
-//       ? heroImages.value.length - 1
-//       : currentImageIndex.value - 1;
-//   resetAutoSlide();
-// };
 
 const startAutoSlide = () => {
   autoSlideInterval = setInterval(() => {
@@ -791,7 +687,6 @@ const resetAutoSlide = () => {
   startAutoSlide();
 };
 
-// Watchers
 watch(currentLanguage, () => {
   document.title = `${t("camtour-brand")} - ${t("home-page-title")}`;
 });
@@ -820,16 +715,10 @@ const handleClickOutside = (event) => {
   }
 };
 
-// Setup component
 onMounted(async () => {
-  // WISHLIST CONFIGURATION - Enhanced wishlist setup
   window.addEventListener("wishlist-updated", handleWishlistUpdate);
   document.title = `${t("camtour-brand")} - ${t("home-page-title")}`;
-
-  // Initialize wishlist state
   await initializeWishlistState();
-
-  // Listen for user authentication changes
   const globalStore = useGlobalStore();
   watch(
     () => globalStore.getIsAuthenticated,
@@ -844,22 +733,13 @@ onMounted(async () => {
     }
   );
 
-  // Listen for toast events
   window.addEventListener("show-toast", handleToastEvent);
-
-  // Listen for language changes
   window.addEventListener("language-changed", () => {});
-
-  // Click outside listener
   document.addEventListener("click", handleClickOutside);
-
-  // Load favorites from localStorage
   const storedFavorites = localStorage.getItem("favorites");
   if (storedFavorites) {
     favorites.value = JSON.parse(storedFavorites);
   }
-
-  // Check for initial search in URL
   if (route.query.search) {
     searchQuery.value = route.query.search;
     searchCategory.value = route.query.category || "";
@@ -867,21 +747,16 @@ onMounted(async () => {
   } else {
     fetchHomeData();
   }
-
-  // Setup interactions after DOM is ready
   nextTick(() => {
     setTimeout(() => {
       const setupScrollers = () => {
         const cardsRow = cardsRowRef.value;
-
         if (cardsRow) {
           const cardWidth = cardsRow.querySelector(".scroll-card")?.offsetWidth || 300;
           scrollDistance.value = cardWidth + 25;
-
           let isDown = false;
           let startX;
           let scrollLeft;
-
           cardsRow.addEventListener("mousedown", (e) => {
             isDown = true;
             cardsRow.style.cursor = "grabbing";
@@ -889,7 +764,6 @@ onMounted(async () => {
             scrollLeft = cardsRow.scrollLeft;
             stopAutoScroll();
           });
-
           cardsRow.addEventListener("mouseleave", () => {
             isDown = false;
             cardsRow.style.cursor = "grab";
@@ -897,7 +771,6 @@ onMounted(async () => {
               startAutoScroll();
             }
           });
-
           cardsRow.addEventListener("mouseup", () => {
             isDown = false;
             cardsRow.style.cursor = "grab";
@@ -905,7 +778,6 @@ onMounted(async () => {
               startAutoScroll();
             }
           });
-
           cardsRow.addEventListener("mousemove", (e) => {
             if (!isDown) return;
             e.preventDefault();
@@ -913,7 +785,6 @@ onMounted(async () => {
             const walk = (x - startX) * 2;
             cardsRow.scrollLeft = scrollLeft - walk;
           });
-
           if (topViewLocations.value.length > 1) {
             startAutoScroll();
           }
@@ -944,20 +815,15 @@ onMounted(async () => {
   });
 });
 
-// Clean up on component unmount
 onBeforeUnmount(() => {
   stopAutoScroll();
   stopAutoSlide();
-
   if (suggestionDebounceTimeout.value) {
     clearTimeout(suggestionDebounceTimeout.value);
   }
-
   if (toastTimeout) {
     clearTimeout(toastTimeout);
   }
-
-  // Remove event listeners
   document.removeEventListener("click", handleClickOutside);
   window.removeEventListener("language-changed", () => {});
   window.removeEventListener("wishlist-updated", handleWishlistUpdate);
@@ -965,15 +831,12 @@ onBeforeUnmount(() => {
 });
 </script>
 
-<!-- TEMPLATE SECTION -->
 <template>
   <div class="home-container">
-    <!-- Toast Notification -->
     <div v-if="showToast" :class="['toast-notification', toastType, { show: showToast }]">
       {{ toastMessage }}
     </div>
 
-    <!-- Wishlist Debug Info (Remove in production) -->
     <div v-if="false" class="wishlist-debug-info">
       <p><strong>Wishlist Count:</strong> {{ wishlistCount }}</p>
       <p><strong>Update Key:</strong> {{ wishlistUpdateKey }}</p>
@@ -1012,7 +875,6 @@ onBeforeUnmount(() => {
               </button>
             </div>
 
-            <!-- Search Suggestions Dropdown -->
             <div
               v-if="showSuggestions && searchSuggestions.length > 0"
               class="search-suggestions"
@@ -1058,25 +920,6 @@ onBeforeUnmount(() => {
             </div>
           </div>
         </div>
-
-        <!-- <div class="slider-controls">
-          <button class="slider-arrow prev" @click="previousImage">
-            <svg viewBox="0 0 24 24">
-              <path
-                d="M15 6l-6 6 6 6"
-                stroke="currentColor"
-                stroke-width="2"
-                fill="none"
-              />
-            </svg>
-          </button>
-          <button class="slider-arrow next" @click="nextImage">
-            <svg viewBox="0 0 24 24">
-              <path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" fill="none" />
-            </svg>
-          </button>
-        </div> -->
-
         <div class="thumbnail-strip">
           <div class="thumbnail-container">
             <div
@@ -1091,7 +934,6 @@ onBeforeUnmount(() => {
             </div>
           </div>
         </div>
-
         <div class="slide-indicators">
           <button
             v-for="(image, index) in heroImages"
@@ -1103,8 +945,6 @@ onBeforeUnmount(() => {
         </div>
       </div>
     </section>
-
-    <!-- Search Results Section -->
     <div v-if="isSearchActive" class="search-results-section">
       <div class="content-container">
         <div class="search-results-header">
@@ -1114,8 +954,6 @@ onBeforeUnmount(() => {
             {{ t("found") }}
           </p>
         </div>
-
-        <!-- Search Results Tabs -->
         <div class="search-tabs">
           <button
             class="search-tab"
@@ -1139,10 +977,7 @@ onBeforeUnmount(() => {
             {{ t("products") }} ({{ searchResults.products?.length || 0 }})
           </button>
         </div>
-
-        <!-- Search Results Content with Wishlist Integration -->
         <div class="search-results-content">
-          <!-- Locations Results -->
           <div
             v-if="activeSearchTab === 'all' || activeSearchTab === 'locations'"
             class="locations-results"
@@ -1646,16 +1481,6 @@ onBeforeUnmount(() => {
               class="product-card hover-float"
               :class="`delay-${(index + 1) * 100}`"
             >
-              <!-- <div class="wishlist-btn-container">
-                <WishlistButton
-                  :item="product"
-                  size="small"
-                  :key="`product-${product.product_id}-${wishlistUpdateKey}`"
-                  @added="onWishlistAdded"
-                  @removed="onWishlistRemoved"
-                  @error="onWishlistError"
-                />
-              </div> -->
               <router-link :to="`/product/detail/${product.product_id}`">
                 <div class="product-label sale">{{ t("sale") }}</div>
                 <img

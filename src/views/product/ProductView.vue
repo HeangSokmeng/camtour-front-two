@@ -426,40 +426,27 @@ const maxPrice = computed(() => {
   return max > 0 ? max : 500;
 });
 
-// Translation helper functions for multilingual support
 const getTranslatedProductName = (product) => {
   if (!product) return "";
-
-  // If current language is Khmer and name_km exists, use it
   if (currentLanguage.value === "km" && product.name_km) {
     return product.name_km;
   }
-
-  // Otherwise, fall back to the regular name
   return product.name || "";
 };
 
 const getTranslatedBrandName = (brand) => {
   if (!brand) return "";
-
-  // If current language is Khmer and name_km exists, use it
   if (currentLanguage.value === "km" && brand.name_km) {
     return brand.name_km;
   }
-
-  // Otherwise, fall back to the regular name
   return brand.name || "";
 };
 
 const getTranslatedCategoryName = (category) => {
   if (!category) return "";
-
-  // First check if we have a Khmer name for the current language
   if (currentLanguage.value === "km" && category.name_km) {
     return category.name_km;
   }
-
-  // Then try translation key lookup
   if (category.name) {
     const key = `category-${category.name.toLowerCase().replace(/\s+/g, "-")}`;
     const translated = t(key);
@@ -467,8 +454,6 @@ const getTranslatedCategoryName = (category) => {
       return translated;
     }
   }
-
-  // Finally fall back to the regular name
   return category.name || "";
 };
 
@@ -481,16 +466,11 @@ const getTranslatedStockStatus = (status) => {
   return translated !== key ? translated : status;
 };
 
-// Language change handler
-const handleLanguageChange = (event) => {
-  console.log("Shop: Language changed to", event.detail.language);
-  // Update page title when language changes
+const handleLanguageChange = () => {
   document.title = `${t("camtour-brand")} - ${t("shop-page-title")}`;
 };
 
 onMounted(async () => {
-  console.log("Shop component mounted with language:", currentLanguage.value);
-
   const savedWishlist = localStorage.getItem("wishlist");
   if (savedWishlist) {
     try {
@@ -500,19 +480,13 @@ onMounted(async () => {
       wishlist.value = [];
     }
   }
-
-  // Add language change listener
   window.addEventListener("language-changed", handleLanguageChange);
-
   await fetchProducts();
   await fetchBrands();
   await fetchCategories();
-
   if (maxPrice.value > 0) {
     priceRange.value = maxPrice.value;
   }
-
-  // Set initial page title
   document.title = `${t("camtour-brand")} - ${t("shop-page-title")}`;
 });
 
@@ -520,18 +494,11 @@ watch([currentPage], () => {
   fetchProducts();
 });
 
-// Watch for language changes
-watch(currentLanguage, (newLanguage) => {
-  console.log("Shop page language changed to:", newLanguage);
-  // Update page title
+watch(currentLanguage, () => {
   document.title = `${t("camtour-brand")} - ${t("shop-page-title")}`;
-
-  // Update error message if there's an error
   if (error.value) {
     error.value = t("error-loading-products");
   }
-
-  // Regenerate search suggestions with new language
   if (searchQuery.value.length > 2) {
     generateSearchSuggestions();
   }
@@ -541,12 +508,10 @@ function handleSearchInput() {
   if (searchTimeout.value) {
     clearTimeout(searchTimeout.value);
   }
-
   if (!searchQuery.value.trim()) {
     showSuggestions.value = false;
     return;
   }
-
   searchTimeout.value = setTimeout(() => {
     if (searchQuery.value.length > 2) {
       generateSearchSuggestions();
@@ -558,18 +523,15 @@ function handleSearchInput() {
 function generateSearchSuggestions() {
   const query = searchQuery.value.toLowerCase();
   const suggestions = new Set();
-
   allProducts.value.forEach((product) => {
     const name = getTranslatedProductName(product).toLowerCase();
     const category = getTranslatedCategoryName(product.pcategory).toLowerCase();
     const brand = getTranslatedBrandName(product.brand).toLowerCase();
-
     if (name.includes(query)) suggestions.add(getTranslatedProductName(product));
     if (category.includes(query))
       suggestions.add(getTranslatedCategoryName(product.pcategory));
     if (brand.includes(query)) suggestions.add(getTranslatedBrandName(product.brand));
   });
-
   searchSuggestions.value = Array.from(suggestions)
     .filter((s) => s && s.toLowerCase() !== query)
     .slice(0, 5);
@@ -608,42 +570,31 @@ function clearSearch() {
 async function fetchProducts() {
   isLoading.value = true;
   error.value = null;
-
   try {
     const params = {
       page: currentPage.value,
     };
-
     if (activeSearch.value) {
       params.search = activeSearch.value;
     }
-
     if (selectedCategories.value.length > 0) {
       params.category_ids = selectedCategories.value.join(",");
     }
-
     if (selectedBrands.value.length > 0) {
       params.brand_ids = selectedBrands.value.join(",");
     }
-
-    console.log("Fetching products with params:", params);
-
     const response = await axios.get("/api/web/view/product", {
       params,
       ...globalStore.getAxiosHeader(),
     });
-
     if (!response.data.error) {
       allProducts.value = response.data.data || [];
-
       pagination.value = {
         per_page: response.data.per_page || 10,
         total: response.data.total || 0,
         total_page: response.data.total_page || 1,
         page_no: response.data.page_no || 1,
       };
-
-      console.log(`Loaded ${allProducts.value.length} products`);
       applyFiltersToProducts();
     } else {
       error.value = response.data.message || t("error-loading-products");
@@ -667,10 +618,8 @@ async function fetchCategories() {
       "/api/web/view/categories",
       globalStore.getAxiosHeader()
     );
-
     if (response.data.result) {
       categories.value = response.data.data || [];
-      console.log(`Loaded ${categories.value.length} categories`);
     } else {
       console.error("Failed to load categories:", response.data.message);
       extractCategoriesFromProducts();
@@ -687,10 +636,8 @@ async function fetchBrands() {
       "/api/web/view/brands",
       globalStore.getAxiosHeader()
     );
-
     if (response.data.result) {
       brands.value = response.data.data || [];
-      console.log(`Loaded ${brands.value.length} brands`);
     } else {
       console.error("Failed to load brands:", response.data.message);
       extractBrandsFromProducts();
@@ -709,7 +656,6 @@ function extractCategoriesFromProducts() {
     }
   });
   categories.value = Object.values(uniqueCategories);
-  console.log(`Extracted ${categories.value.length} categories from products`);
 }
 
 function extractBrandsFromProducts() {
@@ -720,20 +666,15 @@ function extractBrandsFromProducts() {
     }
   });
   brands.value = Object.values(uniqueBrands);
-  console.log(`Extracted ${brands.value.length} brands from products`);
 }
 
 function applyFiltersToProducts() {
   let filtered = [...allProducts.value];
-
-  // Apply price filter
   if (priceRange.value < maxPrice.value) {
     filtered = filtered.filter(
       (product) => parseFloat(product.price) <= priceRange.value
     );
   }
-
-  // Apply sorting
   switch (sortBy.value) {
     case "price-low-high":
       filtered.sort((a, b) => parseFloat(a.price) - parseFloat(b.price));
@@ -751,9 +692,7 @@ function applyFiltersToProducts() {
       filtered.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
       break;
   }
-
   displayedProducts.value = filtered;
-  console.log(`Displaying ${displayedProducts.value.length} products after filters`);
 }
 
 function applyFilters() {
@@ -773,17 +712,13 @@ function resetFilters() {
 function changePage(page) {
   if (pagination.value && page >= 1 && page <= pagination.value.total_page) {
     currentPage.value = page;
-
-    // Scroll to top on page change
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 }
 
 function getPaginationRange() {
   if (!pagination.value) return [1];
-
   const totalPages = pagination.value.total_page;
-
   if (totalPages <= 5) {
     return Array.from({ length: totalPages }, (_, i) => i + 1);
   }
@@ -791,11 +726,9 @@ function getPaginationRange() {
   if (currentPage.value <= 3) {
     return [1, 2, 3, 4, 5];
   }
-
   if (currentPage.value >= totalPages - 2) {
     return Array.from({ length: 5 }, (_, i) => totalPages - 4 + i);
   }
-
   return [
     currentPage.value - 2,
     currentPage.value - 1,
@@ -815,7 +748,6 @@ function getProductImage(product) {
 
 function isNewProduct(product) {
   if (!product.created_at) return false;
-
   const createdDate = new Date(product.created_at);
   const thirtyDaysAgo = new Date();
   thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
@@ -855,10 +787,8 @@ function toggleWishlist(product) {
 
   if (index === -1) {
     wishlist.value.push(product.id);
-    console.log(`Added product ${product.id} to wishlist`);
   } else {
     wishlist.value.splice(index, 1);
-    console.log(`Removed product ${product.id} from wishlist`);
   }
 
   try {
@@ -883,14 +813,8 @@ function getStockStatusClass(status) {
   return "";
 }
 
-// Cleanup on unmount
 onUnmounted(() => {
-  console.log("Shop component unmounting");
-
-  // Remove event listeners
   window.removeEventListener("language-changed", handleLanguageChange);
-
-  // Clear any pending timeouts
   if (searchTimeout.value) {
     clearTimeout(searchTimeout.value);
   }
@@ -898,10 +822,6 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
-/* Adventure Shop - Hiking & Travel Theme Styles */
-/* Main color: #1A7E8C */
-
-/* Base Styles */
 .adventure-shop {
   color: #333;
   background-color: #f8f9fa;

@@ -38,14 +38,13 @@ class WishlistService {
     if (this.isInitialized && !this.hasUserContextChanged()) {
       return;
     }
-    
+
     try {
       const globalStore = this.getGlobalStore();
       if (!globalStore) {
         setTimeout(() => this.initialize(), 100);
         return;
       }
-
       const isAuthenticated = globalStore.getIsAuthenticated;
       if (isAuthenticated && globalStore.profile?.id) {
         this.currentUserId = globalStore.profile.id;
@@ -54,7 +53,6 @@ class WishlistService {
         this.currentUserId = null;
         this.items = [];
       }
-
       this.isInitialized = true;
       this.notifyUpdate();
     } catch (error) {
@@ -63,29 +61,24 @@ class WishlistService {
       this.notifyUpdate();
     }
   }
-
   hasUserContextChanged() {
     const globalStore = this.getGlobalStore();
     if (!globalStore) return false;
     const currentUserId = globalStore.profile?.id || null;
     return this.currentUserId !== currentUserId;
   }
-
   async loadFromAPI() {
     if (!this.currentUserId) {
       this.items = [];
       return;
     }
-
     try {
       const globalStore = this.getGlobalStore();
       if (!globalStore) {
         this.items = [];
         return;
       }
-
       const response = await axios.get('/api/web/wishlist', globalStore.getAxiosHeader());
-      
       if (response.data.result) {
         const wishlistData = response.data.data;
         this.items = Array.isArray(wishlistData) ? wishlistData : [];
@@ -107,16 +100,13 @@ class WishlistService {
     if (!this.currentUserId || this.syncInProgress) {
       return false;
     }
-
     try {
       const globalStore = this.getGlobalStore();
       if (!globalStore) {
         return false;
       }
-
       const headers = globalStore.getAxiosHeader();
       let response;
-
       switch (action) {
         case 'add': {
           const requestData = this.prepareAPIRequestData(item);
@@ -124,7 +114,6 @@ class WishlistService {
           break;
         }
         case 'remove': {
-          // const itemType = this.determineItemType(item);
           response = await axios.delete(
             `/api/web/wishlist/${item.id}`,
             headers
@@ -134,7 +123,6 @@ class WishlistService {
         default:
           throw new Error(`Unknown action: ${action}`);
       }
-
       return response.data.result || false;
     } catch (error) {
       if (error.response?.status !== 401) {
@@ -151,14 +139,12 @@ class WishlistService {
     if (!this.currentUserId || this.syncInProgress) {
       return false;
     }
-
     this.syncInProgress = true;
     try {
       const globalStore = this.getGlobalStore();
       if (!globalStore) {
         return false;
       }
-
       const syncData = {
         items: this.items.map(item => ({
           item_id: String(item.id),
@@ -166,7 +152,6 @@ class WishlistService {
           item_data: item.originalData || item
         }))
       };
-
       const response = await axios.put('/api/web/wishlist/sync', syncData, globalStore.getAxiosHeader());
       return response.data.result || false;
     } catch (error) {
@@ -191,7 +176,7 @@ class WishlistService {
   prepareAPIRequestData(item) {
     const itemType = this.determineItemType(item);
     const itemId = item.id || item.product_id;
-    
+
     if (!itemId) {
       throw new Error('Item ID is required for API request');
     }
@@ -202,14 +187,13 @@ class WishlistService {
       item_data: this.prepareItemData(item)
     };
   }
-  
+
   prepareItemData(item) {
     const baseData = {
       name: item.name || item.product_name || 'Unknown Item',
       image: item.is_thumbnail || item.image || '',
       addedAt: new Date().toISOString(),
     };
-
     if (this.determineItemType(item) === 'product') {
       return {
         ...baseData,
@@ -262,14 +246,10 @@ class WishlistService {
 
   async addItem(item) {
     if (!this.currentUserId) return false;
-    
     await this.ensureInitialized();
-
     if (!this.validateItem(item)) return false;
-
     const itemId = item.id || item.product_id;
     if (this.isInWishlist(itemId)) return false;
-
     try {
       const wishlistItem = this.createWishlistItem(item);
       const success = await this.saveItemToAPI(wishlistItem, 'add');
@@ -279,7 +259,6 @@ class WishlistService {
         this.notifyUpdate();
         return true;
       }
-
       return false;
     } catch (error) {
       return false;
@@ -288,21 +267,16 @@ class WishlistService {
 
   async removeItem(itemId) {
     if (!this.currentUserId) return false;
-    
     await this.ensureInitialized();
-
     try {
       const itemToRemove = this.items.find(item => item.id === itemId);
       if (!itemToRemove) return false;
-
       const success = await this.saveItemToAPI(itemToRemove, 'remove');
-
       if (success) {
         this.items = this.items.filter(item => item.id !== itemId);
         this.notifyUpdate();
         return true;
       }
-
       return false;
     } catch (error) {
       return false;
@@ -325,21 +299,16 @@ class WishlistService {
 
   async clearWishlist() {
     if (!this.currentUserId) return false;
-    
     await this.ensureInitialized();
-
     try {
       const globalStore = this.getGlobalStore();
       if (!globalStore) return false;
-
       const response = await axios.delete('/api/web/wishlist/clear', globalStore.getAxiosHeader());
-      
       if (response.data.result) {
         this.items = [];
         this.notifyUpdate();
         return true;
       }
-
       return false;
     } catch (error) {
       if (error.response?.status !== 401) {
@@ -354,20 +323,18 @@ class WishlistService {
 
   async toggleItem(item) {
     const itemId = item.id || item.product_id;
-    return this.isInWishlist(itemId) 
-      ? await this.removeItem(itemId) 
+    return this.isInWishlist(itemId)
+      ? await this.removeItem(itemId)
       : await this.addItem(item);
   }
 
   async syncWithServer() {
     await this.ensureInitialized();
-
     if (this.currentUserId) {
       await this.loadFromAPI();
     } else {
       this.items = [];
     }
-
     this.notifyUpdate();
   }
 
@@ -394,7 +361,6 @@ class WishlistService {
         timestamp: Date.now()
       }
     });
-
     window.dispatchEvent(event);
   }
 
@@ -406,9 +372,7 @@ class WishlistService {
     if (!query || typeof query !== 'string') {
       return [...this.items];
     }
-
     const lowercaseQuery = query.toLowerCase().trim();
-
     return this.items.filter(item =>
       (item.name && item.name.toLowerCase().includes(lowercaseQuery)) ||
       (item.location && item.location.toLowerCase().includes(lowercaseQuery)) ||
@@ -419,7 +383,6 @@ class WishlistService {
   getStats() {
     const locationItems = this.items.filter(item => item.type === 'location');
     const productItems = this.items.filter(item => item.type === 'product');
-
     const stats = {
       totalItems: this.items.length,
       locations: locationItems.length,
@@ -436,7 +399,6 @@ class WishlistService {
         const ratingsSum = itemsWithRating.reduce((sum, item) => sum + item.rating, 0);
         stats.averageRating = Math.round((ratingsSum / itemsWithRating.length) * 10) / 10;
       }
-
       const itemsWithPrice = this.items.filter(item => item.price > 0);
       if (itemsWithPrice.length > 0) {
         stats.totalValue = itemsWithPrice.reduce((sum, item) => sum + item.price, 0);
@@ -463,19 +425,14 @@ class WishlistService {
 
   async importData(data) {
     if (!this.currentUserId) return false;
-    
     try {
       if (!data || !Array.isArray(data.items)) {
         throw new Error('Invalid import data format');
       }
-
       await this.ensureInitialized();
-
       const globalStore = this.getGlobalStore();
       if (!globalStore) return false;
-
       const validItems = data.items.filter(item => this.validateItem(item));
-      
       const importData = {
         items: validItems.map(item => ({
           item_id: String(item.id),
@@ -483,15 +440,12 @@ class WishlistService {
           item_data: item
         }))
       };
-
       const response = await axios.post('/api/web/wishlist/import', importData, globalStore.getAxiosHeader());
-      
       if (response.data.result) {
         await this.loadFromAPI();
         this.notifyUpdate();
         return true;
       }
-
       return false;
     } catch (error) {
       if (error.response?.status !== 401) {
@@ -506,9 +460,7 @@ class WishlistService {
 }
 
 const wishlistService = new WishlistService();
-
 wishlistService.initialize().catch(console.error);
-
 window.addEventListener('user-login', (event) => {
   const { userId } = event.detail || {};
   if (userId) {

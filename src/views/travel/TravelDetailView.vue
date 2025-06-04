@@ -1,12 +1,9 @@
 <template>
   <div class="detail-container">
-    <!-- Loading Overlay -->
     <div v-if="isLoading" class="loading-overlay">
       <div class="loading-spinner"></div>
       <p>Loading location details...</p>
     </div>
-
-    <!-- Error Display -->
     <div v-else-if="errorMessage" class="error-container">
       <div class="error-card">
         <h2>Error Loading Location</h2>
@@ -14,10 +11,7 @@
         <button @click="fetchLocationDetail" class="retry-btn">Try Again</button>
       </div>
     </div>
-
-    <!-- Content when data is loaded -->
     <div v-else-if="location">
-      <!-- Hero Section with Image Carousel -->
       <div class="detail-hero-section">
         <!-- <div class="breadcrumb fade-in">
           <router-link to="/">Home</router-link> &gt;
@@ -40,8 +34,6 @@
               />
             </div>
           </div>
-
-          <!-- Carousel Controls -->
           <div class="carousel-controls fade-in">
             <button class="carousel-control prev" @click="prevSlide">
               <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -68,8 +60,6 @@
               </svg>
             </button>
           </div>
-
-          <!-- Carousel Indicators -->
           <div class="carousel-indicators">
             <button
               v-for="(photo, index) in location.photos"
@@ -79,8 +69,6 @@
               @click="goToSlide(index)"
             ></button>
           </div>
-
-          <!-- Overlay Content -->
           <div class="hero-overlay">
             <div class="hero-content slide-up">
               <div class="location-category">
@@ -88,18 +76,15 @@
               </div>
               <h1 class="location-title">{{ location.name }}</h1>
               <h2 class="location-subtitle khmer-font">{{ location.name_local }}</h2>
-
               <div class="location-meta">
                 <div class="location-rating">
                   <div class="star">★</div>
                   <div class="rating-score">{{ averageRating }}</div>
                   <div class="review-count">({{ location.total_view || 0 }} Views)</div>
                 </div>
-
                 <div class="location-address">
                   <span>{{ locationAddress }}</span>
                 </div>
-
                 <div v-if="location.tags && location.tags.length" class="location-tags">
                   <div v-for="tag in location.tags" :key="tag.id" class="tag">
                     {{ tag.name }}
@@ -109,8 +94,6 @@
             </div>
           </div>
         </div>
-
-        <!-- Fallback for no photos -->
         <div v-else class="hero-carousel">
           <div class="carousel-inner">
             <div class="carousel-item active">
@@ -121,8 +104,6 @@
               />
             </div>
           </div>
-
-          <!-- Overlay Content -->
           <div class="hero-overlay">
             <div class="hero-content slide-up">
               <div class="location-category">
@@ -130,14 +111,12 @@
               </div>
               <h1 class="location-title">{{ location.name }}</h1>
               <h2 class="location-subtitle khmer-font">{{ location.name_local }}</h2>
-
               <div class="location-meta">
                 <div class="location-rating">
                   <div class="star">★</div>
                   <div class="rating-score">{{ averageRating }}</div>
                   <div class="review-count">({{ location.total_view || 0 }} Views)</div>
                 </div>
-
                 <div class="location-address">
                   <span>{{ locationAddress }}</span>
                 </div>
@@ -145,7 +124,6 @@
             </div>
           </div>
         </div>
-
         <div class="hero-actions slide-up">
           <button class="action-btn favorite-btn" @click="toggleFavorite">
             <svg viewBox="0 0 24 24" :class="{ filled: isFavorite }">
@@ -153,9 +131,7 @@
                 d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"
               ></path>
             </svg>
-            <!-- <span>{{ isFavorite ? "Saved" : "Save" }}</span> -->
           </button>
-
           <button class="action-btn share-btn" @click="shareLocation">
             <svg viewBox="0 0 24 24">
               <path
@@ -164,7 +140,6 @@
             </svg>
             <span>Share</span>
           </button>
-
           <a
             v-if="location.url_location"
             :href="location.url_location"
@@ -181,7 +156,6 @@
         </div>
       </div>
 
-      <!-- Tabs Navigation -->
       <div class="detail-content-container">
         <div class="detail-tabs fade-in">
           <button
@@ -194,10 +168,7 @@
             {{ tab.label }}
           </button>
         </div>
-
-        <!-- Content Sections -->
         <div class="detail-content-section">
-          <!-- Overview Section -->
           <div
             v-if="activeTab === 'overview'"
             class="tab-content overview-section slide-up"
@@ -603,8 +574,6 @@
               <p>Check back soon for exciting product offerings!</p>
             </div>
           </div>
-
-          <!-- Activities Section -->
           <div
             v-if="activeTab === 'activities'"
             class="tab-content activities-section slide-up"
@@ -651,7 +620,6 @@
                   </div>
                 </div>
               </div>
-
               <div class="activity-card">
                 <div class="activity-image">
                   <img
@@ -686,7 +654,6 @@
                   </div>
                 </div>
               </div>
-
               <div class="activity-card">
                 <div class="activity-image">
                   <img
@@ -723,31 +690,21 @@
               </div>
             </div>
           </div>
-
-          <!-- Travel Tips Section -->
-          <!-- Travel Tips Section -->
           <div v-if="activeTab === 'tips'" class="tab-content tips-section slide-up">
             <div class="section-header-wrapper">
               <div class="header">Travel Guide</div>
               <h2 class="title">Essential Travel Tips</h2>
               <p class="subtitle">Make the most of your visit with these insider tips</p>
             </div>
-
-            <!-- Loading state for guide data -->
             <div v-if="isLoadingGuide" class="tips-loading">
               <div class="loading-spinner"></div>
               <p>Loading travel guide...</p>
             </div>
-
-            <!-- Error state for guide data -->
             <div v-else-if="guideError" class="tips-error">
               <p>{{ guideError }}</p>
               <button @click="fetchLocationGuide" class="retry-btn">Try Again</button>
             </div>
-
-            <!-- Guide data available -->
             <div v-else-if="locationGuide" class="tips-grid">
-              <!-- Best Time to Visit -->
               <div class="tip-card">
                 <div class="tip-icon">
                   <svg viewBox="0 0 24 24">
@@ -766,8 +723,6 @@
                   </p>
                 </div>
               </div>
-
-              <!-- Local Contacts -->
               <div class="tip-card">
                 <div class="tip-icon">
                   <svg viewBox="0 0 24 24">
@@ -790,8 +745,6 @@
                   <p v-else>Contact information not available</p>
                 </div>
               </div>
-
-              <!-- Currency & Budget -->
               <div class="tip-card">
                 <div class="tip-icon">
                   <svg viewBox="0 0 24 24">
@@ -821,8 +774,6 @@
                   <p v-else>Currency and budget information not available</p>
                 </div>
               </div>
-
-              <!-- Local Transportation -->
               <div class="tip-card">
                 <div class="tip-icon">
                   <svg viewBox="0 0 24 24">
@@ -849,8 +800,6 @@
                   <p v-else>Transportation information not available</p>
                 </div>
               </div>
-
-              <!-- What to Pack -->
               <div class="tip-card">
                 <div class="tip-icon">
                   <svg viewBox="0 0 24 24">
@@ -876,8 +825,6 @@
                   <p v-else>Packing information not available</p>
                 </div>
               </div>
-
-              <!-- Local Etiquette -->
               <div class="tip-card">
                 <div class="tip-icon">
                   <svg viewBox="0 0 24 24">
@@ -912,8 +859,6 @@
                   <p v-else>Etiquette information not available</p>
                 </div>
               </div>
-
-              <!-- What's On Sale (if available) -->
               <div
                 v-if="locationGuide.what_on_sale && locationGuide.what_on_sale.length > 0"
                 class="tip-card"
@@ -936,8 +881,6 @@
                 </div>
               </div>
             </div>
-
-            <!-- Fallback when no guide data is available -->
             <div v-else class="tips-fallback">
               <div class="empty-icon"></div>
               <h3>Travel Guide Not Available</h3>
@@ -946,8 +889,6 @@
           </div>
         </div>
       </div>
-
-      <!-- Photo Lightbox -->
       <div v-if="lightboxOpen" class="lightbox" @click="closeLightbox">
         <div class="lightbox-content" @click.stop>
           <button class="lightbox-close" @click="closeLightbox">×</button>
@@ -1044,15 +985,11 @@ import axios from "axios";
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from "vue";
 import { useRoute } from "vue-router";
 import { useGlobalStore } from "../../stores/global"; // Adjust path as needed
-
-// Component setup
 const route = useRoute();
-// const router = useRouter();
 const globalStore = useGlobalStore();
 const locationGuide = ref(null);
 const isLoadingGuide = ref(false);
 const guideError = ref("");
-// State refs
 const location = ref(null);
 const isLoading = ref(true);
 const errorMessage = ref("");
@@ -1068,11 +1005,7 @@ const isSubmitting = ref(false);
 const reviewError = ref("");
 const showSuccessMessage = ref(false);
 const successMessage = ref("");
-
-// Auto-rotation interval
 let autoRotateInterval = null;
-
-// Define tabs
 const tabs = [
   { id: "overview", label: "Overview" },
   { id: "products", label: "Products" },
@@ -1082,20 +1015,14 @@ const tabs = [
 const fetchLocationGuide = async () => {
   const locationId = route.params.id;
   if (!locationId) return;
-
   isLoadingGuide.value = true;
   guideError.value = "";
-
   try {
-    console.log(`Fetching location guide for ID: ${locationId}`);
-
     const response = await axios.get(`/api/web/view/location/guide`, {
       params: { location_id: locationId },
       ...globalStore.getAxiosHeader(),
     });
-
     if (response.data && !response.data.error && response.data.data) {
-      // Find the guide data for the current location
       const guideData = response.data.data.find(
         (guide) => guide.location_id == locationId
       );
@@ -1108,7 +1035,6 @@ const fetchLocationGuide = async () => {
     console.error("Failed to fetch location guide:", error);
     guideError.value = error.response?.data?.message || "Failed to load travel guide";
     locationGuide.value = null;
-
     if (typeof globalStore.onCheckError === "function") {
       await globalStore.onCheckError(error);
     }
@@ -1116,19 +1042,17 @@ const fetchLocationGuide = async () => {
     isLoadingGuide.value = false;
   }
 };
-// Computed properties
+
 const averageRating = computed(() => {
   if (!location.value || !location.value.stars || location.value.stars.length === 0) {
     return "0.0";
   }
-
   const sum = location.value.stars.reduce((total, review) => total + review.star, 0);
   return (sum / location.value.stars.length).toFixed(1);
 });
 
 const locationAddress = computed(() => {
   if (!location.value) return "";
-
   const parts = [];
   if (location.value.village?.name) {
     parts.push(location.value.village.name);
@@ -1142,33 +1066,24 @@ const locationAddress = computed(() => {
   if (location.value.province?.name) {
     parts.push(location.value.province.name);
   }
-
   return parts.join(", ");
 });
 
 // Placeholder image for fallback
 const placeholderImage =
   "https://placehold.co/600x400/19ADCF/ffffff?text=Cambodia+Travel";
-
-// Cleanup function
 const cleanup = () => {
-  // Clear intervals
   if (autoRotateInterval) {
     clearInterval(autoRotateInterval);
     autoRotateInterval = null;
   }
-
-  // Remove body classes that might interfere with other pages
   document.body.classList.remove("no-scroll");
-
-  // Close lightbox if open
   if (lightboxOpen.value) {
     lightboxOpen.value = false;
   }
   locationGuide.value = null;
   isLoadingGuide.value = false;
   guideError.value = "";
-  // Reset component state
   location.value = null;
   isLoading.value = true;
   errorMessage.value = "";
@@ -1183,12 +1098,9 @@ const cleanup = () => {
   reviewError.value = "";
   showSuccessMessage.value = false;
   successMessage.value = "";
-
-  // Reset page title to default
   document.title = "Camtour";
 };
 
-// Fetch location detail from API
 const fetchLocationDetail = async () => {
   const locationId = route.params.id;
   if (!locationId) {
@@ -1196,21 +1108,15 @@ const fetchLocationDetail = async () => {
     isLoading.value = false;
     return;
   }
-
   isLoading.value = true;
   errorMessage.value = "";
-
   try {
-    console.log(`Fetching location details for ID: ${locationId}`);
-
-    // Fetch both location details and guide data concurrently
     const [locationResponse] = await Promise.all([
       axios.get(`/api/web/view/location/detail/${locationId}`, {
         ...globalStore.getAxiosHeader(),
       }),
-      fetchLocationGuide(), // Add this call
+      fetchLocationGuide(),
     ]);
-
     if (locationResponse.data.result && locationResponse.data.data) {
       location.value = { ...locationResponse.data.data };
       document.title = `Camtour - ${location.value.name}`;
@@ -1230,7 +1136,6 @@ const fetchLocationDetail = async () => {
       error.message ||
       "An error occurred while loading location details";
     location.value = null;
-
     if (typeof globalStore.onCheckError === "function") {
       await globalStore.onCheckError(error);
     }
@@ -1238,7 +1143,7 @@ const fetchLocationDetail = async () => {
     isLoading.value = false;
   }
 };
-// Carousel navigation methods
+
 const nextSlide = () => {
   if (!location.value?.photos?.length) return;
   currentSlide.value = (currentSlide.value + 1) % location.value.photos.length;
@@ -1280,23 +1185,19 @@ const prevLightboxImage = () => {
   }
 };
 
-// Tab switching
 const switchTab = (tabId) => {
   activeTab.value = tabId;
 };
 
-// Favorite functionality
 const checkFavoriteStatus = async (locationId) => {
   try {
     if (!globalStore.isLoggedIn) {
       isFavorite.value = false;
       return;
     }
-
     const response = await axios.get(`/api/web/user/favorites/check/${locationId}`, {
       ...globalStore.getAxiosHeader(),
     });
-
     if (response.data.result) {
       isFavorite.value = response.data.data?.is_favorite || false;
     }
@@ -1307,20 +1208,16 @@ const checkFavoriteStatus = async (locationId) => {
 
 const toggleFavorite = async () => {
   if (!globalStore.isLoggedIn) {
-    // Redirect to login or show login modal
     if (typeof globalStore.showLoginModal === "function") {
       globalStore.showLoginModal();
     }
     return;
   }
-
   if (!location.value) return;
-
   try {
     const url = isFavorite.value
       ? `/api/web/user/favorites/remove/${location.value.id}`
       : `/api/web/user/favorites/add/${location.value.id}`;
-
     const response = await axios.post(
       url,
       {},
@@ -1328,7 +1225,6 @@ const toggleFavorite = async () => {
         ...globalStore.getAxiosHeader(),
       }
     );
-
     if (response.data.result) {
       isFavorite.value = !isFavorite.value;
       showSuccessToast(
@@ -1355,8 +1251,6 @@ const shareLocation = () => {
       })
       .catch((error) => console.error("Error sharing:", error));
   } else {
-    // Fallback for browsers that don't support Web Share API
-    // Copy URL to clipboard
     navigator.clipboard
       .writeText(window.location.href)
       .then(() => showSuccessToast("Link copied to clipboard!"))
@@ -1370,23 +1264,18 @@ const resetForm = () => {
   reviewError.value = "";
 };
 
-// Review functionality
 const toggleReviewForm = () => {
   showReviewForm.value = !showReviewForm.value;
-
-  // Reset form if closing
   if (!showReviewForm.value) {
     resetForm();
   }
 };
 
 const submitReview = async () => {
-  // Validate input
   if (rating.value === 0) {
     reviewError.value = "Please select a rating";
     return;
   }
-
   if (!comment.value.trim()) {
     reviewError.value = "Please enter your review";
     return;
@@ -1397,15 +1286,10 @@ const submitReview = async () => {
   isSubmitting.value = true;
 
   try {
-    // Get location ID from route
     const locationId = route.params.id;
-
-    // Prepare form data
     const formData = new FormData();
     formData.append("star", rating.value);
     formData.append("comment", comment.value);
-
-    // Make API call
     const response = await axios.post(
       `/api/web/locations/reviews/${locationId}`,
       formData,
@@ -1413,24 +1297,16 @@ const submitReview = async () => {
         ...globalStore.getAxiosHeader(),
       }
     );
-
     if (response.data.result) {
-      // Success - reset form and close
       resetForm();
       showReviewForm.value = false;
-
-      // Refresh location data to show the new review
       await fetchLocationDetail();
-
       showSuccessToast("Review submitted successfully!");
     } else {
-      // API returned error
       reviewError.value = response.data.message || "Failed to submit review";
     }
   } catch (error) {
     console.error("Review submission error:", error);
-
-    // Check if it's an authentication error
     if (
       error.response &&
       error.response.data &&
@@ -1441,8 +1317,6 @@ const submitReview = async () => {
       reviewError.value =
         error.response?.data?.message || "An error occurred. Please try again.";
     }
-
-    // Use global error handler if available
     try {
       if (typeof globalStore.onCheckError === "function") {
         await globalStore.onCheckError(error);
@@ -1455,87 +1329,60 @@ const submitReview = async () => {
   }
 };
 
-// Toast notifications
 const showSuccessToast = (message) => {
   successMessage.value = message;
   showSuccessMessage.value = true;
-
   setTimeout(() => {
     showSuccessMessage.value = false;
   }, 3000);
 };
 
-// Image error handling
 const handleImageError = (event) => {
   event.target.src = placeholderImage;
 };
 
-// Setup auto carousel rotation
 const startAutoRotation = () => {
-  // Clear existing interval
   if (autoRotateInterval) {
     clearInterval(autoRotateInterval);
   }
-
-  // Only start if we have multiple photos
   if (!location.value?.photos?.length || location.value.photos.length <= 1) {
     return;
   }
-
   autoRotateInterval = setInterval(() => {
     if (location.value?.photos?.length > 1) {
       nextSlide();
     }
-  }, 5000); // Rotate every 5 seconds
+  }, 5000);
 };
 
-// const stopAutoRotation = () => {
-//   if (autoRotateInterval) {
-//     clearInterval(autoRotateInterval);
-//     autoRotateInterval = null;
-//   }
-// };
-
-// Watch for route changes
 const routeWatcher = watch(
   () => route.params.id,
   async (newId, oldId) => {
     if (newId !== oldId && newId) {
-      // Cleanup previous state
       cleanup();
-      // Fetch new data
       await fetchLocationDetail();
     }
   }
 );
 
-// Watch for route leaving this component
 const routeLeaveWatcher = watch(
   () => route.name,
   (newRouteName, oldRouteName) => {
-    // If we're leaving the location detail route, cleanup
     if (oldRouteName === "LocationDetail" && newRouteName !== "LocationDetail") {
       cleanup();
     }
   }
 );
 
-// Initialize component
 onMounted(async () => {
   await fetchLocationDetail();
 });
 
-// Cleanup on unmount
 onBeforeUnmount(() => {
   cleanup();
-
-  // Stop watchers
   if (routeWatcher) routeWatcher();
   if (routeLeaveWatcher) routeLeaveWatcher();
 });
 </script>
 
-<style scoped>
-/* Component-specific styles to prevent global interference */
-/*  */
-</style>
+<style scoped></style>

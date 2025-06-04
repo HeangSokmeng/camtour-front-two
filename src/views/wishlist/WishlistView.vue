@@ -6,13 +6,15 @@
         <div class="header-content">
           <h1 class="page-title">
             <svg class="heart-icon" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+              <path
+                d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"
+              ></path>
             </svg>
             {{ t("my-favorites") }}
           </h1>
           <p class="page-subtitle">{{ t("favorites-subtitle") }}</p>
         </div>
-        
+
         <!-- Stats Bar -->
         <div class="stats-bar" v-if="wishlistStats">
           <div class="stat-item">
@@ -38,28 +40,28 @@
         <div class="toolbar-left">
           <!-- Filter Tabs -->
           <div class="filter-tabs">
-            <button 
-              class="filter-tab" 
+            <button
+              class="filter-tab"
               :class="{ active: activeFilter === 'all' }"
               @click="setFilter('all')"
             >
               {{ t("all") }} ({{ wishlistItems.length }})
             </button>
-            <button 
-              class="filter-tab" 
+            <button
+              class="filter-tab"
               :class="{ active: activeFilter === 'location' }"
               @click="setFilter('location')"
               v-if="getItemsByType('location').length > 0"
             >
-              {{ t("locations") }} ({{ getItemsByType('location').length }})
+              {{ t("locations") }} ({{ getItemsByType("location").length }})
             </button>
-            <button 
-              class="filter-tab" 
+            <button
+              class="filter-tab"
               :class="{ active: activeFilter === 'product' }"
               @click="setFilter('product')"
               v-if="getItemsByType('product').length > 0"
             >
-              {{ t("products") }} ({{ getItemsByType('product').length }})
+              {{ t("products") }} ({{ getItemsByType("product").length }})
             </button>
           </div>
         </div>
@@ -81,8 +83,8 @@
 
           <!-- View Toggle -->
           <div class="view-toggle">
-            <button 
-              class="view-btn" 
+            <button
+              class="view-btn"
               :class="{ active: viewMode === 'grid' }"
               @click="setViewMode('grid')"
               title="Grid View"
@@ -94,8 +96,8 @@
                 <rect x="3" y="14" width="7" height="7"></rect>
               </svg>
             </button>
-            <button 
-              class="view-btn" 
+            <button
+              class="view-btn"
               :class="{ active: viewMode === 'list' }"
               @click="setViewMode('list')"
               title="List View"
@@ -112,7 +114,7 @@
           </div>
 
           <!-- Clear All Button -->
-          <button 
+          <button
             class="clear-all-btn"
             @click="showClearModal = true"
             v-if="wishlistItems.length > 0"
@@ -132,7 +134,9 @@
       <div v-else-if="wishlistItems.length === 0" class="empty-state">
         <div class="empty-icon">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+            <path
+              d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"
+            ></path>
           </svg>
         </div>
         <h2>{{ t("no-favorites") }}</h2>
@@ -150,16 +154,18 @@
       <!-- No Search Results -->
       <div v-else-if="filteredItems.length === 0 && searchQuery" class="no-results">
         <p>{{ t("no-search-results") }} "{{ searchQuery }}"</p>
-        <button @click="clearSearch" class="clear-search-btn">{{ t("clear-search") }}</button>
+        <button @click="clearSearch" class="clear-search-btn">
+          {{ t("clear-search") }}
+        </button>
       </div>
 
       <!-- Wishlist Items -->
       <div v-else class="wishlist-content">
         <!-- Grid View -->
         <div v-if="viewMode === 'grid'" class="wishlist-grid">
-          <div 
-            v-for="item in filteredItems" 
-            :key="item.id" 
+          <div
+            v-for="item in filteredItems"
+            :key="item.id"
             class="wishlist-card"
             @click="viewItem(item)"
           >
@@ -176,21 +182,23 @@
                 </svg>
               </button>
 
-              <img 
-                :src="getCurrentImage(item)" 
+              <img
+                :src="getCurrentImage(item)"
                 :alt="item.name"
                 @error="handleImageError"
                 class="item-image"
               />
 
               <!-- Heart button -->
-              <button 
+              <button
                 class="heart-btn"
                 @click.stop="removeFromWishlist(item)"
                 :disabled="isRemoving"
               >
                 <svg viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                  <path
+                    d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"
+                  ></path>
                 </svg>
               </button>
 
@@ -207,8 +215,8 @@
 
               <!-- Image dots indicator -->
               <div class="image-dots" v-if="getItemImages(item).length > 1">
-                <span 
-                  v-for="(image, index) in getItemImages(item)" 
+                <span
+                  v-for="(image, index) in getItemImages(item)"
                   :key="index"
                   class="dot"
                   :class="{ active: item.currentImageIndex === index }"
@@ -216,25 +224,29 @@
                 ></span>
               </div>
             </div>
-            
+
             <div class="card-content">
               <h3 class="item-title">{{ item.name }}</h3>
-              
+
               <div class="item-rating" v-if="item.rating > 0">
                 <span class="rating-score">{{ item.rating }}</span>
                 <div class="rating-stars">
-                  <span 
-                    v-for="i in 5" 
-                    :key="i" 
+                  <span
+                    v-for="i in 5"
+                    :key="i"
                     class="star"
                     :class="{ filled: i <= Math.floor(item.rating) }"
                   >
                     <svg viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path>
+                      <path
+                        d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"
+                      ></path>
                     </svg>
                   </span>
                 </div>
-                <span class="rating-count">({{ formatNumber(item.reviewCount || 0) }})</span>
+                <span class="rating-count"
+                  >({{ formatNumber(item.reviewCount || 0) }})</span
+                >
               </div>
 
               <div class="item-category">{{ item.category || t(item.type) }}</div>
@@ -244,15 +256,15 @@
 
         <!-- List View -->
         <div v-else class="wishlist-list">
-          <div 
-            v-for="item in filteredItems" 
-            :key="item.id" 
+          <div
+            v-for="item in filteredItems"
+            :key="item.id"
             class="wishlist-item"
             @click="viewItem(item)"
           >
             <div class="item-image-container">
-              <img 
-                :src="getCurrentImage(item)" 
+              <img
+                :src="getCurrentImage(item)"
                 :alt="item.name"
                 @error="handleImageError"
                 class="item-image"
@@ -268,7 +280,9 @@
                 <div class="item-stats">
                   <span v-if="item.rating > 0" class="rating">
                     <svg class="star-icon" viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path>
+                      <path
+                        d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"
+                      ></path>
                     </svg>
                     {{ item.rating }}
                   </span>
@@ -279,7 +293,12 @@
               </div>
 
               <p class="item-location" v-if="item.location">
-                <svg class="location-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <svg
+                  class="location-icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                >
                   <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
                   <circle cx="12" cy="10" r="3"></circle>
                 </svg>
@@ -291,7 +310,12 @@
                   {{ t("added") }} {{ formatDate(item.addedAt) }}
                 </span>
                 <span v-if="item.views > 0" class="views">
-                  <svg class="eye-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <svg
+                    class="eye-icon"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                  >
                     <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
                     <circle cx="12" cy="12" r="3"></circle>
                   </svg>
@@ -301,26 +325,22 @@
             </div>
 
             <div class="item-actions">
-              <button 
-                class="action-btn primary"
-                @click.stop="viewItem(item)"
-              >
+              <button class="action-btn primary" @click.stop="viewItem(item)">
                 {{ t("view") }}
               </button>
-              <button 
-                class="action-btn secondary"
-                @click.stop="shareItem(item)"
-              >
+              <button class="action-btn secondary" @click.stop="shareItem(item)">
                 {{ t("share") }}
               </button>
-              <button 
+              <button
                 class="action-btn danger"
                 @click.stop="removeFromWishlist(item)"
                 :title="t('remove-from-favorites')"
                 :disabled="isRemoving"
               >
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                  <path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6h14z"></path>
+                  <path
+                    d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6h14z"
+                  ></path>
                 </svg>
               </button>
             </div>
@@ -343,7 +363,7 @@
           <button class="modal-btn cancel-btn" @click="showClearModal = false">
             {{ t("cancel") }}
           </button>
-          <button 
+          <button
             class="modal-btn confirm-btn"
             @click="clearAllFavorites"
             :disabled="isClearing"
@@ -357,12 +377,7 @@
 
     <!-- Toast Notifications -->
     <div class="toast-container">
-      <div 
-        v-for="toast in toasts" 
-        :key="toast.id"
-        class="toast"
-        :class="toast.type"
-      >
+      <div v-for="toast in toasts" :key="toast.id" class="toast" :class="toast.type">
         {{ toast.message }}
       </div>
     </div>
@@ -372,71 +387,58 @@
 <script setup>
 import { useTranslation } from "@/components/useTranslation";
 import { useGlobalStore } from "@/stores/global";
-import axios from 'axios';
-import { computed, onMounted, onUnmounted, ref } from 'vue';
+import axios from "axios";
+import { computed, onMounted, onUnmounted, ref } from "vue";
 import { useRouter } from "vue-router";
-
 const router = useRouter();
 const globalStore = useGlobalStore();
 const { t } = useTranslation();
-
-// Reactive state
 const wishlistItems = ref([]);
 const wishlistStats = ref(null);
 const isLoading = ref(true);
 const isRemoving = ref(false);
-const activeFilter = ref('all');
-const searchQuery = ref('');
-const viewMode = ref('grid');
+const activeFilter = ref("all");
+const searchQuery = ref("");
+const viewMode = ref("grid");
 const showClearModal = ref(false);
 const isClearing = ref(false);
 const toasts = ref([]);
-
-// Computed properties
 const filteredItems = computed(() => {
   let items = wishlistItems.value;
-
-  // Filter by type
-  if (activeFilter.value !== 'all') {
-    items = items.filter(item => item.type === activeFilter.value);
+  if (activeFilter.value !== "all") {
+    items = items.filter((item) => item.type === activeFilter.value);
   }
-
-  // Filter by search query
   if (searchQuery.value.trim()) {
     const query = searchQuery.value.toLowerCase();
-    items = items.filter(item => 
-      item.name.toLowerCase().includes(query) ||
-      (item.location && item.location.toLowerCase().includes(query)) ||
-      (item.name_local && item.name_local.toLowerCase().includes(query))
+    items = items.filter(
+      (item) =>
+        item.name.toLowerCase().includes(query) ||
+        (item.location && item.location.toLowerCase().includes(query)) ||
+        (item.name_local && item.name_local.toLowerCase().includes(query))
     );
   }
 
   return items;
 });
 
-// Methods
 const loadWishlistData = async () => {
   isLoading.value = true;
   try {
-    const response = await axios.get(
-      "/api/web/wishlist",
-      globalStore.getAxiosHeader()
-    );
-
+    const response = await axios.get("/api/web/wishlist", globalStore.getAxiosHeader());
     if (response.data.result) {
-      wishlistItems.value = (response.data.data || []).map(item => ({
+      wishlistItems.value = (response.data.data || []).map((item) => ({
         ...item,
         currentImageIndex: 0,
-        images: item.images || [item.image].filter(Boolean)
+        images: item.images || [item.image].filter(Boolean),
       }));
       calculateStats();
     } else {
       console.error("Failed to load wishlist:", response.data.message);
-      showToast(t('error-loading-favorites'), 'error');
+      showToast(t("error-loading-favorites"), "error");
     }
   } catch (error) {
-    console.error('Error loading wishlist:', error);
-    showToast(t('error-loading-favorites'), 'error');
+    console.error("Error loading wishlist:", error);
+    showToast(t("error-loading-favorites"), "error");
   } finally {
     isLoading.value = false;
   }
@@ -445,8 +447,8 @@ const loadWishlistData = async () => {
 const calculateStats = () => {
   const stats = {
     totalItems: wishlistItems.value.length,
-    locations: wishlistItems.value.filter(item => item.type === 'location').length,
-    products: wishlistItems.value.filter(item => item.type === 'product').length,
+    locations: wishlistItems.value.filter((item) => item.type === "location").length,
+    products: wishlistItems.value.filter((item) => item.type === "product").length,
   };
   wishlistStats.value = stats;
 };
@@ -457,11 +459,11 @@ const setFilter = (filter) => {
 
 const setViewMode = (mode) => {
   viewMode.value = mode;
-  localStorage.setItem('wishlist_view_mode', mode);
+  localStorage.setItem("wishlist_view_mode", mode);
 };
 
 const getItemsByType = (type) => {
-  return wishlistItems.value.filter(item => item.type === type);
+  return wishlistItems.value.filter((item) => item.type === type);
 };
 
 const getItemImages = (item) => {
@@ -487,38 +489,32 @@ const nextImage = (item) => {
 const previousImage = (item) => {
   const images = getItemImages(item);
   if (images.length <= 1) return;
-  item.currentImageIndex = item.currentImageIndex === 0 
-    ? images.length - 1 
-    : item.currentImageIndex - 1;
+  item.currentImageIndex =
+    item.currentImageIndex === 0 ? images.length - 1 : item.currentImageIndex - 1;
 };
 
 const removeFromWishlist = async (item) => {
   if (isRemoving.value) return;
-  
   isRemoving.value = true;
   try {
     const response = await axios.delete(
       `/api/web/wishlist/${item.id}`,
       globalStore.getAxiosHeader()
     );
-
     if (response.data.result) {
-      // Remove item from local array
-      const index = wishlistItems.value.findIndex(i => i.id === item.id);
+      const index = wishlistItems.value.findIndex((i) => i.id === item.id);
       if (index > -1) {
         wishlistItems.value.splice(index, 1);
       }
       calculateStats();
-      showToast(t('item-removed-from-favorites'), 'success');
-      
-      // Emit event for other components
-      window.dispatchEvent(new CustomEvent('wishlist-updated'));
+      showToast(t("item-removed-from-favorites"), "success");
+      window.dispatchEvent(new CustomEvent("wishlist-updated"));
     } else {
-      showToast(t('error-removing-item'), 'error');
+      showToast(t("error-removing-item"), "error");
     }
   } catch (error) {
-    console.error('Error removing item:', error);
-    showToast(t('error-removing-item'), 'error');
+    console.error("Error removing item:", error);
+    showToast(t("error-removing-item"), "error");
   } finally {
     isRemoving.value = false;
   }
@@ -526,96 +522,92 @@ const removeFromWishlist = async (item) => {
 
 const clearAllFavorites = async () => {
   if (isClearing.value) return;
-  
   isClearing.value = true;
   try {
     const response = await axios.delete(
       "/api/web/wishlist/clear",
       globalStore.getAxiosHeader()
     );
-
     if (response.data.result) {
       wishlistItems.value = [];
       calculateStats();
       showClearModal.value = false;
-      showToast(t('all-favorites-cleared'), 'success');
-      
-      // Emit event for other components
-      window.dispatchEvent(new CustomEvent('wishlist-updated'));
+      showToast(t("all-favorites-cleared"), "success");
+      window.dispatchEvent(new CustomEvent("wishlist-updated"));
     } else {
-      showToast(t('error-clearing-favorites'), 'error');
+      showToast(t("error-clearing-favorites"), "error");
     }
   } catch (error) {
-    console.error('Error clearing favorites:', error);
-    showToast(t('error-clearing-favorites'), 'error');
+    console.error("Error clearing favorites:", error);
+    showToast(t("error-clearing-favorites"), "error");
   } finally {
     isClearing.value = false;
   }
 };
 
 const viewItem = (item) => {
-  if (item.type === 'location') {
+  if (item.type === "location") {
     router.push(`/location/detail/${item.id}`);
-  } else if (item.type === 'product') {
+  } else if (item.type === "product") {
     router.push(`/product/detail/${item.id}`);
   }
 };
 
 const shareItem = async (item) => {
-  const url = window.location.origin + (item.type === 'location' ? `/location/${item.id}` : `/product/${item.id}`);
-  
+  const url =
+    window.location.origin +
+    (item.type === "location" ? `/location/${item.id}` : `/product/${item.id}`);
   if (navigator.share) {
     try {
       await navigator.share({
         title: item.name,
         text: `Check out this ${item.type}: ${item.name}`,
-        url: url
+        url: url,
       });
     } catch (error) {
-      console.log('Error sharing:', error);
+      console.error("Error sharing item:", error);
     }
   } else {
-    // Fallback - copy to clipboard
     try {
       await navigator.clipboard.writeText(url);
-      showToast(t('link-copied'), 'success');
+      showToast(t("link-copied"), "success");
     } catch (error) {
-      console.error('Error copying to clipboard:', error);
-      showToast(t('error-copying-link'), 'error');
+      console.error("Error copying to clipboard:", error);
+      showToast(t("error-copying-link"), "error");
     }
   }
 };
 
 const clearSearch = () => {
-  searchQuery.value = '';
+  searchQuery.value = "";
 };
 
 const getDefaultImage = (type) => {
-  return type === 'location' 
-    ? 'https://placehold.co/400x300/19ADCF/ffffff?text=Location'
-    : 'https://placehold.co/400x300/e74c3c/ffffff?text=Product';
+  return type === "location"
+    ? "https://placehold.co/400x300/19ADCF/ffffff?text=Location"
+    : "https://placehold.co/400x300/e74c3c/ffffff?text=Product";
 };
 
 const handleImageError = (event) => {
   const img = event.target;
-  const card = img.closest('.wishlist-card, .wishlist-item');
-  const badge = card?.querySelector('.item-type-badge');
-  const type = badge?.classList.contains('location') ? 'location' : 'product';
+  const card = img.closest(".wishlist-card, .wishlist-item");
+  const badge = card?.querySelector(".item-type-badge");
+  const type = badge?.classList.contains("location") ? "location" : "product";
   img.src = getDefaultImage(type);
 };
 
 const formatPrice = (price) => {
-  return new Intl.NumberFormat('en-US', {
+  return new Intl.NumberFormat("en-US", {
     minimumFractionDigits: 2,
-    maximumFractionDigits: 2
+    maximumFractionDigits: 2,
   }).format(price);
 };
 
 const formatNumber = (num) => {
   if (num >= 1000000) {
-    return (num / 1000000).toFixed(1) + 'M';
+    return (num / 1000000).toFixed(1) + "M";
   } else if (num >= 1000) {
-    return (num / 1000).toFixed(1) + 'K';
+    return (num / 1000).toFixed(1) + "K";
   }
   return num.toString();
 };
@@ -625,26 +617,25 @@ const formatDate = (dateString) => {
   const now = new Date();
   const diffTime = Math.abs(now - date);
   const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
   if (diffDays === 1) {
-    return t('today');
+    return t("today");
   } else if (diffDays <= 7) {
-    return t('days-ago', { days: diffDays });
+    return t("days-ago", { days: diffDays });
   } else {
     return date.toLocaleDateString();
   }
 };
 
-const showToast = (message, type = 'info') => {
+const showToast = (message, type = "info") => {
   const toast = {
     id: Date.now(),
     message,
-    type
+    type,
   };
   toasts.value.push(toast);
-  
+
   setTimeout(() => {
-    const index = toasts.value.findIndex(t => t.id === toast.id);
+    const index = toasts.value.findIndex((t) => t.id === toast.id);
     if (index > -1) {
       toasts.value.splice(index, 1);
     }
@@ -652,26 +643,20 @@ const showToast = (message, type = 'info') => {
 };
 
 const handleWishlistUpdate = async () => {
-  // Reload data when wishlist is updated from other components
   await loadWishlistData();
 };
 
-// Lifecycle hooks
 onMounted(async () => {
-  // Load saved view mode
-  const savedViewMode = localStorage.getItem('wishlist_view_mode');
+  const savedViewMode = localStorage.getItem("wishlist_view_mode");
   if (savedViewMode) {
     viewMode.value = savedViewMode;
   }
-
   await loadWishlistData();
-  
-  // Listen for wishlist updates from other components
-  window.addEventListener('wishlist-updated', handleWishlistUpdate);
+  window.addEventListener("wishlist-updated", handleWishlistUpdate);
 });
 
 onUnmounted(() => {
-  window.removeEventListener('wishlist-updated', handleWishlistUpdate);
+  window.removeEventListener("wishlist-updated", handleWishlistUpdate);
 });
 </script>
 
@@ -689,7 +674,7 @@ onUnmounted(() => {
 
 /* Page Header */
 .page-header {
-  background: #1A7E8C;
+  background: #1a7e8c;
   color: white;
   padding: 60px 0 40px;
 }
@@ -849,7 +834,7 @@ onUnmounted(() => {
   background: #ff8d80;
   color: white;
   border: none;
-  border-radius:30px;
+  border-radius: 30px;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -876,8 +861,12 @@ onUnmounted(() => {
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 /* Empty State */
@@ -1492,60 +1481,60 @@ onUnmounted(() => {
   .page-title {
     font-size: 2rem;
   }
-  
+
   .stats-bar {
     gap: 20px;
   }
-  
+
   .stat-number {
     font-size: 1.5rem;
   }
-  
+
   .toolbar {
     flex-direction: column;
     align-items: stretch;
   }
-  
+
   .toolbar-left,
   .toolbar-right {
     justify-content: center;
   }
-  
+
   .filter-tabs {
     justify-content: center;
     flex-wrap: wrap;
   }
-  
+
   .search-input {
     width: 200px;
   }
-  
+
   .wishlist-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .wishlist-item {
     flex-direction: column;
   }
-  
+
   .item-image-container {
     width: 100%;
     height: 200px;
   }
-  
+
   .item-actions {
     flex-direction: row;
     border-left: none;
     border-top: 1px solid #e1e5e9;
     min-width: auto;
   }
-  
+
   .item-header {
     flex-direction: column;
     align-items: start;
     gap: 10px;
   }
-  
+
   .item-footer {
     flex-direction: column;
     align-items: start;
@@ -1557,32 +1546,32 @@ onUnmounted(() => {
   .container {
     padding: 0 15px;
   }
-  
+
   .page-header {
     padding: 40px 0 30px;
   }
-  
+
   .page-title {
     font-size: 1.8rem;
   }
-  
+
   .heart-icon {
     width: 30px;
     height: 30px;
   }
-  
+
   .search-input {
     width: 180px;
   }
-  
+
   .nav-btn {
     display: none;
   }
-  
+
   .image-dots {
     bottom: 8px;
   }
-  
+
   .dot {
     width: 6px;
     height: 6px;

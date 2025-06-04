@@ -48,16 +48,13 @@
 </template>
 
 <script setup>
-import { computed } from "vue";
-import { useRoute } from "vue-router";
-
-// Components
 import AppFooter from "@/components/AppFooter.vue";
 import AppHeader from "@/components/AppHeader.vue";
 import CartDrawer from "@/components/CartDrawer.vue";
 import { createTranslationProvider } from "@/components/useTranslation";
 import ChatBot from "@/views/ai/ChatBotView.vue";
-// Initialize translation provider
+import { computed } from "vue";
+import { useRoute } from "vue-router";
 createTranslationProvider();
 
 const route = useRoute();
@@ -65,7 +62,6 @@ const isLoginPage = computed(() => ["/login", "/register"].includes(route.path))
 </script>
 
 <style>
-/* Global transitions for route changes */
 .fade-enter-active,
 .fade-leave-active {
   transition: opacity 0.3s ease;
