@@ -10,15 +10,15 @@
         </p>
         <div class="hero-stats">
           <div class="stat">
-            <span class="stat-number">50+</span>
+            <span class="stat-number">+</span>
             <span class="stat-label">{{ t("hiking-trails") }}</span>
           </div>
           <div class="stat">
-            <span class="stat-number">25</span>
+            <span class="stat-number"></span>
             <span class="stat-label">{{ t("provinces") }}</span>
           </div>
           <div class="stat">
-            <span class="stat-number">1000+</span>
+            <span class="stat-number">+</span>
             <span class="stat-label">{{ t("happy-hikers") }}</span>
           </div>
         </div>
@@ -40,7 +40,7 @@
           </div>
           <div class="story-image">
             <img
-              src="https://scontent.fpnh5-4.fna.fbcdn.net/v/t39.30808-6/500409730_1009917414585355_1742149793144846234_n.jpg?_nc_cat=100&ccb=1-7&_nc_sid=127cfc&_nc_eui2=AeHbuTmYEzeKqeUS5aujTkGVwP5e-FwscKDA_l74XCxwoC4bfT_M36mkBp5Q-7hqbWYeVylF6S2qMJDTbnwwN_Lx&_nc_ohc=nF6c-BsB7aMQ7kNvwFHuP9l&_nc_oc=AdlgCLrpcqUf-zLI7A094rpJZjj6tSocKKWGrUq9rF1yN-2i0iiK54hyBQpl7yaU6_U&_nc_zt=23&_nc_ht=scontent.fpnh5-4.fna&_nc_gid=Kl-b1a3QxDhZdTyiA2Ww3Q&oh=00_AfKBKPta5xOYqCCKz9pCOB2jBhuRLKs2jNeY3FTY_fbQvQ&oe=683BC1D4"
+              src="../../assets/aboutUs/hiking.png"
               alt="Cambodia hiking"
             />
           </div>
@@ -56,7 +56,12 @@
 
         <div class="destination-grid">
           <div class="destination-card featured">
-            <div class="destination-image cardamom"></div>
+            <div class="destination-image cardamom">
+              <video autoplay muted loop playsinline class="bg-video">
+                <source src="../../assets/video/krvahn.mp4" type="video/mp4" />
+                <!-- Your browser does not support the video tag. -->
+              </video>
+            </div>
             <div class="destination-content">
               <h3>{{ t("cardamom-mountains") }}</h3>
               <div class="destination-meta">
@@ -154,7 +159,7 @@
             </div>
           </div>
 
-          <div class="destination-card">
+          <!-- <div class="destination-card">
             <div class="destination-image bokor"></div>
             <div class="destination-content">
               <h3>{{ t("bokor-national-park") }}</h3>
@@ -173,7 +178,7 @@
                 <span class="highlight">🌊 {{ t("coastal-views") }}</span>
               </div>
             </div>
-          </div>
+          </div> -->
         </div>
       </div>
     </div>
@@ -259,66 +264,64 @@
         <div class="team-grid">
           <div class="team-member">
             <div class="member-image team1"></div>
-            <h3>Heang Sokmeng</h3>
+            <h3>{{ t("name-sokmeng") }}</h3>
             <p class="role">{{ t("founder-chief-guide") }}</p>
             <p class="description">
               {{ t("sokmeng-description") }}
             </p>
             <div class="member-stats">
-              <span>500+ {{ t("trails-explored") }}</span>
-              <span>1000+ {{ t("hikers-guided") }}</span>
+              <span>{{ t("trails-explored") }}</span>
+              <span>{{ t("hikers-guided") }}</span>
             </div>
           </div>
 
           <div class="team-member">
             <div class="member-image team2"></div>
-            <h3>Raksa Pich</h3>
+            <h3>{{ t("name-raksa") }}</h3>
             <p class="role">{{ t("ux-designer-cartographer") }}</p>
             <p class="description">
               {{ t("raksa-description") }}
             </p>
             <div class="member-stats">
-              <span>50+ {{ t("digital-maps-created") }}</span>
-              <span>{{ t("award-winning-design") }}</span>
+              <span> {{ t("digital-maps-created") }}</span>
+              <!-- <span>{{ t("award-winning-design") }}</span> -->
             </div>
           </div>
 
           <div class="team-member">
             <div class="member-image team3"></div>
-            <h3>Chhayya Lim</h3>
+            <h3>{{ t("name-chhayya") }}</h3>
             <p class="role">{{ t("content-creator-cultural") }}</p>
             <p class="description">
               {{ t("chhayya-description") }}
             </p>
             <div class="member-stats">
-              <span>200+ {{ t("trail-articles") }}</span>
-              <span>{{ t("cultural-ambassador") }}</span>
+              <span>{{ t("trail-articles") }}</span>
+              <!-- <span>{{ t("cultural-ambassador") }}</span> -->
             </div>
           </div>
-
           <div class="team-member">
             <div class="member-image team4"></div>
-            <h3>Rachana Vong</h3>
+            <h3>{{ t("name-rachana") }}</h3>
             <p class="role">{{ t("backend-developer-architect") }}</p>
             <p class="description">
               {{ t("rachana-description") }}
             </p>
             <div class="member-stats">
-              <span>99.9% {{ t("uptime") }}</span>
-              <span>{{ t("tech-innovation-leader") }}</span>
+              <span>{{ t("uptime") }}</span>
+              <!-- <span>{{ t("tech-innovation-leader") }}</span> -->
             </div>
           </div>
-
           <div class="team-member mentor-card">
             <div class="member-image mentor"></div>
-            <h3>Sek Socheat</h3>
+            <h3>{{ t("name-socheat") }}</h3>
             <p class="role">{{ t("technical-advisor-conservation") }}</p>
             <p class="description">
               {{ t("socheat-description") }}
             </p>
             <div class="member-stats">
               <span>{{ t("conservation-champion") }}</span>
-              <span>20+ {{ t("years-experience") }}</span>
+              <!-- <span>20+ {{ t("years-experience") }}</span> -->
             </div>
           </div>
         </div>
@@ -408,7 +411,7 @@ h2:after {
   height: 100vh;
   min-height: 600px;
   background: linear-gradient(rgba(45, 85, 48, 0.4), rgba(45, 85, 48, 0.6)),
-    url("https://scontent.fpnh5-3.fna.fbcdn.net/v/t39.30808-6/475839332_929971895913241_5075284319079452731_n.jpg?_nc_cat=108&ccb=1-7&_nc_sid=127cfc&_nc_eui2=AeFuaAAba-b8PxatZRqA3SilGNw6gPk3ApYY3DqA-TcCliK9jH6zHZk5udHBQfbwbwrYo6nQIi56hcJKcbwIfGsn&_nc_ohc=UXBLpxCN-fcQ7kNvwHRUnR6&_nc_oc=AdnXFxGbrGg7ODglibO6i79kjeFa-79Qcu5pmhn6W7jsc2VrwkYhi8Ys5aOidAkCYYY&_nc_zt=23&_nc_ht=scontent.fpnh5-3.fna&_nc_gid=XPBpHIflP0KmLqfwcXzysQ&oh=00_AfJBx5tebh36gLnCvrT5fty3vSAYk0JAtJzqBTGDtlQEaw&oe=683BD6FC")
+    url("../../assets/aboutUs/banner.png")
       center/cover;
   position: relative;
   display: flex;
@@ -508,7 +511,7 @@ h2:after {
 
 /* Featured Destinations */
 .featured-destinations {
-  padding: 8rem 0;
+  /* padding: 8rem 0; */
   background: var(--card-bg);
 }
 
@@ -642,11 +645,22 @@ h2:after {
 
 /* Background Images */
 .cardamom {
-  background-image: url("https://asset.cambodia.gov.kh/tourism/2024/04/photo_2024-04-10_22-43-54-1024x576.jpg");
+  position: relative;
+  overflow: hidden;
+}
+
+.bg-video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* cover to fill container */
+  z-index: -1; /* send behind content */
 }
 
 .angkor {
-  background-image: url("https://scontent.fpnh5-3.fna.fbcdn.net/v/t39.30808-6/494266220_707560924960354_6276499458737379265_n.jpg?_nc_cat=108&ccb=1-7&_nc_sid=127cfc&_nc_eui2=AeH9_aTgewPEf1brB7g8vHMonMPMV-Gztaecw8xX4bO1p4xP6-u6De1WsklzPzbG3NRhJNoZouJP4DWLyF1nR6tV&_nc_ohc=zFvvYLoX6cQQ7kNvwGZsVlB&_nc_oc=AdmpuG2W7hx2n8hus1To7CBqChCED4aJsNALhOw1si28qvBce1LYgq1zBCkkng347uQ&_nc_zt=23&_nc_ht=scontent.fpnh5-3.fna&_nc_gid=OZ8b4F9g9eEWCF37ojC-Eg&oh=00_AfLdwP0H1NmvQ_2_EpL1NyEFs81rFRioJx1-bqLJvFpzzw&oe=683BE358");
+  background-image: url("../../assets/aboutUs/angkor.png");
 }
 
 .preah-vihear {
@@ -654,11 +668,11 @@ h2:after {
 }
 
 .kep {
-  background-image: url("https://scontent.fpnh5-4.fna.fbcdn.net/v/t39.30808-6/485364775_2895665947277513_5874689214910935172_n.jpg?_nc_cat=110&ccb=1-7&_nc_sid=3a1ebe&_nc_eui2=AeH6WRZlQeVliK2ykBBp_SEDpdXBYLjJ-r-l1cFguMn6v0g_VYQM44LgnLkH2oKNYNKfVsrfl1uTKcpn2ba-Gky_&_nc_ohc=oe9-G4wbT3gQ7kNvwGyUbiF&_nc_oc=AdlJXY7JDrwfqSpBRvZBSz-hWpwhPx6mgNliqFmvlkRXxWRgbx7aP7yoZ4gq3nWi1K8&_nc_zt=23&_nc_ht=scontent.fpnh5-4.fna&_nc_gid=LZ5UUR8wDASDiUY0vqJ64w&oh=00_AfIsIgAhMsyMPPSzRMJEy9GckwrNNgnOR2S0mw82qOfAEQ&oe=683BE441");
+  background-image: url("../../assets/aboutUs/kep.png");
 }
 
 .mondulkiri {
-  background-image: url("https://scontent.fpnh5-2.fna.fbcdn.net/v/t39.30808-6/474482418_3844931409085904_1229716563051648739_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=f727a1&_nc_eui2=AeGmsGvYEOT1yep8ijESyDBUFjv5Oc_By7gWO_k5z8HLuD0wMvJFvNPZcvgDzMuhkJCQGbB20Ql5rLKOjooITvus&_nc_ohc=_q6llb0H9E0Q7kNvwF94Gjd&_nc_oc=AdkB86L6Uh-O0Q6y90G0fMM0a5otFrp4NTGlZRJrXs5mG1ykej_GN0LkAsCTr4Afsj4&_nc_zt=23&_nc_ht=scontent.fpnh5-2.fna&_nc_gid=qfJgJaO_DfQ8HKCLrGHT6g&oh=00_AfJ3hQQbMD_4Agu7tVdLdIa5lVzEUx_NuGj77YeBo54YpQ&oe=683BBBCF");
+  background-image: url("../../assets/aboutUs/mondolkiri.png");
 }
 
 .bokor {
@@ -667,7 +681,7 @@ h2:after {
 
 /* Cambodia Facts */
 .cambodia-facts {
-  padding: 8rem 0;
+  /* padding: 8rem 0; */
   background: var(--light-bg);
 }
 
@@ -709,7 +723,7 @@ h2:after {
 
 /* Mission & Values */
 .mission-values {
-  padding: 8rem 0;
+  /* padding: 8rem 0; */
   background: var(--card-bg);
 }
 
@@ -842,19 +856,19 @@ h2:after {
 }
 
 .team2 {
-  background-image: url("https://images.unsplash.com/photo-1494790108755-2616b612b567?w=300&h=300&fit=crop&crop=face");
+  background-image: url("../../assets/teams/rs.png");
 }
 
 .team3 {
-  background-image: url("https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=300&h=300&fit=crop&crop=face");
+  background-image: url("../../assets/teams/chyy.png");
 }
 
 .team4 {
-  background-image: url("https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=300&h=300&fit=crop&crop=face");
+  background-image: url("../../assets/teams/vr.jpg");
 }
 
 .mentor {
-  background-image: url("https://images.unsplash.com/photo-1560250097-0b93528c311a?w=300&h=300&fit=crop&crop=face");
+  background-image: url("../../assets/teams/memto.jpg");
 }
 
 /* Call to Action */
@@ -970,7 +984,7 @@ h2:after {
 
 @media (max-width: 768px) {
   .hero-section {
-    height: 80vh;
+    height: 100%;
     min-height: 500px;
   }
 
@@ -1309,5 +1323,4 @@ h2:after {
     order: 2;
   }
 }
-
 </style>

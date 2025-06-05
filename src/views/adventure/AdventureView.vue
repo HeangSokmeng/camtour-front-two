@@ -23,7 +23,7 @@
       </div>
       <div class="hero-image">
         <img
-          src="https://scontent.fpnh11-1.fna.fbcdn.net/v/t39.30808-6/500409730_1009917414585355_1742149793144846234_n.jpg?_nc_cat=100&ccb=1-7&_nc_sid=127cfc&_nc_ohc=oYyNqbAaUUcQ7kNvwEvXSm_&_nc_oc=AdkWnieCgV66X8rzfRJ7LaSv_XOUbyxbQqHIeeIkC4IbhqfQ05uNrApdpYzCeyLLsG8&_nc_zt=23&_nc_ht=scontent.fpnh11-1.fna&_nc_gid=MdGVeVggXBMmW1-WFWUKxA&oh=00_AfL4Z07JDWmorAtYKpeFDjXYo-L_dLsPbPloG3767HpPaw&oe=68425954"
+          :src= imgBanner
           :alt="t('hiking-adventure-alt')"
         />
       </div>
@@ -345,6 +345,7 @@
 import "@/assets/css/adventure.css"; // Import the responsive CSS
 import { useTranslation } from "@/components/useTranslation";
 import { useGlobalStore } from "@/stores/global";
+import imgBanner from '@/assets/adventure/banner.png'
 import axios from "axios";
 import { computed, onMounted, onUnmounted, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
@@ -413,6 +414,9 @@ const getLocalizedName = (item, type) => {
   if (!item) return "";
   if (isKhmerLanguage.value && item.local_name) {
     return item.local_name;
+  }
+  if (isKhmerLanguage.value && item.name_km) {
+    return item.name_km;
   }
   const key = `${type}-${item.name.toLowerCase().replace(/\s+/g, "-")}`;
   const translated = t(key);

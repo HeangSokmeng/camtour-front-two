@@ -844,7 +844,7 @@ onUnmounted(() => {
   left: 0;
   right: 0;
   bottom: 0;
-  background: url("https://www.peaxequipment.com/cdn/shop/files/Power-LP-Banner-Image.jpg?crop=center&height=650&v=1736543664&width=2048");
+  background: url("../../assets/product/banner.png");
   z-index: 1;
 }
 

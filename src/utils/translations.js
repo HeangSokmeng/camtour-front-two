@@ -565,7 +565,11 @@ export const translations = {
 
     'tropical-climate': 'Tropical Climate',
     'climate-description': 'Year-round hiking opportunities with the best conditions from November to March. Dry season offers clear skies and comfortable temperatures.',
-
+    'name-raksa' : 'Loun Raksa',
+    'name-rachana' : 'Vuth Rachana',
+    'name-chhayya' : 'Neom Chhayya',
+    'name-sokmeng' : 'Heang Sokmeng',
+    'name-socheat' : 'Sek Socheat',
     'affordable-adventure': 'Affordable Adventure',
     'affordable-description': 'Experience world-class hiking at a fraction of the cost compared to other Southeast Asian destinations, with budget-friendly accommodations and local guides.',
     'try-adjusting-filters' : 'Try Adjusting Filters',
@@ -596,22 +600,22 @@ export const translations = {
     'technical-advisor-conservation': 'Technical Advisor & Conservation Expert',
 
     // Team member descriptions
-    'sokmeng-description': 'With over 15 years exploring Cambodia\'s wilderness, Sokmeng has summited every major peak and discovered countless hidden trails. A certified wilderness first aid instructor and passionate conservationist.',
-    'raksa-description': 'Creates intuitive trail maps and user experiences that help adventurers navigate Cambodia\'s diverse landscapes. Specializes in GPS mapping and mobile app design for outdoor enthusiasts.',
-    'chhayya-description': 'Shares detailed trail guides, cultural insights, and photography tips. Fluent in Khmer, English, and French, she bridges the gap between local knowledge and international visitors.',
-    'rachana-description': 'Powers our platform with robust systems, real-time weather integration, and interactive mapping technologies. Ensures seamless experiences for thousands of users daily.',
+    'sokmeng-description': 'Over 03 years of backend development experience, Sokmeng builds secure and scalable Laravel APIs for web and mobile apps. Focused on clean code, performance, and real-world impact.',
+    'raksa-description': 'Designs intuitive web interfaces and trail maps that help users explore Cambodia’s diverse landscapes. Specializes in UX/UI, GPS mapping, and mobile-first design for outdoor platforms.',
+    'chhayya-description': 'Builds engaging frontend experiences to share trail guides, cultural insights, and photography tips. Fluent in Khmer, English, and French—connecting local stories with global audiences.',
+    'rachana-description': 'Powers our platform with reliable systems, organized documentation, and dynamic data handling. Supports real-time features like weather and mapping to ensure smooth user experiences daily.',
     'socheat-description': 'Former park ranger and environmental scientist who guides our conservation efforts and technical development. 20+ years experience in Cambodia\'s national parks and protected areas.',
 
     // Team stats
-    'trails-explored': 'Trails Explored',
-    'hikers-guided': 'Hikers Guided',
+    'trails-explored': 'APIs Built',
+    'hikers-guided': '1000+ Hours in Laravel',
     'digital-maps-created': 'Digital Maps Created',
-    'award-winning-design': 'Award-Winning Design',
-    'trail-articles': 'Trail Articles',
+    // 'award-winning-design': 'Award-Winning Design',
+    'trail-articles': 'Frontend Developer',
     'cultural-ambassador': 'Cultural Ambassador',
-    'uptime': 'Uptime',
+    'uptime': 'General management of information for tourist sites and document organization.',
     'tech-innovation-leader': 'Tech Innovation Leader',
-    'conservation-champion': 'Conservation Champion',
+    'conservation-champion': 'Advisor on technology development and document management trainer.',
     'years-experience': 'Years Experience',
 
     // Call to Action
@@ -758,6 +762,21 @@ export const translations = {
     'about-us': 'អំពីយើងខ្ញុំ',
     "male": "ប្រុស",
     "female": "ស្រី",
+    'trails-explored': 'ធ្វើការបង្កើតជាមួយ Api',
+    'hikers-guided': '១០០០ម៉ោងជាមួយ Api',
+    'sokmeng-description': 'មានបទពិសោធន៍លើសពី 0៣ ឆ្នាំក្នុងការអភិវឌ្ឍបច្ចេកវិទ្យាព័ត៌មានខាងក្រោយ (Backend) Sokmeng បានបង្កើត API ដ៏មានសុវត្ថិភាព និងអាចធ្វើសមត្ថភាពកំណត់បានជាច្រើនដោយប្រើ Laravel។',
+    'raksa-description': 'រចនាបទពិសោធន៍អ្នកប្រើ និងផ្ទាំងផែនទីអន្តរកម្ម ដើម្បីជួយអ្នកដើរភ្នំរុករកទេសភាពនានានៅកម្ពុជា។ ជំនាញខាង UX/UI បណ្តាញ, ផែនទី GPS និងការរចនាសម្រាប់អាប់ផលីខេសិនចល័ត។',
+    'chhayya-description': 'បង្កើតផ្នែកមុខគេហទំព័រដែលទាក់ទាញ ដើម្បីចែករំលែកផែនការដើរដ៏លម្អិត ចំណេះដឹងវប្បធម៌ និងគន្លឹះថតរូប។ មានជំនាញភាសាខ្មែរ អង់គ្លេស ផ្សព្វផ្សាយរឿងរ៉ាវក្នុងស្រុកទៅកាន់សកលលោក។',
+    'rachana-description': 'គ្រប់គ្រងប្រព័ន្ធឯកសារ សៀវភៅ និងទិន្នន័យយ៉ាងមានប្រសិទ្ធភាព ដើម្បីគាំទ្រជាសះស្បើយដល់ប្រព័ន្ធ ព័ត៌មានអាកាសធាតុពេលពិត និងផែនទីអន្តរកម្ម។ ផ្តល់បទពិសោធន៍ដ៏រលូនដល់អ្នកប្រើរាប់ពាន់នាក់រៀងរាល់ថ្ងៃ។',
+    'socheat-description': 'គ្រូបង្រៀន និងវិទ្យាសាស្ត្របរិស្ថានមានបទពិសោធន៍ ក្នុងការងារពាក់ព័ន្ធនឹងឧទ្យានជាតិ និងការរក្សាទុកធនធានធម្មជាតិ។ បច្ចុប្បន្នជាមេentor ក្នុងការស្រាវជ្រាវ AI និងអភិវឌ្ឍបច្ចេកវិទ្យា។',
+    'digital-maps-created': 'បទពិសោធន៍និងរចនា',
+    // 'award-winning-design': 'Award-Winning Design',
+    'trail-articles': 'ធ្វើការបង្កើតជាមួយ ផ្នែកខាងមុខ',
+    'cultural-ambassador': 'Cultural Ambassador',
+    'uptime': 'គ្រប់គ្រងទូទៅលើព័ត៌មានរបស់ទីតាំងកម្សាន្ត និងការរៀបចំឯកសារ',
+    'tech-innovation-leader': 'Tech Innovation Leader',
+    'conservation-champion': 'ព្រឹក្សាយោបល់អំពីការអភិវឌ្ឃន៍បច្ចេកវិទ្យា និងគម្រូការរៀបចំឯកសារ',
+    'years-experience': 'Years Experience',
     // Auth
     'signup': 'ចុះឈ្មោះ',
     'login': 'ចូលគណនី',
@@ -768,7 +787,11 @@ export const translations = {
     'select-category': 'សូមជ្រើសរើសប្រភេទទីតាំង',
     'showing-filtered-results': 'លទ្ធផលនៃការស្វែងរកគឺចំនួន',
     'locations-found': 'នៃទីតាំង',
-
+    'name-raksa' : 'លុន រក្សា',
+    'name-rachana' : 'វុធ រចនា',
+    'name-chhayya' : 'នឹម ឆាយយា',
+    'name-sokmeng' : 'ហៀង សុខម៉េង',
+    'name-socheat' : 'សេក សុជាតិ',
     // Hero section
     'cambodia': 'កម្ពុជា',
     'find-favorite-place': 'ស្វែងរកកន្លែងដែលអ្នកចូលចិត្ត',
@@ -1333,9 +1356,9 @@ export const translations = {
     // Team member roles
     'founder-chief-guide': 'អ្នកបង្កើតនិងមគ្គុទេសក៍ដើមបំផុត',
     'ux-designer-cartographer': 'អ្នករចនា UX/UI និងអ្នកធ្វើផែនទីឌីជីថល',
-    'content-creator-cultural': 'អ្នកបង្កើតមាតិកានិងជំនាញវប្បធម៌',
-    'backend-developer-architect': 'អ្នកអភិវឌ្ឍន៍ Backend និងស្ថាបត្យកម្មប្រព័ន្ធ',
-    'technical-advisor-conservation': 'ទីប្រឹក្សាបច្ចេកទេសនិងជំនាញអភិរក្ស',
+    'content-creator-cultural': 'អ្នកបង្កើតផ្នែកខាងមុននៃគេហទំព័រ',
+    'backend-developer-architect': 'អ្នកគ្រប់គ្រប់គ្រងទិន្នន័យ និងការរៀបចំឯកសារ',
+    'technical-advisor-conservation': 'ទីប្រឹក្សាបច្ចេកទេសនិងអភិវឌ្ឃន៍បច្ចេកវិទ្យា',
 
     // Call to Action
     'ready-start-adventure': 'ត្រៀមរួចសម្រាប់ចាប់ផ្តើមការផ្សងព្រេងកម្ពុជារបស់អ្នកហើយឬនៅ?',

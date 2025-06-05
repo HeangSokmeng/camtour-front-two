@@ -574,6 +574,8 @@
               <p>Check back soon for exciting product offerings!</p>
             </div>
           </div>
+
+          <!-- Activities Section -->
           <div
             v-if="activeTab === 'activities'"
             class="tab-content activities-section slide-up"
@@ -585,52 +587,43 @@
                 Explore exciting adventures and activities at this location
               </p>
             </div>
-            <div class="activities-grid">
-              <div class="activity-card">
+
+            <!-- Loading State -->
+            <div v-if="isLoading" class="activities-loading">
+              <div class="loading-spinner"></div>
+              <p>Loading activities...</p>
+            </div>
+
+            <!-- Activities Grid -->
+            <div
+              v-else-if="
+                location.active_travel_activities &&
+                location.active_travel_activities.length > 0
+              "
+              class="activities-grid"
+            >
+              <div
+                v-for="activity in location.active_travel_activities"
+                :key="activity.id"
+                class="activity-card"
+              >
                 <div class="activity-image">
                   <img
-                    src="https://placehold.co/400x300/19ADCF/ffffff?text=Hiking"
-                    alt="Hiking Tour"
+                    :src="activity.image || placeholderImage"
+                    :alt="activity.title"
+                    @error="handleImageError"
                   />
-                </div>
-                <div class="activity-content">
-                  <h3 class="activity-title">Guided Hiking Tour</h3>
-                  <p class="activity-desc">
-                    Experience breathtaking views with our expert local guide
-                  </p>
-                  <div class="activity-details">
-                    <div class="activity-duration">
-                      <svg viewBox="0 0 24 24">
-                        <path
-                          d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"
-                        />
-                        <path d="M12.5 7H11v6l5.25 3.15.75-1.23-4.5-2.67z" />
-                      </svg>
-                      <span>4 hours</span>
-                    </div>
-                    <div class="activity-difficulty">
-                      <svg viewBox="0 0 24 24">
-                        <path
-                          d="M13.5 5.5c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zM9.8 8.9L7 23h2.1l1.8-8 2.1 2v6h2v-7.5l-2.1-2 .6-3C14.8 12 16.8 13 19 13v-2c-1.9 0-3.5-1-4.3-2.4l-1-1.6c-.4-.6-1-1-1.7-1-.3 0-.5.1-.8.1L6 8.3V13h2V9.6l1.8-.7"
-                        />
-                      </svg>
-                      <span>Moderate</span>
-                    </div>
-                    <div class="activity-price">$45 per person</div>
+                  <div v-if="activity.is_active" class="activity-status active">
+                    Available
                   </div>
                 </div>
-              </div>
-              <div class="activity-card">
-                <div class="activity-image">
-                  <img
-                    src="https://placehold.co/400x300/19ADCF/ffffff?text=Cycling"
-                    alt="Cycling Tour"
-                  />
-                </div>
                 <div class="activity-content">
-                  <h3 class="activity-title">Countryside Cycling</h3>
+                  <h3 class="activity-title">{{ activity.title }}</h3>
                   <p class="activity-desc">
-                    Cycle through scenic countryside and local villages
+                    {{
+                      activity.description ||
+                      "Experience this amazing activity at our location"
+                    }}
                   </p>
                   <div class="activity-details">
                     <div class="activity-duration">
@@ -640,7 +633,10 @@
                         />
                         <path d="M12.5 7H11v6l5.25 3.15.75-1.23-4.5-2.67z" />
                       </svg>
-                      <span>3 hours</span>
+                      <span
+                        >{{ activity.duration_hours }}
+                        {{ activity.duration_hours === 1 ? "hour" : "hours" }}</span
+                      >
                     </div>
                     <div class="activity-difficulty">
                       <svg viewBox="0 0 24 24">
@@ -648,48 +644,195 @@
                           d="M13.5 5.5c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zM9.8 8.9L7 23h2.1l1.8-8 2.1 2v6h2v-7.5l-2.1-2 .6-3C14.8 12 16.8 13 19 13v-2c-1.9 0-3.5-1-4.3-2.4l-1-1.6c-.4-.6-1-1-1.7-1-.3 0-.5.1-.8.1L6 8.3V13h2V9.6l1.8-.7"
                         />
                       </svg>
-                      <span>Easy</span>
+                      <span
+                        class="difficulty-badge"
+                        :class="getDifficultyClass(activity.difficulty_level)"
+                      >
+                        {{ activity.difficulty_level }}
+                      </span>
                     </div>
-                    <div class="activity-price">$35 per person</div>
+                    <div class="activity-price">
+                      ${{ parseFloat(activity.price_per_person).toFixed(2) }}
+                      <span class="currency">{{ activity.currency || "USD" }}</span>
+                      <span class="per-person">per person</span>
+                    </div>
                   </div>
-                </div>
-              </div>
-              <div class="activity-card">
-                <div class="activity-image">
-                  <img
-                    src="https://placehold.co/400x300/19ADCF/ffffff?text=Cooking"
-                    alt="Cooking Class"
-                  />
-                </div>
-                <div class="activity-content">
-                  <h3 class="activity-title">Traditional Cooking Class</h3>
-                  <p class="activity-desc">
-                    Learn to cook authentic Cambodian dishes with local ingredients
-                  </p>
-                  <div class="activity-details">
-                    <div class="activity-duration">
+
+                  <!-- Additional Activity Info -->
+                  <div v-if="activity.max_participants" class="activity-meta">
+                    <div class="activity-capacity">
                       <svg viewBox="0 0 24 24">
                         <path
-                          d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"
-                        />
-                        <path d="M12.5 7H11v6l5.25 3.15.75-1.23-4.5-2.67z" />
-                      </svg>
-                      <span>2 hours</span>
-                    </div>
-                    <div class="activity-difficulty">
-                      <svg viewBox="0 0 24 24">
-                        <path
-                          d="M13.5 5.5c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zM9.8 8.9L7 23h2.1l1.8-8 2.1 2v6h2v-7.5l-2.1-2 .6-3C14.8 12 16.8 13 19 13v-2c-1.9 0-3.5-1-4.3-2.4l-1-1.6c-.4-.6-1-1-1.7-1-.3 0-.5.1-.8.1L6 8.3V13h2V9.6l1.8-.7"
+                          d="M16 4c0-1.11.89-2 2-2s2 .89 2 2-.89 2-2 2-2-.89-2-2zm4 18v-6h2.5l-2.54-7.63A1.42 1.42 0 0 0 18.6 7c-.8 0-1.54.5-1.85 1.26L14.59 15H16v7h4zm-12.5 0v-7.5h1.75L7.5 7H6c-1.1 0-2 .9-2 2v13h3.5zm3.5-13c.83 0 1.5-.67 1.5-1.5S11.83 6 11 6s-1.5.67-1.5 1.5S10.17 9 11 9z"
                         />
                       </svg>
-                      <span>Easy</span>
+                      <span>Max {{ activity.max_participants }} people</span>
                     </div>
-                    <div class="activity-price">$40 per person</div>
+                  </div>
+
+                  <!-- Action Buttons -->
+                  <div class="activity-actions">
+                    <button
+                      class="btn-book-activity"
+                      @click="bookActivity(activity)"
+                      :disabled="!activity.is_active"
+                    >
+                      {{ activity.is_active ? "Book Now" : "Not Available" }}
+                    </button>
+                    <button
+                      class="btn-activity-details"
+                      @click="viewActivityDetails(activity)"
+                    >
+                      View Details
+                    </button>
                   </div>
                 </div>
               </div>
             </div>
+
+            <!-- Empty State -->
+            <div v-else class="empty-activities">
+              <div class="empty-icon">
+                <svg viewBox="0 0 24 24">
+                  <path
+                    d="M13.5 5.5c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zM9.8 8.9L7 23h2.1l1.8-8 2.1 2v6h2v-7.5l-2.1-2 .6-3C14.8 12 16.8 13 19 13v-2c-1.9 0-3.5-1-4.3-2.4l-1-1.6c-.4-.6-1-1-1.7-1-.3 0-.5.1-.8.1L6 8.3V13h2V9.6l1.8-.7"
+                  />
+                </svg>
+              </div>
+              <h3>No Activities Available</h3>
+              <p>
+                Currently, there are no activities available at this location. Check back
+                soon for exciting adventure offerings!
+              </p>
+              <button class="btn-suggest-activity" @click="suggestActivity">
+                Suggest an Activity
+              </button>
+            </div>
+
+            <!-- Activity Detail Modal -->
+            <div
+              v-if="showActivityModal"
+              class="activity-modal-overlay"
+              @click="closeActivityModal"
+            >
+              <div class="activity-modal-content" @click.stop>
+                <div class="modal-header">
+                  <h3>{{ selectedActivity?.title }}</h3>
+                  <button class="modal-close" @click="closeActivityModal">&times;</button>
+                </div>
+                <div class="modal-body">
+                  <div class="activity-modal-image">
+                    <img
+                      :src="selectedActivity?.image || placeholderImage"
+                      :alt="selectedActivity?.title"
+                      @error="handleImageError"
+                    />
+                  </div>
+                  <div class="activity-modal-info">
+                    <div class="modal-description">
+                      <h4>Description</h4>
+                      <p>
+                        {{
+                          selectedActivity?.description ||
+                          "Experience this amazing activity at our location with professional guides and equipment."
+                        }}
+                      </p>
+                    </div>
+
+                    <div class="modal-details-grid">
+                      <div class="detail-item">
+                        <strong>Duration:</strong>
+                        <span
+                          >{{ selectedActivity?.duration_hours }}
+                          {{
+                            selectedActivity?.duration_hours === 1 ? "hour" : "hours"
+                          }}</span
+                        >
+                      </div>
+                      <div class="detail-item">
+                        <strong>Difficulty:</strong>
+                        <span
+                          :class="getDifficultyClass(selectedActivity?.difficulty_level)"
+                        >
+                          {{ selectedActivity?.difficulty_level }}
+                        </span>
+                      </div>
+                      <div class="detail-item">
+                        <strong>Price:</strong>
+                        <span class="price-highlight">
+                          ${{
+                            parseFloat(selectedActivity?.price_per_person || 0).toFixed(2)
+                          }}
+                          {{ selectedActivity?.currency || "USD" }} per person
+                        </span>
+                      </div>
+                      <div v-if="selectedActivity?.max_participants" class="detail-item">
+                        <strong>Max Participants:</strong>
+                        <span>{{ selectedActivity.max_participants }} people</span>
+                      </div>
+                    </div>
+
+                    <!-- Included Items -->
+                    <div
+                      v-if="
+                        selectedActivity?.included_items &&
+                        selectedActivity.included_items.length > 0
+                      "
+                      class="modal-section"
+                    >
+                      <h4>What's Included</h4>
+                      <ul class="included-list">
+                        <li v-for="item in selectedActivity.included_items" :key="item">
+                          <svg viewBox="0 0 24 24" class="check-icon">
+                            <path
+                              d="M9 16.17L5.53 12.7c-.39-.39-1.02-.39-1.41 0-.39.39-.39 1.02 0 1.41l4.18 4.18c.39.39 1.02.39 1.41 0L20.29 6.71c.39-.39.39-1.02 0-1.41-.39-.39-1.02-.39-1.41 0L9 16.17z"
+                            />
+                          </svg>
+                          {{ item }}
+                        </li>
+                      </ul>
+                    </div>
+
+                    <!-- Requirements -->
+                    <div
+                      v-if="
+                        selectedActivity?.requirements &&
+                        selectedActivity.requirements.length > 0
+                      "
+                      class="modal-section"
+                    >
+                      <h4>Requirements</h4>
+                      <ul class="requirements-list">
+                        <li
+                          v-for="requirement in selectedActivity.requirements"
+                          :key="requirement"
+                        >
+                          <svg viewBox="0 0 24 24" class="info-icon">
+                            <path
+                              d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"
+                            />
+                          </svg>
+                          {{ requirement }}
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button
+                    class="btn-book-modal"
+                    @click="bookActivity(selectedActivity)"
+                    :disabled="!selectedActivity?.is_active"
+                  >
+                    {{
+                      selectedActivity?.is_active ? "Book This Activity" : "Not Available"
+                    }}
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
+
           <div v-if="activeTab === 'tips'" class="tab-content tips-section slide-up">
             <div class="section-header-wrapper">
               <div class="header">Travel Guide</div>
@@ -978,71 +1121,63 @@
     </div>
   </div>
 </template>
-
 <script setup>
 import "@/assets/css/locationDetial.css";
 import axios from "axios";
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from "vue";
 import { useRoute } from "vue-router";
-import { useGlobalStore } from "../../stores/global"; // Adjust path as needed
+import { useGlobalStore } from "../../stores/global";
+
+// Route and Store
 const route = useRoute();
 const globalStore = useGlobalStore();
+
+// Refs for location and guide data
 const locationGuide = ref(null);
 const isLoadingGuide = ref(false);
 const guideError = ref("");
 const location = ref(null);
 const isLoading = ref(true);
 const errorMessage = ref("");
+
+// Carousel and lightbox refs
 const currentSlide = ref(0);
 const lightboxOpen = ref(false);
 const lightboxIndex = ref(0);
+
+// Tab and UI state
 const activeTab = ref("overview");
 const isFavorite = ref(false);
+const showSuccessMessage = ref(false);
+const successMessage = ref("");
+
+// Review form refs
 const showReviewForm = ref(false);
 const rating = ref(0);
 const comment = ref("");
 const isSubmitting = ref(false);
 const reviewError = ref("");
-const showSuccessMessage = ref(false);
-const successMessage = ref("");
+
+// Activity modal refs
+const selectedActivity = ref(null);
+const showActivityModal = ref(false);
+
+// Auto-rotate interval
 let autoRotateInterval = null;
+
+// Tab configuration
 const tabs = [
   { id: "overview", label: "Overview" },
   { id: "products", label: "Products" },
   { id: "activities", label: "Activities" },
   { id: "tips", label: "Travel Tips" },
 ];
-const fetchLocationGuide = async () => {
-  const locationId = route.params.id;
-  if (!locationId) return;
-  isLoadingGuide.value = true;
-  guideError.value = "";
-  try {
-    const response = await axios.get(`/api/web/view/location/guide`, {
-      params: { location_id: locationId },
-      ...globalStore.getAxiosHeader(),
-    });
-    if (response.data && !response.data.error && response.data.data) {
-      const guideData = response.data.data.find(
-        (guide) => guide.location_id == locationId
-      );
-      locationGuide.value = guideData || null;
-    } else {
-      console.warn("No guide data found for this location");
-      locationGuide.value = null;
-    }
-  } catch (error) {
-    console.error("Failed to fetch location guide:", error);
-    guideError.value = error.response?.data?.message || "Failed to load travel guide";
-    locationGuide.value = null;
-    if (typeof globalStore.onCheckError === "function") {
-      await globalStore.onCheckError(error);
-    }
-  } finally {
-    isLoadingGuide.value = false;
-  }
-};
 
+// Placeholder image
+const placeholderImage =
+  "https://placehold.co/600x400/19ADCF/ffffff?text=Cambodia+Travel";
+
+// Computed properties
 const averageRating = computed(() => {
   if (!location.value || !location.value.stars || location.value.stars.length === 0) {
     return "0.0";
@@ -1069,38 +1204,91 @@ const locationAddress = computed(() => {
   return parts.join(", ");
 });
 
-// Placeholder image for fallback
-const placeholderImage =
-  "https://placehold.co/600x400/19ADCF/ffffff?text=Cambodia+Travel";
-const cleanup = () => {
-  if (autoRotateInterval) {
-    clearInterval(autoRotateInterval);
-    autoRotateInterval = null;
+// Activity helper methods
+const getDifficultyClass = (difficulty) => {
+  switch (difficulty?.toLowerCase()) {
+    case "easy":
+      return "difficulty-easy";
+    case "moderate":
+      return "difficulty-moderate";
+    case "hard":
+      return "difficulty-hard";
+    default:
+      return "difficulty-easy";
   }
-  document.body.classList.remove("no-scroll");
-  if (lightboxOpen.value) {
-    lightboxOpen.value = false;
-  }
-  locationGuide.value = null;
-  isLoadingGuide.value = false;
-  guideError.value = "";
-  location.value = null;
-  isLoading.value = true;
-  errorMessage.value = "";
-  currentSlide.value = 0;
-  lightboxIndex.value = 0;
-  activeTab.value = "overview";
-  isFavorite.value = false;
-  showReviewForm.value = false;
-  rating.value = 0;
-  comment.value = "";
-  isSubmitting.value = false;
-  reviewError.value = "";
-  showSuccessMessage.value = false;
-  successMessage.value = "";
-  document.title = "Camtour";
 };
 
+// Activity modal methods
+const viewActivityDetails = (activity) => {
+  selectedActivity.value = activity;
+  showActivityModal.value = true;
+  document.body.classList.add("no-scroll");
+};
+
+const closeActivityModal = () => {
+  showActivityModal.value = false;
+  selectedActivity.value = null;
+  document.body.classList.remove("no-scroll");
+};
+
+const bookActivity = (activity) => {
+  if (!activity.is_active) {
+    showSuccessToast("This activity is currently not available");
+    return;
+  }
+
+  // TODO: Implement booking logic
+  // You can integrate with your booking system here
+  showSuccessToast(`Booking initiated for ${activity.title}!`);
+  console.log("Booking activity:", activity);
+
+  // Close modal if it's open
+  if (showActivityModal.value) {
+    closeActivityModal();
+  }
+};
+
+const suggestActivity = () => {
+  // TODO: Implement activity suggestion feature
+  showSuccessToast("Thank you for your interest! We'll consider your suggestions.");
+};
+
+// Location guide methods
+const fetchLocationGuide = async () => {
+  const locationId = route.params.id;
+  if (!locationId) return;
+
+  isLoadingGuide.value = true;
+  guideError.value = "";
+
+  try {
+    const response = await axios.get(`/api/web/view/location/guide`, {
+      params: { location_id: locationId },
+      ...globalStore.getAxiosHeader(),
+    });
+
+    if (response.data && !response.data.error && response.data.data) {
+      const guideData = response.data.data.find(
+        (guide) => guide.location_id == locationId
+      );
+      locationGuide.value = guideData || null;
+    } else {
+      console.warn("No guide data found for this location");
+      locationGuide.value = null;
+    }
+  } catch (error) {
+    console.error("Failed to fetch location guide:", error);
+    guideError.value = error.response?.data?.message || "Failed to load travel guide";
+    locationGuide.value = null;
+    if (typeof globalStore.onCheckError === "function") {
+      await globalStore.onCheckError(error);
+    }
+  } finally {
+    isLoadingGuide.value = false;
+  }
+};
+
+// Main location data fetch
 const fetchLocationDetail = async () => {
   const locationId = route.params.id;
   if (!locationId) {
@@ -1108,8 +1296,10 @@ const fetchLocationDetail = async () => {
     isLoading.value = false;
     return;
   }
+
   isLoading.value = true;
   errorMessage.value = "";
+
   try {
     const [locationResponse] = await Promise.all([
       axios.get(`/api/web/view/location/detail/${locationId}`, {
@@ -1117,6 +1307,7 @@ const fetchLocationDetail = async () => {
       }),
       fetchLocationGuide(),
     ]);
+
     if (locationResponse.data.result && locationResponse.data.data) {
       location.value = { ...locationResponse.data.data };
       document.title = `Camtour - ${location.value.name}`;
@@ -1144,6 +1335,7 @@ const fetchLocationDetail = async () => {
   }
 };
 
+// Carousel methods
 const nextSlide = () => {
   if (!location.value?.photos?.length) return;
   currentSlide.value = (currentSlide.value + 1) % location.value.photos.length;
@@ -1158,6 +1350,20 @@ const prevSlide = () => {
 
 const goToSlide = (index) => {
   currentSlide.value = index;
+};
+
+const startAutoRotation = () => {
+  if (autoRotateInterval) {
+    clearInterval(autoRotateInterval);
+  }
+  if (!location.value?.photos?.length || location.value.photos.length <= 1) {
+    return;
+  }
+  autoRotateInterval = setInterval(() => {
+    if (location.value?.photos?.length > 1) {
+      nextSlide();
+    }
+  }, 5000);
 };
 
 // Lightbox methods
@@ -1185,10 +1391,12 @@ const prevLightboxImage = () => {
   }
 };
 
+// Tab methods
 const switchTab = (tabId) => {
   activeTab.value = tabId;
 };
 
+// Favorite methods
 const checkFavoriteStatus = async (locationId) => {
   try {
     if (!globalStore.isLoggedIn) {
@@ -1214,6 +1422,7 @@ const toggleFavorite = async () => {
     return;
   }
   if (!location.value) return;
+
   try {
     const url = isFavorite.value
       ? `/api/web/user/favorites/remove/${location.value.id}`
@@ -1258,6 +1467,7 @@ const shareLocation = () => {
   }
 };
 
+// Review methods
 const resetForm = () => {
   rating.value = 0;
   comment.value = "";
@@ -1329,6 +1539,7 @@ const submitReview = async () => {
   }
 };
 
+// Utility methods
 const showSuccessToast = (message) => {
   successMessage.value = message;
   showSuccessMessage.value = true;
@@ -1341,20 +1552,41 @@ const handleImageError = (event) => {
   event.target.src = placeholderImage;
 };
 
-const startAutoRotation = () => {
+// Cleanup method
+const cleanup = () => {
   if (autoRotateInterval) {
     clearInterval(autoRotateInterval);
+    autoRotateInterval = null;
   }
-  if (!location.value?.photos?.length || location.value.photos.length <= 1) {
-    return;
+  document.body.classList.remove("no-scroll");
+  if (lightboxOpen.value) {
+    lightboxOpen.value = false;
   }
-  autoRotateInterval = setInterval(() => {
-    if (location.value?.photos?.length > 1) {
-      nextSlide();
-    }
-  }, 5000);
+  if (showActivityModal.value) {
+    showActivityModal.value = false;
+  }
+  locationGuide.value = null;
+  isLoadingGuide.value = false;
+  guideError.value = "";
+  location.value = null;
+  isLoading.value = true;
+  errorMessage.value = "";
+  currentSlide.value = 0;
+  lightboxIndex.value = 0;
+  activeTab.value = "overview";
+  isFavorite.value = false;
+  showReviewForm.value = false;
+  rating.value = 0;
+  comment.value = "";
+  isSubmitting.value = false;
+  reviewError.value = "";
+  showSuccessMessage.value = false;
+  successMessage.value = "";
+  selectedActivity.value = null;
+  document.title = "Camtour";
 };
 
+// Route watchers
 const routeWatcher = watch(
   () => route.params.id,
   async (newId, oldId) => {
@@ -1374,6 +1606,7 @@ const routeLeaveWatcher = watch(
   }
 );
 
+// Lifecycle hooks
 onMounted(async () => {
   await fetchLocationDetail();
 });
@@ -1384,5 +1617,3 @@ onBeforeUnmount(() => {
   if (routeLeaveWatcher) routeLeaveWatcher();
 });
 </script>
-
-<style scoped></style>

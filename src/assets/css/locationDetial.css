@@ -916,7 +916,7 @@
 }
 
 .activity-card:hover {
-  transform: translateY(-10px);
+  /* transform: translateY(-5px); */
   box-shadow: var(--shadow-lg);
 }
 

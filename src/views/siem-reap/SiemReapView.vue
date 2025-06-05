@@ -3,7 +3,7 @@
     <section class="hero-header">
       <div class="hero-background">
         <img 
-          src="https://visitlocaltravel.com/blog/wp-content/uploads/2024/11/Best-Time-to-Visit-Angkor-Wat.jpg" 
+          src="../../assets/siemreaps/banner.png" 
           alt="Beautiful Angkor Wat temple complex in Siem Reap" 
           class="hero-bg-image"
         />
@@ -1121,7 +1121,7 @@ onUnmounted(() => {
 
 .heritage-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 25px;
   margin-bottom: 40px;
 }

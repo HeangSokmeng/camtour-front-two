@@ -1,5 +1,7 @@
 <script setup>
-import homeBannerImg from "@/assets/banners/banner-home.jpg";
+import homeBanner01Img from "@/assets/home/banners/banner01.jpg";
+import homeBanner02Img from "@/assets/home/banners/banner02.png";
+import homeBanner03Img from "@/assets/home/banners/banner03.png";
 import { useTranslation } from "@/components/useTranslation";
 import WishlistButton from "@/components/WishlistButton.vue";
 import { useGlobalStore } from "@/stores/global";
@@ -37,21 +39,19 @@ const wishlistItems = ref([]);
 let autoSlideInterval = null;
 const heroImages = ref([
   {
-    src: homeBannerImg,
+    src: homeBanner01Img,
     alt: "Angkor Wat Temple Complex",
     title: "Angkor Wat",
     description: "Ancient temple complex",
   },
   {
-    src:
-      "https://scontent.fpnh11-1.fna.fbcdn.net/v/t39.30808-6/469119324_964562495720655_7345235433667041914_n.jpg?_nc_cat=107&ccb=1-7&_nc_sid=127cfc&_nc_eui2=AeEC6ZN8PseULZim4e0F0kQ4LD-usnVikqAsP66ydWKSoDZZgorkBzBQnuBGa9b_zd_YO6ZoxWihttxYNsi2MnrI&_nc_ohc=EydmQdMsJb4Q7kNvwEslbUt&_nc_oc=Adl31dMJqbeBsjYhEv4ay8yMMvxf2tPYFTMWpiygLfvbsXUVlVFo764Ar1QLLqt-7Xw&_nc_zt=23&_nc_ht=scontent.fpnh11-1.fna&_nc_gid=Z-_i7yaGcUaDOvhMGH5MyA&oh=00_AfLyHXH1KwOLgomQqh1BhMP-QUODhrhyKWUod2aNYdEufw&oe=683E5B79",
+    src:homeBanner02Img,
     alt: "Bayon Temple Faces",
     title: "Bayon Temple",
     description: "Temple of faces",
   },
   {
-    src:
-      "https://asset.cambodia.gov.kh/tourism/2023/11/Royal-Palace-in-Phnom-Penh-Capital-jpg.webp",
+    src:homeBanner03Img,
     alt: "Banteay Srei Temple",
     title: "Banteay Srei",
     description: "Pink sandstone temple",
@@ -1553,7 +1553,7 @@ onBeforeUnmount(() => {
         <div class="newsletter-section fade-in">
           <div class="newsletter-image-container">
             <img
-              src="https://i.shgcdn.com/26c7dd1b-1629-429b-b4fa-09b8a5c0cb0f/-/format/auto/-/preview/3000x3000/-/quality/lighter/"
+              src="../../assets/home/information.png"
               alt="Beautiful Cambodia scenery"
               class="newsletter-image"
             />
@@ -1592,7 +1592,7 @@ onBeforeUnmount(() => {
               </div>
             </div>
             <div class="cta-image">
-              <img src="../../assets/image/PhnomPhsar.jpg" alt="Cambodia Adventure Map" />
+              <img src="../../assets/home/PhnomPhsar.jpg" alt="Cambodia Adventure Map" />
             </div>
           </div>
         </div>
