@@ -3,22 +3,22 @@
     <!-- Loading Overlay -->
     <div v-if="isLoading" class="loading-overlay">
       <div class="loader"></div>
-      <p>Loading product details...</p>
+      <p>{{ t('loading-product-details') }}</p>
     </div>
 
     <!-- Error Message -->
     <div v-else-if="error" class="error-message">
       <div class="error-icon">!</div>
       <h3>{{ error }}</h3>
-      <button @click="fetchProductData" class="retry-btn">Try Again</button>
+      <button @click="fetchProductData" class="retry-btn">{{ t('try-again') }}</button>
     </div>
 
     <!-- Product Details Content -->
     <div v-else-if="product" class="content-container">
       <div class="breadcrumb fade-in">
-        <router-link to="/">Home</router-link> &gt;
-        <router-link to="/product">Hiking Gear</router-link> &gt;
-        <span>{{ product.name }}</span>
+        <router-link to="/">{{ t('home') }}</router-link> &gt;
+        <router-link to="/product">{{ t('hiking-gear') }}</router-link> &gt;
+        <span>{{ getLocalizedProductName(product) }}</span>
       </div>
 
       <div class="product-detail-layout">
@@ -27,12 +27,12 @@
           <div class="main-image-container">
             <img
               :src="mainImage"
-              :alt="product.name"
+              :alt="getLocalizedProductName(product)"
               class="main-image"
               @error="handleImageError"
             />
             <div v-if="product.status === 'published'" class="product-badge published">
-              {{ product.status.toUpperCase() }}
+              {{ getLocalizedStatus(product.status) }}
             </div>
           </div>
 
@@ -46,7 +46,7 @@
             >
               <img
                 :src="image"
-                :alt="`${product.name} - view ${index + 1}`"
+                :alt="`${getLocalizedProductName(product)} - ${t('view')} ${index + 1}`"
                 @error="handleImageError"
               />
             </div>
@@ -56,10 +56,10 @@
         <!-- Product Info Section -->
         <div class="product-info slide-left">
           <div class="product-header">
-            <div class="brand-tag" v-if="product.brand">{{ product.brand.name }}</div>
-            <h1 class="product-title">{{ product.name }}</h1>
-            <div class="product-subtitle" v-if="product.name_km">
-              {{ product.name_km }}
+            <div class="brand-tag" v-if="product.brand">{{ getLocalizedBrandName(product.brand) }}</div>
+            <h1 class="product-title">{{ getLocalizedProductName(product) }}</h1>
+            <div class="product-subtitle" v-if="getLocalizedProductDescription(product)">
+              {{ getLocalizedProductDescription(product) }}
             </div>
           </div>
 
@@ -78,40 +78,40 @@
               </template>
             </div>
             <span class="review-count"
-              >({{ product.stars ? product.stars.length : 0 }} Reviews)</span
+              >({{ product.stars ? product.stars.length : 0 }} {{ t('reviews') }})</span
             >
           </div>
 
           <div class="product-price-box">
-            <div class="price-label">Price</div>
+            <div class="price-label">{{ t('price') }}</div>
             <div class="product-price">${{ selectedVariantPrice || product.price }}</div>
           </div>
 
           <div class="product-meta">
-            <div class="product-code">Reference: {{ product.code }}</div>
+            <div class="product-code">{{ t('reference') }}: {{ product.code }}</div>
             <div class="product-brand" v-if="product.brand">
-              Brand: {{ product.brand.name }}
+              {{ t('brand') }}: {{ getLocalizedBrandName(product.brand) }}
             </div>
-            <div class="product-views">Views: {{ product.total_views || 0 }}</div>
+            <div class="product-views">{{ t('views') }}: {{ product.total_views || 0 }}</div>
           </div>
 
           <div class="product-categories">
             <span class="category-tag" v-if="product.category">{{
-              product.category.name
+              getLocalizedCategoryName(product.category)
             }}</span>
             <span class="category-tag" v-if="product.pcategory">{{
-              product.pcategory.name
+              getLocalizedCategoryName(product.pcategory)
             }}</span>
           </div>
 
           <!-- Product description preview -->
           <div class="product-description-preview">
-            <p>{{ product.description }}</p>
+            <p>{{ getLocalizedProductFullDescription(product) }}</p>
           </div>
 
           <!-- Color Selection -->
           <div class="product-colors" v-if="product.colors && product.colors.length > 0">
-            <h3>Color Options</h3>
+            <h3>{{ t('color-options') }}</h3>
             <div class="color-options">
               <button
                 v-for="color in product.colors"
@@ -120,14 +120,14 @@
                 :class="{ active: selectedColor === color.id }"
                 @click="selectColor(color.id)"
               >
-                {{ color.name }}
+                {{ getLocalizedColorName(color) }}
               </button>
             </div>
           </div>
 
           <!-- Size Selection -->
           <div class="product-sizes" v-if="product.sizes && product.sizes.length > 0">
-            <h3>Size Options</h3>
+            <h3>{{ t('size-options') }}</h3>
             <div class="size-options">
               <button
                 v-for="size in product.sizes"
@@ -136,21 +136,21 @@
                 :class="{ active: selectedSize === size.id }"
                 @click="selectSize(size.id)"
               >
-                {{ size.size }}
+                {{ getLocalizedSizeName(size) }}
               </button>
             </div>
           </div>
 
           <!-- Quantity Selection -->
           <div class="product-quantity">
-            <h3>Quantity</h3>
+            <h3>{{ t('quantity') }}</h3>
             <div class="quantity-control">
               <button @click="decrementQuantity" class="quantity-btn">-</button>
               <input type="number" v-model.number="quantity" min="1" :max="maxQuantity" />
               <button @click="incrementQuantity" class="quantity-btn">+</button>
             </div>
             <p class="stock-info" :class="{ 'low-stock': isLowStock }">
-              {{ stockMessage }}
+              {{ getLocalizedStockMessage() }}
             </p>
           </div>
 
@@ -163,33 +163,15 @@
                   fill="currentColor"
                 ></path>
               </svg>
-              Add To Cart
+              {{ t('add-to-cart') }}
             </button>
-
-            <!-- <button
-              @click="toggleFavorite"
-              class="favorite-btn"
-              :class="{ active: isFavorite }"
-            >
-              <svg
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-              >
-                <path
-                  d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"
-                ></path>
-              </svg>
-            </button> -->
           </div>
         </div>
       </div>
 
       <!-- Product Features -->
       <div class="product-features slide-up">
-        <h2 class="section-title">Product Features</h2>
+        <h2 class="section-title">{{ t('product-features') }}</h2>
         <div class="features-container">
           <div class="feature-item">
             <div class="feature-icon">
@@ -203,8 +185,8 @@
                 <path d="M23 12a11.05 11.05 0 0 0-22 0zm-5 7a3 3 0 0 1-6 0v-7"></path>
               </svg>
             </div>
-            <h3>Waterproof Design</h3>
-            <p>Stay dry in all conditions with our waterproof gear technology</p>
+            <h3>{{ t('waterproof-design') }}</h3>
+            <p>{{ t('waterproof-description') }}</p>
           </div>
 
           <div class="feature-item">
@@ -221,10 +203,8 @@
                 <line x1="12" y1="16" x2="12" y2="16"></line>
               </svg>
             </div>
-            <h3>Lightweight</h3>
-            <p>
-              Ultra-light materials for easy transport without compromising durability
-            </p>
+            <h3>{{ t('lightweight') }}</h3>
+            <p>{{ t('lightweight-description') }}</p>
           </div>
 
           <div class="feature-item">
@@ -241,8 +221,8 @@
                 ></polygon>
               </svg>
             </div>
-            <h3>Premium Quality</h3>
-            <p>Built to last with premium materials and expert craftsmanship</p>
+            <h3>{{ t('premium-quality') }}</h3>
+            <p>{{ t('premium-quality-description') }}</p>
           </div>
 
           <div class="feature-item">
@@ -258,19 +238,19 @@
                 <circle cx="12" cy="7" r="4"></circle>
               </svg>
             </div>
-            <h3>User-Friendly</h3>
-            <p>Intuitive design for quick setup and hassle-free usage</p>
+            <h3>{{ t('user-friendly') }}</h3>
+            <p>{{ t('user-friendly-description') }}</p>
           </div>
         </div>
       </div>
 
       <!-- Product Description -->
       <div class="product-description-section">
-        <h2 class="section-title">Product Description</h2>
+        <h2 class="section-title">{{ t('product-description') }}</h2>
         <div class="description-tabs">
           <div class="tab-headers">
             <button
-              v-for="(tab, index) in tabs"
+              v-for="(tab, index) in getLocalizedTabs()"
               :key="index"
               class="tab-header"
               :class="{ active: activeTab === index }"
@@ -282,41 +262,32 @@
 
           <div class="tab-content" :class="{ active: activeTab === 0 }">
             <div class="tab-content-inner">
-              <p>{{ product.description }}</p>
-              <p>
-                This premium hiking gear is designed for outdoor enthusiasts who demand
-                quality and performance. Built with durable materials and expert
-                craftsmanship, this product will stand up to the harshest conditions while
-                providing comfort and reliability on the trail.
-              </p>
-              <p>
-                Whether you're planning a weekend camping trip or a serious backpacking
-                expedition, this gear will help ensure your adventure is successful and
-                enjoyable.
-              </p>
+              <p>{{ getLocalizedProductFullDescription(product) }}</p>
+              <p>{{ t('premium-hiking-gear-description') }}</p>
+              <p>{{ t('adventure-gear-description') }}</p>
             </div>
           </div>
 
           <div class="tab-content" :class="{ active: activeTab === 1 }">
             <div class="tab-content-inner">
-              <h4>Product Specifications</h4>
+              <h4>{{ t('product-specifications') }}</h4>
               <ul class="specifications-list">
-                <li><strong>Material:</strong> High-grade weatherproof fabric</li>
-                <li><strong>Weight:</strong> 2.5 lbs (1.1 kg)</li>
-                <li><strong>Dimensions:</strong> 12" x 10" x 5" when packed</li>
-                <li>
-                  <strong>Color Options:</strong>
+                <li><strong>{{ t('material') }}:</strong> {{ t('high-grade-weatherproof-fabric') }}</li>
+                <li><strong>{{ t('weight') }}:</strong> {{ t('product-weight') }}</li>
+                <li><strong>{{ t('dimensions') }}:</strong> {{ t('product-dimensions') }}</li>
+                <li v-if="product.colors && product.colors.length > 0">
+                  <strong>{{ t('color-options') }}:</strong>
                   <span v-for="(color, index) in product.colors" :key="color.id">
-                    {{ color.name }}{{ index < product.colors.length - 1 ? ", " : "" }}
+                    {{ getLocalizedColorName(color) }}{{ index < product.colors.length - 1 ? ", " : "" }}
                   </span>
                 </li>
-                <li>
-                  <strong>Size Options:</strong>
+                <li v-if="product.sizes && product.sizes.length > 0">
+                  <strong>{{ t('size-options') }}:</strong>
                   <span v-for="(size, index) in product.sizes" :key="size.id">
-                    {{ size.size }}{{ index < product.sizes.length - 1 ? ", " : "" }}
+                    {{ getLocalizedSizeName(size) }}{{ index < product.sizes.length - 1 ? ", " : "" }}
                   </span>
                 </li>
-                <li><strong>Warranty:</strong> 1-year limited manufacturer warranty</li>
+                <li><strong>{{ t('warranty') }}:</strong> {{ t('one-year-warranty') }}</li>
               </ul>
             </div>
           </div>
@@ -339,7 +310,7 @@
                       </template>
                     </div>
                     <div class="review-count">
-                      {{ product.stars ? product.stars.length : 0 }} reviews
+                      {{ product.stars ? product.stars.length : 0 }} {{ t('reviews') }}
                     </div>
                   </div>
                 </div>
@@ -374,26 +345,26 @@
                     </div>
                   </div>
                   <div v-else class="no-reviews">
-                    <p>No reviews yet. Be the first to review this product!</p>
+                    <p>{{ t('no-reviews-yet-product') }}</p>
                   </div>
                 </div>
 
                 <!-- Review Form -->
                 <div class="review-section">
-                  <h3>Write a Review</h3>
+                  <h3>{{ t('write-a-review') }}</h3>
 
                   <!-- Login status debugging (remove in production) -->
                   <div class="login-status">
-                    <p>Login Status: {{ isLoggedIn ? "Logged In" : "Not Logged In" }}</p>
-                    <p v-if="globalStore.user">Welcome, {{ globalStore.user.name }}</p>
+                    <p>{{ t('login-status') }}: {{ isLoggedIn ? t('logged-in') : t('not-logged-in') }}</p>
+                    <p v-if="globalStore.user">{{ t('welcome') }}, {{ globalStore.user.name }}</p>
                     <button @click="checkLoginStatus" class="debug-button">
-                      Verify Login Status
+                      {{ t('verify-login-status') }}
                     </button>
                   </div>
 
                   <div v-if="isLoggedIn" class="review-form">
                     <div class="rating-input">
-                      <label>Your Rating:</label>
+                      <label>{{ t('your-rating') }}:</label>
                       <div class="star-rating">
                         <span
                           v-for="n in 5"
@@ -406,11 +377,11 @@
                       </div>
                     </div>
                     <div class="comment-input">
-                      <label>Your Review:</label>
+                      <label>{{ t('your-review') }}:</label>
                       <textarea
                         v-model="userComment"
                         rows="4"
-                        placeholder="Share your experience with this product..."
+                        :placeholder="t('share-product-experience')"
                       ></textarea>
                     </div>
                     <button
@@ -418,13 +389,12 @@
                       class="submit-review-btn"
                       :disabled="!canSubmitReview"
                     >
-                      Submit Review
+                      {{ t('submit-review') }}
                     </button>
                   </div>
                   <div v-else class="login-to-review">
                     <p>
-                      Please <router-link to="/login">log in</router-link> to write a
-                      review.
+                      {{ t('please') }} <router-link to="/login">{{ t('log-in') }}</router-link> {{ t('to-write-review') }}.
                     </p>
                   </div>
                 </div>
@@ -436,7 +406,7 @@
 
       <!-- Related Products Section -->
       <div class="related-products-section slide-up" v-if="relatedProducts.length > 0">
-        <h2 class="section-title">Related Products</h2>
+        <h2 class="section-title">{{ t('related-products') }}</h2>
         <div class="related-products-grid">
           <div
             v-for="(item, index) in relatedProducts"
@@ -447,11 +417,11 @@
             <router-link :to="`/product/detail/${item.id}`">
               <div class="product-card-inner">
                 <div v-if="item.status === 'published'" class="product-label sale">
-                  NEW
+                  {{ t('new') }}
                 </div>
                 <img
                   :src="getProductImage(item)"
-                  :alt="item.name"
+                  :alt="getLocalizedProductName(item)"
                   class="product-image"
                   @error="handleImageError"
                 />
@@ -465,10 +435,10 @@
                 </div>
                 <div class="product-info">
                   <div class="product-category" v-if="item.category">
-                    {{ item.category.name }}
+                    {{ getLocalizedCategoryName(item.category) }}
                   </div>
-                  <h3 class="product-brand">{{ item.name }}</h3>
-                  <p class="product-name" v-if="item.name_km">{{ item.name_km }}</p>
+                  <h3 class="product-brand">{{ getLocalizedProductName(item) }}</h3>
+                  <p class="product-name" v-if="getLocalizedProductDescription(item)">{{ getLocalizedProductDescription(item) }}</p>
                   <div class="product-price">
                     <span class="current-price">${{ item.price }}</span>
                   </div>
@@ -485,22 +455,29 @@
         <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
         <polyline points="22 4 12 14.01 9 11.01"></polyline>
       </svg>
-      <span>Added to cart!</span>
+      <span>{{ t('added-to-cart-success') }}</span>
     </div>
   </div>
 </template>
+
 <script setup>
+import { useTranslation } from '@/components/useTranslation';
 import { useCartStore } from "@/stores/cart";
 import { useGlobalStore } from "@/stores/global";
 import axios from "axios";
 import { computed, inject, onMounted, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
+
+// Translation setup
+const { currentLanguage, t } = useTranslation();
+
 const route = useRoute();
 const router = useRouter();
 const globalStore = useGlobalStore();
 const cartStore = useCartStore();
 const showSuccessNotification = inject("showSuccessNotification", null);
 const showErrorNotification = inject("showErrorNotification", null);
+
 const product = ref(null);
 const relatedProducts = ref([]);
 const isLoading = ref(true);
@@ -514,11 +491,134 @@ const selectedVariant = ref(null);
 const selectedVariantPrice = ref(null);
 const showAddedMessage = ref(false);
 const activeTab = ref(0);
-const tabs = [{ name: "Description" }, { name: "Specifications" }, { name: "Reviews" }];
 const userRating = ref(0);
 const userComment = ref("");
 const isSubmittingReview = ref(false);
+
+// Translation helper functions
+const getLocalizedProductName = (product) => {
+  if (!product) return '';
+  
+  const currentLang = currentLanguage.value;
+  if (currentLang === 'km' && product.name_km) {
+    return product.name_km;
+  } else if (currentLang === 'km' && product.name_local) {
+    return product.name_local;
+  }
+  return product.name || '';
+};
+
+const getLocalizedProductDescription = (product) => {
+  if (!product) return '';
+  
+  const currentLang = currentLanguage.value;
+  if (currentLang === 'km' && product.description_km) {
+    return product.description_km;
+  } else if (currentLang === 'km' && product.description_local) {
+    return product.description_local;
+  }
+  return product.name_km || product.name_local || '';
+};
+
+const getLocalizedProductFullDescription = (product) => {
+  if (!product) return t('no-description-available');
+  
+  const currentLang = currentLanguage.value;
+  if (currentLang === 'km' && product.description_km) {
+    return product.description_km;
+  } else if (currentLang === 'km' && product.description_local) {
+    return product.description_local;
+  }
+  return product.description || t('no-description-available');
+};
+
+const getLocalizedBrandName = (brand) => {
+  if (!brand) return '';
+  
+  const currentLang = currentLanguage.value;
+  if (currentLang === 'km' && brand.name_km) {
+    return brand.name_km;
+  } else if (currentLang === 'km' && brand.name_local) {
+    return brand.name_local;
+  }
+  return brand.name || '';
+};
+
+const getLocalizedCategoryName = (category) => {
+  if (!category) return '';
+  
+  const currentLang = currentLanguage.value;
+  if (currentLang === 'km' && category.name_km) {
+    return category.name_km;
+  } else if (currentLang === 'km' && category.name_local) {
+    return category.name_local;
+  }
+  return category.name || '';
+};
+
+const getLocalizedColorName = (color) => {
+  if (!color) return '';
+  
+  const currentLang = currentLanguage.value;
+  if (currentLang === 'km' && color.name_km) {
+    return color.name_km;
+  } else if (currentLang === 'km' && color.name_local) {
+    return color.name_local;
+  }
+  return color.name || '';
+};
+
+const getLocalizedSizeName = (size) => {
+  if (!size) return '';
+  
+  const currentLang = currentLanguage.value;
+  if (currentLang === 'km' && size.size_km) {
+    return size.size_km;
+  } else if (currentLang === 'km' && size.size_local) {
+    return size.size_local;
+  }
+  return size.size || '';
+};
+
+const getLocalizedStatus = (status) => {
+  const statusMap = {
+    'published': t('published'),
+    'draft': t('draft'),
+    'active': t('active'),
+    'inactive': t('inactive')
+  };
+  
+  return statusMap[status?.toLowerCase()] || status?.toUpperCase() || '';
+};
+
+const getLocalizedStockMessage = () => {
+  if (maxQuantity.value <= 0) {
+    return t('out-of-stock');
+  } else if (isLowStock.value) {
+    return `${t('low-stock')}: ${t('only')} ${maxQuantity.value} ${t('left')}`;
+  } else {
+    return `${maxQuantity.value} ${t('in-stock')}`;
+  }
+};
+
+const getLocalizedTabs = () => {
+  return [
+    { name: t('description') },
+    { name: t('specifications') },
+    { name: t('reviews') }
+  ];
+};
+
+// Language change handler
+const handleLanguageChange = () => {
+  document.title = `${t('camtour-brand')} - ${getLocalizedProductName(product.value) || t('product-detail')}`;
+  if (error.value) {
+    error.value = t('error-loading-product-details');
+  }
+};
+
 const isLoggedIn = computed(() => globalStore.isLogin);
+
 const averageRating = computed(() => {
   if (!product.value?.stars || product.value.stars.length === 0) {
     return 0;
@@ -573,21 +673,12 @@ const isLowStock = computed(() => {
   return maxQuantity.value > 0 && maxQuantity.value < 5;
 });
 
-const stockMessage = computed(() => {
-  if (maxQuantity.value <= 0) {
-    return "Out of Stock";
-  } else if (isLowStock.value) {
-    return `Low Stock: Only ${maxQuantity.value} Left`;
-  } else {
-    return `${maxQuantity.value} In Stock`;
-  }
-});
-
 const canAddToCart = computed(() => {
   return maxQuantity.value > 0 && quantity.value <= maxQuantity.value;
 });
 
 const placeholderImage = "https://placehold.co/400x300/E9967A/ffffff?text=Hiking+Gear";
+
 const fetchProductData = async () => {
   const productId = route.params.id;
   if (!productId) {
@@ -602,6 +693,8 @@ const fetchProductData = async () => {
     });
     if (response.data.result) {
       product.value = response.data.data.product || response.data.data;
+      document.title = `${t('camtour-brand')} - ${getLocalizedProductName(product.value)}`;
+      
       if (product.value.colors && product.value.colors.length > 0) {
         selectColor(product.value.colors[0].id);
       }
@@ -616,11 +709,11 @@ const fetchProductData = async () => {
         fetchRelatedProducts();
       }
     } else {
-      error.value = response.data.message || "Failed to load product details";
+      error.value = response.data.message || t('failed-to-load-product-details');
     }
   } catch (err) {
     console.error("Error fetching product data:", err);
-    error.value = "An error occurred while loading product details";
+    error.value = t('error-occurred-loading-product-details');
     await globalStore.onCheckError(err);
   } finally {
     isLoading.value = false;
@@ -671,23 +764,23 @@ const submitReview = async () => {
         star: userRating.value,
         comment: userComment.value,
         rater_id: globalStore.user?.id,
-        rater_name: globalStore.user?.name || "User",
+        rater_name: globalStore.user?.name || t('user'),
         created_at: new Date(),
       });
       userRating.value = 0;
       userComment.value = "";
       if (showSuccessNotification) {
-        showSuccessNotification("Your review has been submitted successfully!");
+        showSuccessNotification(t('review-submitted-successfully'));
       }
     } else {
       if (showErrorNotification) {
-        showErrorNotification(response.data.message || "Failed to submit review");
+        showErrorNotification(response.data.message || t('failed-to-submit-review'));
       }
     }
   } catch (err) {
     console.error("Error submitting review:", err);
     if (showErrorNotification) {
-      showErrorNotification("An error occurred while submitting your review");
+      showErrorNotification(t('error-occurred-submitting-review'));
     }
   } finally {
     isSubmittingReview.value = false;
@@ -708,7 +801,7 @@ const getStarClass = (position) => {
 
 const formatDate = (dateString) => {
   const date = new Date(dateString);
-  return date.toLocaleDateString("en-US", {
+  return date.toLocaleDateString(currentLanguage.value === 'km' ? 'km-KH' : 'en-US', {
     year: "numeric",
     month: "short",
     day: "numeric",
@@ -775,7 +868,7 @@ const decrementQuantity = () => {
 const addToCart = () => {
   const productItem = {
     id: product.value.id,
-    name: product.value.name,
+    name: getLocalizedProductName(product.value),
     name_km: product.value.name_km,
     code: product.value.code,
     price: selectedVariantPrice.value || product.value.price,
@@ -786,11 +879,12 @@ const addToCart = () => {
     sizeId: selectedSize.value,
     sizeName: getSelectedSizeName(),
     variantId: selectedVariant.value?.id,
-    brand: product.value.brand?.name,
-    category: product.value.category?.name,
-    pcategory: product.value.pcategory?.name,
+    brand: getLocalizedBrandName(product.value.brand),
+    category: getLocalizedCategoryName(product.value.category),
+    pcategory: getLocalizedCategoryName(product.value.pcategory),
     maxQuantity: maxQuantity.value,
   };
+  
   const result = cartStore.addToCart(productItem);
   if (result.success) {
     showAddedMessage.value = true;
@@ -811,13 +905,13 @@ const addToCart = () => {
 const getSelectedColorName = () => {
   if (!selectedColor.value || !product.value?.colors) return null;
   const color = product.value.colors.find((c) => c.id === selectedColor.value);
-  return color ? color.name : null;
+  return color ? getLocalizedColorName(color) : null;
 };
 
 const getSelectedSizeName = () => {
   if (!selectedSize.value || !product.value?.sizes) return null;
   const size = product.value.sizes.find((s) => s.id === selectedSize.value);
-  return size ? size.size : null;
+  return size ? getLocalizedSizeName(size) : null;
 };
 
 const checkLoginStatus = () => {
@@ -835,13 +929,20 @@ const checkLoginStatus = () => {
   };
 };
 
+// Language watcher
+watch(currentLanguage, () => {
+  handleLanguageChange();
+});
+
 onMounted(() => {
+  window.addEventListener('language-changed', handleLanguageChange);
   const storedFavorites = localStorage.getItem("hikingFavorites");
   if (storedFavorites) {
     favorites.value = JSON.parse(storedFavorites);
   }
   fetchProductData();
 });
+
 watch(
   () => route.params.id,
   (newId) => {
@@ -874,8 +975,6 @@ watch(
   --success-color: #4caf50;
   --warning-color: #ffc107;
   --error-color: #f44336;
-
-  font-family: "Open Sans", "Segoe UI", sans-serif;
   color: var(--text-dark);
   background-color: var(--background-medium);
   top: 70px;
@@ -1686,7 +1785,6 @@ textarea {
   border: 1px solid var(--border-color);
   border-radius: 4px;
   resize: vertical;
-  font-family: inherit;
 }
 
 .submit-review-btn {

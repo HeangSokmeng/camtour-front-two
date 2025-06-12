@@ -11,6 +11,7 @@ import CheckoutComfirm from '../views/product/OrderConfirmationView.vue';
 import ProductDetail from '../views/product/ProductDetailView.vue';
 import OrderProduct from '../views/product/productOrderView.vue';
 import ProductView from '../views/product/ProductView.vue';
+import Plan from '../views/recommendation/SiemReapRecommendView.vue';
 import SiemReap from '../views/siem-reap/SiemReapView.vue';
 import DetailsView from '../views/travel/TravelDetailView.vue';
 import WishlistView from '../views/wishlist/WishlistView.vue';
@@ -83,7 +84,8 @@ const routes = [
       title: 'Siem Reap',
       transition: 'slide-up'
     }
-  },{
+  }, 
+  {
     path: '/favorites',
     name: 'wish list',
     component: WishlistView,
@@ -119,7 +121,18 @@ const routes = [
       transition: 'slide-left',
       headerType: 'product'  // Add this line
     }
-  },{
+  },
+  {
+    path: '/plan',
+    name: 'plan',
+    component: Plan,
+    meta: {
+      title: 'Plan',
+      transition: 'slide-left',
+      headerType: 'plan'  // Add this line
+    }
+  }, 
+  {
     path: '/order',
     name: 'order',
     component: OrderProduct,
@@ -137,7 +150,7 @@ const routes = [
       title: 'Shop',
       transition: 'fade'
     }
-  }, 
+  },
   // {
   //   path: '/location/getone/:id',
   //   name: 'product-detail',
@@ -158,14 +171,14 @@ const routes = [
     }
   },
   {
-    path: '/:pathMatch(.*)*', 
+    path: '/:pathMatch(.*)*',
     // name: 'notFound',
     // component: () => import('../views/NotFound.vue'),
     // meta: { 
     //   title: 'Page Not Found',
     //   transition: 'fade'
     // }
-     redirect: '/', // or component: NotFound
+    redirect: '/', // or component: NotFound
   }
 ];
 

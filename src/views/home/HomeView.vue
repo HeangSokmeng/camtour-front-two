@@ -45,13 +45,13 @@ const heroImages = ref([
     description: "Ancient temple complex",
   },
   {
-    src:homeBanner02Img,
+    src: homeBanner02Img,
     alt: "Bayon Temple Faces",
     title: "Bayon Temple",
     description: "Temple of faces",
   },
   {
-    src:homeBanner03Img,
+    src: homeBanner03Img,
     alt: "Banteay Srei Temple",
     title: "Banteay Srei",
     description: "Pink sandstone temple",
@@ -131,30 +131,28 @@ const chatbotFeatures = ref([
   {
     key: "trip-planning",
     translationKey: "trip-planning",
+    tooltip: "go-to-recommend",
     iconPath:
       "M20 3h-1V1h-2v2H7V1H5v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 18H4V10h16v11zM4 8V5h16v3H4z",
   },
   {
-    key: "tour-discounts",
-    translationKey: "tour-discounts",
-    iconPath:
-      "M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 6h-1.7l-5 9H7c-.83 0-1.5-.67-1.5-1.5S6.17 15 7 15h1.7l5-9H17c.83 0 1.5.67 1.5 1.5S17.83 9 17 9z",
-  },
-  {
     key: "location-info",
     translationKey: "location-info",
+    tooltip: "go-to-recommend",
     iconPath:
       "M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z",
   },
   {
     key: "travel-tips",
     translationKey: "travel-tips",
+    tooltip: "go-to-recommend",
     iconPath:
       "M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4zM14 13h-3v3H9v-3H6v-2h3V8h2v3h3v2z",
   },
   {
     key: "budget-advice",
     translationKey: "budget-advice",
+    tooltip: "go-to-recommend",
     iconPath:
       "M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z",
   },
@@ -410,8 +408,8 @@ const fetchSearchSuggestions = async (query) => {
         data.product.slice(0, 2).forEach((product) => {
           suggestions.push({
             id: `product-${product.product_id}`,
-            name: product.product_name,
-            name_km: product.product_name_km,
+            name: getLocalizedProductName(product),
+            image: product.is_thumbnail,
             type: "product",
             data: product,
           });
@@ -492,7 +490,7 @@ const refreshWishlistState = async () => {
     wishlistItems.value = items;
     wishlistUpdateKey.value++;
   } catch (error) {
-    console.error(error)
+    console.error(error);
   }
 };
 
@@ -1152,16 +1150,18 @@ onBeforeUnmount(() => {
             </div>
           </div>
           <div class="chatbot-features">
-            <div
-              class="chatbot-feature"
+            <router-link
               v-for="feature in chatbotFeatures"
               :key="feature.key"
+              :to="'/plan'"
+              class="chatbot-feature"
+              :title="t(feature.tooltip)"
             >
               <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path :d="feature.iconPath" fill="currentColor" />
               </svg>
               <span>{{ t(feature.translationKey) }}</span>
-            </div>
+            </router-link>
           </div>
         </div>
       </div>
@@ -1411,12 +1411,13 @@ onBeforeUnmount(() => {
 
           <div class="feature-card bounce-in delay-200">
             <div class="feature-icon">
-              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <!-- <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path
-                  d="M12 3L1 9l4 2.18v6L12 21l7-3.82v-6l2-1.09V17h2V9L12 3zm6.82 6L12 12.72 5.18 9 12 5.28 18.82 9zM17 15.99l-5 2.73-5-2.73v-3.72L12 15l5-2.73v3.72z"
                   fill="currentColor"
+                  d="M12 2a1 1 0 0 1 1 1v1h2a4 4 0 0 1 4 4v8a4 4 0 0 1-4 4h-2v1a1 1 0 1 1-2 0v-1h-2a4 4 0 0 1-4-4V8a4 4 0 0 1 4-4h2V3a1 1 0 0 1 1-1zm-4 6a1 1 0 1 0 0 2 1 1 0 0 0 0-2zm8 0a1 1 0 1 0 0 2 1 1 0 0 0 0-2zm-8 6a1 1 0 1 0 2 0h4a1 1 0 1 0 2 0v1H8v-1z"
                 />
-              </svg>
+              </svg> -->
+              <img width="40px" src="../../assets/icons/robot.png" alt="" />
             </div>
             <h3 class="feature-title">{{ t("local-guides") }}</h3>
             <p class="feature-desc">{{ t("local-guides-description") }}</p>
@@ -1647,7 +1648,6 @@ onBeforeUnmount(() => {
   border-radius: 5px;
   font-size: 12px;
   z-index: 9999;
-  font-family: monospace;
 }
 
 .wishlist-debug-info p {

@@ -21,12 +21,12 @@
           <strong>{{ orderId }}</strong>
         </div>
 
-        <div class="confirmation-message">
+        <!-- <div class="confirmation-message">
           <p>
             A confirmation email has been sent to <strong>{{ email }}</strong> with all
             your Ordering details.
           </p>
-        </div>
+        </div> -->
       </div>
 
       <div class="next-steps">
@@ -112,21 +112,20 @@
 </template>
 
 <script setup>
-import { useGlobalStore } from "@/stores/global";
-import { computed, onMounted, ref } from "vue";
+import { onMounted, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 
 const route = useRoute();
 const router = useRouter();
-const globalStore = useGlobalStore();
+// const globalStore = useGlobalStore();
 const orderId = ref(route.query.order_id || "ORD-123456");
 const userEmail = ref("");
-const email = computed(() => {
-  if (globalStore.getIsAuthenticated && globalStore.profile?.email) {
-    return globalStore.profile.email;
-  }
-  return userEmail.value || "your email address";
-});
+// const email = computed(() => {
+//   if (globalStore.getIsAuthenticated && globalStore.profile?.email) {
+//     return globalStore.profile.email;
+//   }
+//   return userEmail.value || "your email address";
+// });
 const recommendedTours = ref([
   {
     id: 1,
@@ -172,6 +171,7 @@ onMounted(() => {
   }
   fetchRecommendedTours();
 });
+
 const fetchRecommendedTours = async () => {
   try {
     await new Promise((resolve) => setTimeout(resolve, 500));

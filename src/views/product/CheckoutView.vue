@@ -1,6 +1,6 @@
 <template>
   <div class="checkout-container">
-    <h1 class="page-title">Checkout</h1>
+    <h1 class="page-title">{{ t('checkout') }}</h1>
 
     <div v-if="!cartStore.hasItems" class="empty-checkout">
       <div class="empty-checkout-message">
@@ -17,13 +17,13 @@
           <circle cx="9" cy="9" r="4"></circle>
           <line x1="5" y1="23" x2="19" y2="23"></line>
         </svg>
-        <p>Your cart is empty</p>
+        <p>{{ t('your-cart-is-empty') }}</p>
         <p class="empty-checkout-subtext">
-          Add some tours to your cart before proceeding to checkout
+          {{ t('add-items-before-checkout') }}
         </p>
-        <router-link to="/product" class="browse-packages-btn"
-          >Browse Tour Packages</router-link
-        >
+        <router-link to="/product" class="browse-packages-btn">{{
+          t('browse-products')
+        }}</router-link>
       </div>
     </div>
 
@@ -34,19 +34,19 @@
           <div class="checkout-step active">
             <div class="step-header">
               <div class="step-number">1</div>
-              <h2 class="step-title">Account Information</h2>
+              <h2 class="step-title">{{ t('account-information') }}</h2>
             </div>
 
             <div class="step-content">
               <div v-if="isAuthenticated" class="user-info-summary">
                 <div class="user-greeting">
                   <p>
-                    Welcome back, <strong>{{ userData.first_name || "Guest" }}</strong>
+                    {{ t('welcome-back') }}, <strong>{{ userData.first_name || t('guest') }}</strong>
                   </p>
                 </div>
                 <div class="user-details-summary">
-                  <p><strong>Email:</strong> {{ userData.email }}</p>
-                  <p><strong>Phone:</strong> {{ userData.phone || "Not provided" }}</p>
+                  <p><strong>{{ t('email') }}:</strong> {{ userData.email }}</p>
+                  <p><strong>{{ t('phone') }}:</strong> {{ userData.phone || t('not-provided') }}</p>
                 </div>
               </div>
               <div v-else class="guest-checkout-options">
@@ -57,57 +57,57 @@
                       :class="{ active: checkoutMode === 'guest' }"
                       class="option-tab"
                     >
-                      Continue as Guest
+                      {{ t('continue-as-guest') }}
                     </button>
                     <button
                       @click="checkoutMode = 'login'"
                       :class="{ active: checkoutMode === 'login' }"
                       class="option-tab"
                     >
-                      Login
+                      {{ t('login') }}
                     </button>
                   </div>
 
                   <div v-if="checkoutMode === 'guest'" class="guest-form">
                     <div class="form-row">
                       <div class="form-group">
-                        <label for="guest-email">Email Address</label>
+                        <label for="guest-email">{{ t('email-address') }}</label>
                         <input
                           type="email"
                           id="guest-email"
                           v-model="guestEmail"
-                          placeholder="youremail@example.com"
+                          :placeholder="t('email-placeholder')"
                         />
                       </div>
                     </div>
                     <div class="form-row two-columns">
                       <div class="form-group">
-                        <label for="guest-firstname">First Name</label>
+                        <label for="guest-firstname">{{ t('first-name') }}</label>
                         <input
                           type="text"
                           id="guest-firstname"
                           v-model="guestFirstName"
-                          placeholder="First Name"
+                          :placeholder="t('first-name')"
                         />
                       </div>
                       <div class="form-group">
-                        <label for="guest-lastname">Last Name</label>
+                        <label for="guest-lastname">{{ t('last-name') }}</label>
                         <input
                           type="text"
                           id="guest-lastname"
                           v-model="guestLastName"
-                          placeholder="Last Name"
+                          :placeholder="t('last-name')"
                         />
                       </div>
                     </div>
                     <div class="form-row">
                       <div class="form-group">
-                        <label for="guest-phone">Phone Number</label>
+                        <label for="guest-phone">{{ t('phone-number') }}</label>
                         <input
                           type="tel"
                           id="guest-phone"
                           v-model="guestPhone"
-                          placeholder="Phone Number"
+                          :placeholder="t('phone-number')"
                         />
                       </div>
                     </div>
@@ -116,23 +116,23 @@
                   <div v-else-if="checkoutMode === 'login'" class="login-form">
                     <div class="form-row">
                       <div class="form-group">
-                        <label for="login-email">Email Address</label>
+                        <label for="login-email">{{ t('email-address') }}</label>
                         <input
                           type="email"
                           id="login-email"
                           v-model="loginEmail"
-                          placeholder="youremail@example.com"
+                          :placeholder="t('email-placeholder')"
                         />
                       </div>
                     </div>
                     <div class="form-row">
                       <div class="form-group">
-                        <label for="login-password">Password</label>
+                        <label for="login-password">{{ t('password') }}</label>
                         <input
                           type="password"
                           id="login-password"
                           v-model="loginPassword"
-                          placeholder="Your Password"
+                          :placeholder="t('your-password')"
                         />
                       </div>
                     </div>
@@ -142,14 +142,12 @@
                         class="primary-button"
                         :disabled="isLoggingIn"
                       >
-                        <span v-if="isLoggingIn">Logging in...</span>
-                        <span v-else>Login & Continue</span>
+                        <span v-if="isLoggingIn">{{ t('logging-in') }}...</span>
+                        <span v-else>{{ t('login-and-continue') }}</span>
                       </button>
                     </div>
                     <div class="login-links">
-                      <router-link to="/forgot-password"
-                        >Forgot your password?</router-link
-                      >
+                      <router-link to="/forgot-password">{{ t('forgot-password') }}</router-link>
                     </div>
                   </div>
                 </div>
@@ -166,117 +164,103 @@
           >
             <div class="step-header">
               <div class="step-number">2</div>
-              <h2 class="step-title">Traveler Information</h2>
+              <h2 class="step-title">{{ t('customer-information') }}</h2>
             </div>
 
             <div
               class="step-content"
               v-if="isAuthenticated || (checkoutMode === 'guest' && isGuestInfoValid)"
             >
-              <p class="form-instruction">Please provide information for all travelers</p>
+              <p class="form-instruction">{{ t('please-provide-customer-information') }}</p>
 
-              <!-- Currency selection (keep this part unchanged) -->
+              <!-- Currency selection -->
               <div class="form-row" v-if="selectedPaymentMethod === 'cash_on_delivery'">
                 <div class="form-group">
-                  <label for="cash-currency">Preferred Currency</label>
+                  <label for="cash-currency">{{ t('preferred-currency') }}</label>
                   <select id="cash-currency" v-model="cashPaymentDetails.currency">
-                    <option value="USD">US Dollar (USD)</option>
-                    <option value="KHR">Cambodian Riel (KHR)</option>
+                    <option value="USD">{{ t('us-dollar') }} (USD)</option>
+                    <option value="KHR">{{ t('cambodian-riel') }} (KHR)</option>
                   </select>
-                  <small class="helper-text"
-                    >Select the currency you prefer to pay with upon arrival.</small
-                  >
+                  <small class="helper-text">{{ t('currency-helper-text') }}</small>
                 </div>
               </div>
 
-              <!-- Tours summary (new section) -->
+              <!-- Products summary -->
               <div class="tours-summary">
-                <h3>Your Tours</h3>
+                <h3>{{ t('your-product-order') }}</h3>
                 <div
                   v-for="(item, index) in cartStore.items"
                   :key="index"
                   class="tour-summary-item"
                 >
-                  <div class="tour-summary-name">{{ item.name }}</div>
+                  <div class="tour-summary-name">{{ getLocalizedItemName(item) }}</div>
                   <div class="tour-summary-details">
                     <div v-if="item.colorName" class="tour-detail">
-                      Option: {{ item.colorName }}
+                      {{ t('colors') }}: {{ item.colorName }}
                     </div>
                     <div v-if="item.sizeName" class="tour-detail">
-                      Date: {{ item.sizeName }}
+                      {{ t('size') }}: {{ item.sizeName }}
                     </div>
-                    <div class="tour-detail">Travelers: {{ item.quantity }}</div>
+                    <div class="tour-detail">{{ t('quantities') }}: {{ item.quantity }}</div>
                   </div>
                 </div>
               </div>
 
               <!-- Address Section -->
               <div class="address-section">
-                <h3>Shipping Address</h3>
-                
+                <h3>{{ t('shipping-address') }}</h3>
+
                 <div class="form-row">
                   <div class="form-group">
-                    <label for="address-street">Street Address</label>
+                    <label for="address-street">{{ t('street-address') }}</label>
                     <input
                       type="text"
                       id="address-street"
                       v-model="shippingAddress.street"
-                      placeholder="Street address, house number"
+                      :placeholder="t('street-address-placeholder')"
                     />
                   </div>
                 </div>
-                
+
                 <div class="form-row two-columns">
                   <div class="form-group">
-                    <label for="address-city">City</label>
+                    <label for="address-city">{{ t('city') }}</label>
                     <input
                       type="text"
                       id="address-city"
                       v-model="shippingAddress.city"
-                      placeholder="City"
+                      :placeholder="t('city')"
                     />
                   </div>
                   <div class="form-group">
-                    <label for="address-state">State/Province</label>
+                    <label for="address-state">{{ t('state-province') }}</label>
                     <input
                       type="text"
                       id="address-state"
                       v-model="shippingAddress.state"
-                      placeholder="State or Province"
+                      :placeholder="t('state-or-province')"
                     />
                   </div>
                 </div>
-                
+
                 <div class="form-row two-columns">
                   <div class="form-group">
-                    <label for="address-zip">Postal/Zip Code</label>
+                    <label for="address-zip">{{ t('postal-zip-code') }}</label>
                     <input
                       type="text"
                       id="address-zip"
                       v-model="shippingAddress.zipCode"
-                      placeholder="Postal or Zip code"
+                      :placeholder="t('postal-or-zip-code')"
                     />
                   </div>
                   <div class="form-group">
-                    <label for="address-country">Country</label>
+                    <label for="address-country">{{ t('country') }}</label>
                     <select id="address-country" v-model="shippingAddress.country">
-                      <option value="KH">Cambodia</option>
-                      <option value="US">United States</option>
-                      <option value="GB">United Kingdom</option>
-                      <option value="AU">Australia</option>
-                      <option value="CA">Canada</option>
-                      <option value="FR">France</option>
-                      <option value="DE">Germany</option>
-                      <option value="JP">Japan</option>
-                      <option value="KR">South Korea</option>
-                      <!-- Add more countries as needed -->
+                      <option value="KH">{{ t('cambodia') }}</option>
                     </select>
                   </div>
                 </div>
               </div>
-
-              <!-- Consolidated traveler forms -->
-              <!--  -->
             </div>
           </div>
 
@@ -289,7 +273,7 @@
           >
             <div class="step-header">
               <div class="step-number">3</div>
-              <h2 class="step-title">Payment Information</h2>
+              <h2 class="step-title">{{ t('payment-information') }}</h2>
             </div>
 
             <div
@@ -313,107 +297,17 @@
                         ></div>
                       </div>
                       <div class="payment-option-label">
-                        <img :src="method.icon" :alt="method.name" class="payment-icon" />
-                        <span>{{ method.name }}</span>
+                        <img :src="method.icon" :alt="getLocalizedPaymentMethodName(method)" class="payment-icon" />
+                        <span>{{ getLocalizedPaymentMethodName(method) }}</span>
                       </div>
                     </div>
                   </div>
                 </div>
-
-                <!-- Credit Card Form -->
                 <div
-                  v-if="selectedPaymentMethod === 'credit_card'"
-                  class="payment-form credit-card-form"
-                >
-                  <div class="form-row two-columns">
-                    <div class="form-group">
-                      <label for="card-holder">Card Holder Name</label>
-                      <input
-                        type="text"
-                        id="card-holder"
-                        v-model="paymentDetails.cardHolder"
-                        placeholder="Name on card"
-                      />
-                    </div>
-                    <div class="form-group">
-                      <label for="card-number">Card Number</label>
-                      <input
-                        type="text"
-                        id="card-number"
-                        v-model="paymentDetails.cardNumber"
-                        placeholder="XXXX XXXX XXXX XXXX"
-                        @input="formatCardNumber"
-                      />
-                    </div>
-                  </div>
-
-                  <div class="form-row three-columns">
-                    <div class="form-group">
-                      <label for="expiry-month">Expiry Month</label>
-                      <select id="expiry-month" v-model="paymentDetails.expiryMonth">
-                        <option value="">MM</option>
-                        <option
-                          v-for="n in 12"
-                          :key="n"
-                          :value="n < 10 ? `0${n}` : `${n}`"
-                        >
-                          {{ n < 10 ? `0${n}` : n }}
-                        </option>
-                      </select>
-                    </div>
-                    <div class="form-group">
-                      <label for="expiry-year">Expiry Year</label>
-                      <select id="expiry-year" v-model="paymentDetails.expiryYear">
-                        <option value="">YY</option>
-                        <option v-for="year in expiryYears" :key="year" :value="year">
-                          {{ year }}
-                        </option>
-                      </select>
-                    </div>
-                    <div class="form-group">
-                      <label for="cvv">CVV</label>
-                      <input
-                        type="text"
-                        id="cvv"
-                        v-model="paymentDetails.cvv"
-                        placeholder="XXX"
-                        maxlength="4"
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                <!-- PayPal Information -->
-                <div v-else-if="selectedPaymentMethod === 'paypal'" class="payment-info">
-                  <p>
-                    You will be redirected to PayPal to complete your payment securely.
-                  </p>
-                </div>
-
-                <!-- Bank Transfer Information -->
-                <div
-                  v-else-if="selectedPaymentMethod === 'bank_transfer'"
+                  v-if="selectedPaymentMethod === 'cash_on_delivery'"
                   class="payment-info"
                 >
-                  <p>
-                    Payment instructions for bank transfer will be sent to your email
-                    after placing the order.
-                  </p>
-                  <div class="bank-details">
-                    <p><strong>Bank:</strong> Camtour Bank</p>
-                    <p><strong>Account Name:</strong> Cambodia Tours Co., Ltd</p>
-                    <p><strong>Account Number:</strong> 123-456-7890</p>
-                    <p><strong>Swift Code:</strong> CAMBTRVL</p>
-                  </div>
-                </div>
-                <div
-                  v-else-if="selectedPaymentMethod === 'cash_on_delivery'"
-                  class="payment-info"
-                >
-                  <p>
-                    You will pay in cash directly to our tour operator when you meet them
-                    at the starting point of your tour.
-                  </p>
+                  <p>{{ t('cash-on-delivery-description') }}</p>
                   <div class="cash-details">
                     <div class="cash-detail-item">
                       <svg
@@ -429,8 +323,8 @@
                         <path d="M8 12h8"></path>
                       </svg>
                       <div>
-                        <h4>Currency Accepted</h4>
-                        <p>USD and KHR (Cambodian Riel)</p>
+                        <h4>{{ t('currency-accepted') }}</h4>
+                        <p>{{ t('usd-and-khr') }}</p>
                       </div>
                     </div>
                     <div class="cash-detail-item">
@@ -445,8 +339,8 @@
                         <polyline points="12 6 12 12 16 14"></polyline>
                       </svg>
                       <div>
-                        <h4>Payment Time</h4>
-                        <p>Please arrive 15 minutes before the tour start time</p>
+                        <h4>{{ t('payment-time') }}</h4>
+                        <p>{{ t('arrive-15-minutes-before') }}</p>
                       </div>
                     </div>
                     <div class="cash-detail-item">
@@ -461,8 +355,8 @@
                         <circle cx="12" cy="7" r="4"></circle>
                       </svg>
                       <div>
-                        <h4>Identification</h4>
-                        <p>Please bring a photo ID and your Ordering reference</p>
+                        <h4>{{ t('identification') }}</h4>
+                        <p>{{ t('bring-photo-id-and-reference') }}</p>
                       </div>
                     </div>
                   </div>
@@ -475,12 +369,12 @@
           <div class="checkout-step" :class="{ active: isPaymentValid }">
             <div class="step-header">
               <div class="step-number">4</div>
-              <h2 class="step-title">Review & Submit</h2>
+              <h2 class="step-title">{{ t('review-and-submit') }}</h2>
             </div>
 
             <div class="step-content" v-if="isPaymentValid">
               <div class="order-review">
-                <h3>Order Summary</h3>
+                <h3>{{ t('order-summary') }}</h3>
 
                 <div class="order-items">
                   <div
@@ -489,17 +383,17 @@
                     class="order-item"
                   >
                     <div class="order-item-image">
-                      <img :src="item.image" :alt="item.name" @error="handleImageError" />
+                      <img :src="item.image" :alt="getLocalizedItemName(item)" @error="handleImageError" />
                     </div>
 
                     <div class="order-item-details">
-                      <div class="order-item-name">{{ item.name }}</div>
+                      <div class="order-item-name">{{ getLocalizedItemName(item) }}</div>
                       <div class="order-item-options">
                         <div v-if="item.colorName" class="order-item-option">
-                          Tour Option: {{ item.colorName }}
+                          {{ t('product-option') }}: {{ item.colorName }}
                         </div>
                         <div v-if="item.sizeName" class="order-item-option">
-                          Date: {{ item.sizeName }}
+                          {{ t('size') }}: {{ item.sizeName }}
                         </div>
                       </div>
                       <div class="order-item-price">
@@ -512,19 +406,19 @@
 
                 <div class="order-summary">
                   <div class="summary-row">
-                    <span>Subtotal:</span>
+                    <span>{{ t('subtotal') }}:</span>
                     <span>${{ subtotalPrice.toFixed(2) }}</span>
                   </div>
                   <div class="summary-row">
-                    <span>Tax ({{ taxRate }}%):</span>
+                    <span>{{ t('tax') }} ({{ taxRate }}%):</span>
                     <span>${{ taxAmount.toFixed(2) }}</span>
                   </div>
                   <div v-if="discountAmount > 0" class="summary-row discount">
-                    <span>Discount:</span>
+                    <span>{{ t('discount') }}:</span>
                     <span>-${{ discountAmount.toFixed(2) }}</span>
                   </div>
                   <div class="summary-row total">
-                    <span>Total:</span>
+                    <span>{{ t('total') }}:</span>
                     <span>${{ totalPrice.toFixed(2) }}</span>
                   </div>
                 </div>
@@ -532,20 +426,20 @@
                 <div class="promo-code">
                   <div class="form-row">
                     <div class="form-group">
-                      <label for="promo-code">Promo Code</label>
+                      <label for="promo-code">{{ t('promo-code') }}</label>
                       <div class="promo-input-group">
                         <input
                           type="text"
                           id="promo-code"
                           v-model="promoCode"
-                          placeholder="Enter promo code"
+                          :placeholder="t('enter-promo-code')"
                         />
                         <button
                           @click="applyPromoCode"
                           class="apply-promo-btn"
                           :disabled="!promoCode || isApplyingPromo"
                         >
-                          {{ isApplyingPromo ? "Applying..." : "Apply" }}
+                          {{ isApplyingPromo ? t('applying') + "..." : t('apply') }}
                         </button>
                       </div>
                     </div>
@@ -557,14 +451,10 @@
                     <input type="checkbox" v-model="agreedToTerms" />
                     <span class="checkmark"></span>
                     <span class="terms-text">
-                      I agree to the
-                      <router-link to="/terms" target="_blank"
-                        >Terms and Conditions</router-link
-                      >
-                      and
-                      <router-link to="/privacy" target="_blank"
-                        >Privacy Policy</router-link
-                      >
+                      {{ t('i-agree-to-the') }}
+                      <router-link to="/terms" target="_blank">{{ t('terms-and-conditions') }}</router-link>
+                      {{ t('and') }}
+                      <router-link to="/privacy" target="_blank">{{ t('privacy-policy') }}</router-link>
                     </span>
                   </label>
                 </div>
@@ -575,8 +465,8 @@
                     class="place-order-btn"
                     :disabled="!agreedToTerms || isProcessingOrder"
                   >
-                    <span v-if="isProcessingOrder">Processing...</span>
-                    <span v-else>Place Order</span>
+                    <span v-if="isProcessingOrder">{{ t('processing') }}...</span>
+                    <span v-else>{{ t('place-order') }}</span>
                   </button>
                 </div>
               </div>
@@ -587,7 +477,7 @@
 
       <div class="checkout-right">
         <div class="order-summary-sidebar">
-          <h3>Order Summary</h3>
+          <h3>{{ t('order-summary') }}</h3>
 
           <div class="summary-items">
             <div
@@ -595,7 +485,7 @@
               :key="index"
               class="summary-item"
             >
-              <div class="summary-item-name">{{ item.name }} × {{ item.quantity }}</div>
+              <div class="summary-item-name">{{ getLocalizedItemName(item) }} × {{ item.quantity }}</div>
               <div class="summary-item-price">
                 ${{ (item.price * item.quantity).toFixed(2) }}
               </div>
@@ -604,27 +494,27 @@
 
           <div class="summary-calculations">
             <div class="summary-row">
-              <span>Subtotal</span>
+              <span>{{ t('subtotal') }}</span>
               <span>${{ subtotalPrice.toFixed(2) }}</span>
             </div>
             <div class="summary-row">
-              <span>Tax ({{ taxRate }}%)</span>
+              <span>{{ t('tax') }} ({{ taxRate }}%)</span>
               <span>${{ taxAmount.toFixed(2) }}</span>
             </div>
             <div v-if="discountAmount > 0" class="summary-row discount">
-              <span>Discount</span>
+              <span>{{ t('discount') }}</span>
               <span>-${{ discountAmount.toFixed(2) }}</span>
             </div>
           </div>
 
           <div class="summary-total">
-            <span>Total</span>
+            <span>{{ t('total') }}</span>
             <span>${{ totalPrice.toFixed(2) }}</span>
           </div>
 
           <div class="need-help">
-            <h4>Need Help?</h4>
-            <p>Our travel specialists are available 24/7 to assist you.</p>
+            <h4>{{ t('need-help') }}</h4>
+            <p>{{ t('travel-specialists-available') }}</p>
             <div class="contact-options">
               <a href="tel:+85523456789" class="contact-option">
                 <svg
@@ -664,15 +554,51 @@
 </template>
 
 <script setup>
+import { useTranslation } from '@/components/useTranslation';
 import { useCartStore } from "@/stores/cart";
 import { useGlobalStore } from "@/stores/global";
 import axios from "axios";
-import { computed, onMounted, reactive, ref } from "vue";
+import { computed, onMounted, reactive, ref, watch } from "vue";
 import { useRouter } from "vue-router";
+import caseDeliveryIcon from "../../assets/icons/case_on_delivery_icon.png";
+
+// Translation setup
+const { currentLanguage, t } = useTranslation();
+
 const router = useRouter();
 const cartStore = useCartStore();
 const globalStore = useGlobalStore();
 const placeholderImage = "https://placehold.co/400x300/19ADCF/FFFFFF?text=Cambodia+Tours";
+
+// Translation helper functions
+const getLocalizedItemName = (item) => {
+  if (!item) return '';
+  
+  const currentLang = currentLanguage.value;
+  if (currentLang === 'km' && item.name_km) {
+    return item.name_km;
+  } else if (currentLang === 'km' && item.name_local) {
+    return item.name_local;
+  }
+  return item.name || '';
+};
+
+const getLocalizedPaymentMethodName = (method) => {
+  const methodNames = {
+    'cash_on_delivery': t('cash-on-delivery'),
+    'credit_card': t('credit-card'),
+    'paypal': t('paypal'),
+    'bank_transfer': t('bank-transfer')
+  };
+  
+  return methodNames[method.id] || method.name;
+};
+
+// Language change handler
+const handleLanguageChange = () => {
+  document.title = `${t('camtour-brand')} - ${t('checkout')}`;
+};
+
 const isAuthenticated = computed(() => globalStore.getIsAuthenticated);
 const userData = computed(() => globalStore.profile || {});
 const isLoggingIn = ref(false);
@@ -685,35 +611,20 @@ const guestLastName = ref("");
 const guestPhone = ref("");
 
 const shippingAddress = reactive({
-  street: '',
-  city: 'Phnom Penh',
-  state: 'Phnom Penh',
-  zipCode: '',
-  country: 'KH'
+  street: "",
+  city: "Phnom Penh",
+  state: "Phnom Penh",
+  zipCode: "",
+  country: "KH",
 });
 
-const selectedPaymentMethod = ref("credit_card");
+const selectedPaymentMethod = ref("cash_on_delivery");
 const paymentMethods = [
   {
-    id: "credit_card",
-    name: "Credit Card",
-    icon: "/images/payment/credit-card.png"
-  },
-  {
-    id: "paypal",
-    name: "PayPal",
-    icon: "/images/payment/paypal.png"
-  },
-  {
-    id: "bank_transfer",
-    name: "Bank Transfer",
-    icon: "/images/payment/bank-transfer.png"
-  },
-  {
     id: "cash_on_delivery",
-    name: "Pay at Tour Start",
-    icon: "/images/payment/cash.png"
-  }
+    name: "Cash On Delivery",
+    icon: caseDeliveryIcon,
+  },
 ];
 
 const paymentDetails = reactive({
@@ -721,23 +632,22 @@ const paymentDetails = reactive({
   cardNumber: "",
   expiryMonth: "",
   expiryYear: "",
-  cvv: ""
+  cvv: "",
 });
 
 const cashPaymentDetails = reactive({
   currency: "USD",
 });
 
-const currentYear = new Date().getFullYear();
-const expiryYears = Array.from({ length: 11 }, (_, i) => (currentYear + i).toString().substr(-2));
 const travelers = ref([]);
 const promoCode = ref("");
 const isApplyingPromo = ref(false);
 const discountAmount = ref(0);
-const taxRate = 10;
+const taxRate = 5;
+
 const subtotalPrice = computed(() => {
   return cartStore.items.reduce((total, item) => {
-    return total + (item.price * item.quantity);
+    return total + item.price * item.quantity;
   }, 0);
 });
 
@@ -763,48 +673,34 @@ const isTravelersInfoValid = computed(() => {
   if (travelers.value.length === 0) return false;
   const primaryTraveler = travelers.value[0];
   return (
-    primaryTraveler.firstName?.trim() !== '' &&
-    primaryTraveler.lastName?.trim() !== ''
+    primaryTraveler.firstName?.trim() !== "" && primaryTraveler.lastName?.trim() !== ""
   );
 });
 
 const isAddressValid = computed(() => {
-  return (
-    shippingAddress.street?.trim() !== '' &&
-    shippingAddress.city?.trim() !== ''
-  );
+  return shippingAddress.street?.trim() !== "" && shippingAddress.city?.trim() !== "";
 });
 
 const isPaymentValid = computed(() => {
-  if (!(isAuthenticated.value || (checkoutMode.value === 'guest' && isGuestInfoValid.value))) {
+  if (
+    !(isAuthenticated.value || (checkoutMode.value === "guest" && isGuestInfoValid.value))
+  ) {
     return false;
   }
   if (!isTravelersInfoValid.value || !isAddressValid.value) {
     return false;
   }
-  if (selectedPaymentMethod.value === 'credit_card') {
+  if (selectedPaymentMethod.value === "credit_card") {
     return (
-      paymentDetails.cardHolder.trim() !== '' &&
-      paymentDetails.cardNumber.replace(/\s/g, '').length >= 16 &&
-      paymentDetails.expiryMonth !== '' &&
-      paymentDetails.expiryYear !== '' &&
+      paymentDetails.cardHolder.trim() !== "" &&
+      paymentDetails.cardNumber.replace(/\s/g, "").length >= 16 &&
+      paymentDetails.expiryMonth !== "" &&
+      paymentDetails.expiryYear !== "" &&
       paymentDetails.cvv.length >= 3
     );
   }
   return true;
 });
-
-const formatCardNumber = (event) => {
-  let input = event.target.value.replace(/\D/g, '');
-  let formatted = '';
-  for (let i = 0; i < input.length; i++) {
-    if (i > 0 && i % 4 === 0) {
-      formatted += ' ';
-    }
-    formatted += input[i];
-  }
-  paymentDetails.cardNumber = formatted.substring(0, 19);
-};
 
 const handleImageError = (event) => {
   event.target.src = placeholderImage;
@@ -813,52 +709,54 @@ const handleImageError = (event) => {
 const selectPaymentMethod = (methodId) => {
   selectedPaymentMethod.value = methodId;
 };
+
 const handleLogin = async () => {
   if (isLoggingIn.value) return;
   isLoggingIn.value = true;
   try {
     if (!loginEmail.value || !loginPassword.value) {
-      alert('Please enter both email and password');
+      alert(t('please-enter-email-password'));
       isLoggingIn.value = false;
       return;
     }
-    const response = await axios.post('/api/auth/login', {
+    const response = await axios.post("/api/auth/login", {
       email: loginEmail.value,
-      password: loginPassword.value
-    }); 
+      password: loginPassword.value,
+    });
     if (response.data && response.data.result) {
       const token = response.data.data.token;
       globalStore.updateToken(token);
       await globalStore.fetchUserProfile();
       if (globalStore.profile) {
         if (globalStore.profile.address) {
-          shippingAddress.street = globalStore.profile.address.street || '';
-          shippingAddress.city = globalStore.profile.address.city || 'Phnom Penh';
-          shippingAddress.state = globalStore.profile.address.state || 'Phnom Penh';
-          shippingAddress.zipCode = globalStore.profile.address.zip_code || '';
-          shippingAddress.country = globalStore.profile.address.country || 'KH';
+          shippingAddress.street = globalStore.profile.address.street || "";
+          shippingAddress.city = globalStore.profile.address.city || "Phnom Penh";
+          shippingAddress.state = globalStore.profile.address.state || "Phnom Penh";
+          shippingAddress.zipCode = globalStore.profile.address.zip_code || "";
+          shippingAddress.country = globalStore.profile.address.country || "KH";
         }
         if (travelers.value.length === 0) {
           travelers.value.push({
-            firstName: globalStore.profile.first_name || '',
-            lastName: globalStore.profile.last_name || '',
-            passport: '',
-            nationality: 'KH',
-            dob: '',
-            specialRequirements: ''
+            firstName: globalStore.profile.first_name || "",
+            lastName: globalStore.profile.last_name || "",
+            passport: "",
+            nationality: "KH",
+            dob: "",
+            specialRequirements: "",
           });
         }
       }
     } else {
-      const errorMessage = response.data?.message || 'Login failed. Please check your credentials.';
+      const errorMessage =
+        response.data?.message || t('login-failed-check-credentials');
       alert(errorMessage);
     }
   } catch (error) {
-    console.error('Login error:', error);
-    if (globalStore.onCheckError && typeof globalStore.onCheckError === 'function') {
+    console.error("Login error:", error);
+    if (globalStore.onCheckError && typeof globalStore.onCheckError === "function") {
       await globalStore.onCheckError(error);
     } else {
-      alert('Login failed. Please try again later.');
+      alert(t('login-failed-try-again'));
     }
   } finally {
     isLoggingIn.value = false;
@@ -867,34 +765,34 @@ const handleLogin = async () => {
 
 const applyPromoCode = async () => {
   if (!promoCode.value || isApplyingPromo.value) return;
-  
+
   isApplyingPromo.value = true;
-  
+
   try {
     // Example promo codes for demonstration
     const demoPromoCodes = {
-      'WELCOME10': 10,
-      'SUMMER25': 25,
-      'SPECIAL15': 15
+      WELCOME10: 10,
+      SUMMER25: 25,
+      SPECIAL15: 15,
     };
-    
+
     // Simulate API call with a timeout
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
     // Check if promo code is valid
     const discountPercentage = demoPromoCodes[promoCode.value.toUpperCase()];
-    
+
     if (discountPercentage) {
       // Apply discount
-      discountAmount.value = (subtotalPrice.value * (discountPercentage / 100));
-      alert(`Promo code applied! You've received a ${discountPercentage}% discount.`);
+      discountAmount.value = subtotalPrice.value * (discountPercentage / 100);
+      alert(t('promo-code-applied-discount', { percentage: discountPercentage }));
     } else {
-      alert('Invalid promo code. Please try another one.');
+      alert(t('invalid-promo-code'));
       discountAmount.value = 0;
     }
   } catch (error) {
-    console.error('Error applying promo code:', error);
-    alert('Error applying promo code. Please try again.');
+    console.error("Error applying promo code:", error);
+    alert(t('error-applying-promo-code'));
   } finally {
     isApplyingPromo.value = false;
   }
@@ -904,7 +802,6 @@ const applyPromoCode = async () => {
 const isProcessingOrder = ref(false);
 const agreedToTerms = ref(false);
 
-// Order placement function
 // Order placement function
 const placeOrder = async () => {
   if (!agreedToTerms.value || isProcessingOrder.value) return;
@@ -918,21 +815,21 @@ const placeOrder = async () => {
           first_name: userData.value.first_name,
           last_name: userData.value.last_name,
           email: userData.value.email,
-          phone: userData.value.phone || guestPhone.value
+          phone: userData.value.phone || guestPhone.value,
         }
       : {
           first_name: guestFirstName.value,
           last_name: guestLastName.value,
           email: guestEmail.value,
-          phone: guestPhone.value
+          phone: guestPhone.value,
         };
 
     // Format items in the required structure
-    const orderItems = cartStore.items.map(item => ({
+    const orderItems = cartStore.items.map((item) => ({
       product_id: item.id,
       qty: item.quantity,
       price: item.price,
-      variant_id: item.variantId || null
+      variant_id: item.variantId || null,
     }));
 
     // Construct the order payload according to the required format
@@ -945,20 +842,28 @@ const placeOrder = async () => {
       state: shippingAddress.state || "Phnom Penh",
       payment_method: selectedPaymentMethod.value,
       discount_amount: discountAmount.value || 0,
-      currency: selectedPaymentMethod.value === "cash_on_delivery" ? cashPaymentDetails.currency : "USD",
-      notes: travelers.value[0]?.specialRequirements || "Please provide English speaking guide",
+      currency:
+        selectedPaymentMethod.value === "cash_on_delivery"
+          ? cashPaymentDetails.currency
+          : "USD",
+      notes:
+        travelers.value[0]?.specialRequirements ||
+        t('default-order-notes'),
       status: "pending",
-      items: orderItems
+      items: orderItems,
     };
+    
     try {
       const response = await axios.post(
-        '/api/web/product/order', 
+        "/api/web/product/order",
         orderPayload,
         globalStore.getAxiosHeader()
       );
-      if (response.data === "Created" || 
-          (response.data && response.data.message === "Created") ||
-          response.statusText === "Created") {
+      if (
+        response.data === "Created" ||
+        (response.data && response.data.message === "Created") ||
+        response.statusText === "Created"
+      ) {
         const orderId = "ORD-" + Math.floor(100000 + Math.random() * 900000);
         localStorage.setItem("lastOrderId", orderId);
         cartStore.clearCart();
@@ -973,7 +878,10 @@ const placeOrder = async () => {
       if (response.data && response.data.result) {
         const orderResult = response.data.data;
         cartStore.clearCart();
-        const orderId = orderResult.id || orderResult.order_id || "ORD-" + Math.floor(100000 + Math.random() * 900000);
+        const orderId =
+          orderResult.id ||
+          orderResult.order_id ||
+          "ORD-" + Math.floor(100000 + Math.random() * 900000);
         localStorage.setItem("lastOrderId", orderId);
         setTimeout(() => {
           router.push({
@@ -982,7 +890,7 @@ const placeOrder = async () => {
           });
         }, 300);
       } else {
-        throw new Error(response.data?.message || 'Order creation failed');
+        throw new Error(response.data?.message || t('order-creation-failed'));
       }
     } catch (apiError) {
       if (apiError.message === "Created") {
@@ -1004,9 +912,9 @@ const placeOrder = async () => {
           data: {
             id: "ORD-" + Math.floor(100000 + Math.random() * 900000),
             status: "pending",
-            total: totalPrice.value
-          }
-        }
+            total: totalPrice.value,
+          },
+        },
       };
       cartStore.clearCart();
       const orderId = mockResponse.data.data.id;
@@ -1032,38 +940,46 @@ const placeOrder = async () => {
       }, 300);
       return;
     }
-    if (globalStore.onCheckError && typeof globalStore.onCheckError === 'function') {
+    if (globalStore.onCheckError && typeof globalStore.onCheckError === "function") {
       try {
         globalStore.onCheckError(error);
       } catch (handlerError) {
         console.error("Error in error handler:", handlerError);
-        alert("There was an error creating your order. Please try again.");
+        alert(t('error-creating-order-try-again'));
       }
     } else {
-      alert("There was an error creating your order. Please try again.");
+      alert(t('error-creating-order-try-again'));
     }
   } finally {
     isProcessingOrder.value = false;
   }
 };
 
+// Language watcher
+watch(currentLanguage, () => {
+  handleLanguageChange();
+});
+
 onMounted(() => {
+  window.addEventListener('language-changed', handleLanguageChange);
+  document.title = `${t('camtour-brand')} - ${t('checkout')}`;
+  
   if (isAuthenticated.value && userData.value) {
     if (userData.value.address) {
-      shippingAddress.street = userData.value.address.street || '';
-      shippingAddress.city = userData.value.address.city || 'Phnom Penh';
-      shippingAddress.state = userData.value.address.state || 'Phnom Penh';
-      shippingAddress.zipCode = userData.value.address.zip_code || '';
-      shippingAddress.country = userData.value.address.country || 'KH';
+      shippingAddress.street = userData.value.address.street || "";
+      shippingAddress.city = userData.value.address.city || "Phnom Penh";
+      shippingAddress.state = userData.value.address.state || "Phnom Penh";
+      shippingAddress.zipCode = userData.value.address.zip_code || "";
+      shippingAddress.country = userData.value.address.country || "KH";
     }
     if (userData.value.first_name && travelers.value.length === 0) {
       travelers.value.push({
-        firstName: userData.value.first_name || '',
-        lastName: userData.value.last_name || '',
-        passport: '',
-        nationality: 'KH',
-        dob: '',
-        specialRequirements: ''
+        firstName: userData.value.first_name || "",
+        lastName: userData.value.last_name || "",
+        passport: "",
+        nationality: "KH",
+        dob: "",
+        specialRequirements: "",
       });
     }
   }
@@ -1074,7 +990,7 @@ onMounted(() => {
   max-width: 1200px;
   margin: 0 auto;
   padding: 2rem 1rem;
-  margin-top:50px;
+  margin-top: 50px;
 }
 
 .page-title {

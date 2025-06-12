@@ -4,7 +4,7 @@ import { createApp } from 'vue';
 import App from './App.vue';
 import './assets/css/main.css';
 import router from './router/index.js';
-axios.defaults.baseURL = process.env.VUE_APP_API_HOST || 'http://127.0.0.1:8000';
+axios.defaults.baseURL = process.env.VUE_APP_API_HOST;
 
 router.beforeEach((to, from, next) => {
   document.body.style.overflow = '';

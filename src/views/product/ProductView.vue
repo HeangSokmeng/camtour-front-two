@@ -246,15 +246,23 @@
                 </div>
 
                 <div class="product-rating" v-if="product.stars && product.stars.length">
-                  <div class="stars">
+                  <div class="stars flex items-center space-x-1">
                     <span
                       v-for="i in 5"
                       :key="i"
-                      :class="['star', { filled: i <= getAverageRating(product.stars) }]"
-                      >★</span
+                      :class="[
+                        'star',
+                        i <= getAverageRating(product.stars)
+                          ? 'text-yellow-400'
+                          : 'text-gray-300',
+                      ]"
                     >
+                      ★
+                    </span>
+                    <span class="rating-count text-sm text-gray-500">
+                      ({{ product.stars.length }})
+                    </span>
                   </div>
-                  <span class="rating-count">({{ product.stars.length }})</span>
                 </div>
 
                 <div class="product-meta">
@@ -271,7 +279,7 @@
                     </router-link>
                   </button>
 
-                  <button
+                  <!-- <button
                     class="wishlist-btn"
                     @click.stop="toggleWishlist(product)"
                     :class="{ active: isInWishlist(product.id) }"
@@ -282,7 +290,7 @@
                     "
                   >
                     <i class="heart-icon">♥</i>
-                  </button>
+                  </button> -->
                 </div>
 
                 <div class="stock-status" v-if="product.stock_status">
@@ -776,26 +784,6 @@ function navigateToProduct(productId) {
 
 function handleImageError(event) {
   event.target.src = "https://placehold.co/400x300/1A7E8C/ffffff?text=Outdoor+Gear";
-}
-
-function isInWishlist(productId) {
-  return wishlist.value.includes(productId);
-}
-
-function toggleWishlist(product) {
-  const index = wishlist.value.indexOf(product.id);
-
-  if (index === -1) {
-    wishlist.value.push(product.id);
-  } else {
-    wishlist.value.splice(index, 1);
-  }
-
-  try {
-    localStorage.setItem("wishlist", JSON.stringify(wishlist.value));
-  } catch (error) {
-    console.error("Error saving wishlist to localStorage:", error);
-  }
 }
 
 function getAverageRating(stars) {

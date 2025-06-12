@@ -203,9 +203,8 @@ const shoppingCategories = [
 ];
 
 const contactInfo = [
-  { type: "phone1", icon: PhoneIcon, href: "tel:+85511595794", value: "+855 11 595 794" },
-  { type: "phone2", icon: PhoneIcon, href: "tel:+85511595794", value: "+855 11 595 794" },
-  { type: "email", icon: EmailIcon, href: "mailto:chhayyaneom00@gmail.com", value: "chhayyaneom00@gmail.com" },
+  { type: "phone1", icon: PhoneIcon, href: "tel:+85510428181", value: "+855 10 42 8181" },
+  { type: "email", icon: EmailIcon, href: "mailto:camtourrecommender@gmail.com", value: "camtourrecommender@gmail.com" },
   { type: "address", icon: LocationIcon, href: null, value: computed(() => t("footer-address")) },
 ];
 

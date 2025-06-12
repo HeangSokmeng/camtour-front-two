@@ -57,10 +57,11 @@
         <div class="destination-grid">
           <div class="destination-card featured">
             <div class="destination-image cardamom">
-              <video autoplay muted loop playsinline class="bg-video">
+                <iframe class="bg-video" width="100%" height="599" src="https://www.youtube.com/embed/J_vobEtKv2k" title="Morning Coffee with nature surrounding 🌿🌧️ #jomnotexplore #cambodia #kohkong" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+              <!-- <video autoplay muted loop playsinline class="bg-video">
                 <source src="../../assets/video/krvahn.mp4" type="video/mp4" />
-                <!-- Your browser does not support the video tag. -->
-              </video>
+                Your browser does not support the video tag.
+              </video> -->
             </div>
             <div class="destination-content">
               <h3>{{ t("cardamom-mountains") }}</h3>
@@ -650,13 +651,13 @@ h2:after {
 }
 
 .bg-video {
-  position: absolute;
+  /* position: absolute; */
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  object-fit: cover; /* cover to fill container */
-  z-index: -1; /* send behind content */
+  object-fit: cover;
+  z-index: -1;
 }
 
 .angkor {

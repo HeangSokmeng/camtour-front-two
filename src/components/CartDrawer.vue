@@ -3,7 +3,7 @@
     <div class="cart-overlay" @click="store.toggleCartDrawer"></div>
     <div class="cart-drawer">
       <div class="cart-header">
-        <h2>Product Bookings</h2>
+        <h2>{{ t('product-ordering') }}</h2>
         <button class="close-btn" @click="store.toggleCartDrawer">×</button>
       </div>
       <div v-if="!store.hasItems" class="empty-cart">
@@ -22,9 +22,9 @@
             <line x1="5" y1="23" x2="19" y2="23"></line>
           </svg>
         </div>
-        <p>Your cart is empty</p>
+        <p>{{ t('your-cart-is-empty') }}</p>
         <button class="browse-packages-btn" @click="browseTours">
-          Browse Tour Packages
+          {{ t('browse-products') }}
         </button>
       </div>
       <div v-else class="cart-content">
@@ -35,17 +35,17 @@
             class="cart-item"
           >
             <div class="item-image">
-              <img :src="item.image" :alt="item.name" @error="handleImageError($event)" />
+              <img :src="item.image" :alt="getLocalizedItemName(item)" @error="handleImageError($event)" />
             </div>
             <div class="item-details">
-              <div class="item-name">{{ item.name }}</div>
-              <div class="item-meta" v-if="item.category">{{ item.category }}</div>
+              <div class="item-name">{{ getLocalizedItemName(item) }}</div>
+              <div class="item-meta" v-if="getLocalizedItemCategory(item)">{{ getLocalizedItemCategory(item) }}</div>
               <div class="item-options">
                 <div v-if="item.colorName" class="item-option">
-                  Tour Option: {{ item.colorName }}
+                  {{ t('product-option') }}: {{ item.colorName }}
                 </div>
                 <div v-if="item.sizeName" class="item-option">
-                  Date: {{ item.sizeName }}
+                  {{ t('size') }}: {{ item.sizeName }}
                 </div>
               </div>
               <div class="item-price-qty">
@@ -55,6 +55,7 @@
                     @click="decrementQuantity(item)"
                     class="quantity-btn"
                     :disabled="item.quantity <= 1"
+                    :aria-label="t('decrease-quantity')"
                   >
                     -
                   </button>
@@ -63,6 +64,7 @@
                     @click="incrementQuantity(item)"
                     class="quantity-btn"
                     :disabled="item.maxQuantity && item.quantity >= item.maxQuantity"
+                    :aria-label="t('increase-quantity')"
                   >
                     +
                   </button>
@@ -72,7 +74,7 @@
             <button
               @click="removeItem(item)"
               class="remove-item-btn"
-              aria-label="Remove item"
+              :aria-label="t('remove-item')"
             >
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <line x1="18" y1="6" x2="6" y2="18"></line>
@@ -83,19 +85,19 @@
         </div>
         <div class="cart-summary">
           <div class="summary-row">
-            <span>Number of Items:</span>
+            <span>{{ t('number-of-items') }}:</span>
             <span>{{ store.cartItemCount }}</span>
           </div>
           <div class="summary-row total">
-            <span>Total:</span>
+            <span>{{ t('total') }}:</span>
             <span>{{ store.formattedTotal }}</span>
           </div>
         </div>
         <div class="cart-actions">
           <button @click="store.toggleCartDrawer" class="continue-shopping-btn">
-            Continue Browsing
+            {{ t('continue-browsing') }}
           </button>
-          <button @click="checkout" class="checkout-btn">Proceed to Checkout</button>
+          <button @click="checkout" class="checkout-btn">{{ t('proceed-to-checkout') }}</button>
         </div>
       </div>
     </div>
@@ -113,8 +115,8 @@
           </svg>
         </div>
         <div class="notification-content">
-          <h3>Proceeding to Checkout</h3>
-          <p>You're being redirected to the secure checkout page.</p>
+          <h3>{{ t('proceeding-to-checkout') }}</h3>
+          <p>{{ t('redirecting-to-secure-checkout') }}</p>
         </div>
         <button class="notification-close" @click="closeNotification">×</button>
       </div>
@@ -123,14 +125,50 @@
 </template>
 
 <script setup>
+import { useTranslation } from '@/components/useTranslation';
 import { useCartStore } from "@/stores/cart";
-import { onMounted, ref } from "vue";
+import { onMounted, ref, watch } from "vue";
 import { useRouter } from "vue-router";
+
+// Translation setup
+const { currentLanguage, t } = useTranslation();
 
 const router = useRouter();
 const store = useCartStore();
 const showNotification = ref(false);
 const placeholderImage = "https://placehold.co/200x150/19ADCF/ffffff?text=Cambodia+Tour";
+
+// Translation helper functions
+const getLocalizedItemName = (item) => {
+  if (!item) return '';
+  
+  const currentLang = currentLanguage.value;
+  if (currentLang === 'km' && item.name_km) {
+    return item.name_km;
+  } else if (currentLang === 'km' && item.name_local) {
+    return item.name_local;
+  }
+  return item.name || '';
+};
+
+const getLocalizedItemCategory = (item) => {
+  if (!item) return '';
+  
+  const currentLang = currentLanguage.value;
+  if (currentLang === 'km' && item.category_km) {
+    return item.category_km;
+  } else if (currentLang === 'km' && item.category_local) {
+    return item.category_local;
+  }
+  return item.category || '';
+};
+
+// Language change handler
+const handleLanguageChange = () => {
+  // Cart drawer doesn't change document title, but can handle other language-specific updates
+  // Force reactivity update for computed values
+  store.$patch({});
+};
 
 const handleImageError = (event) => {
   event.target.src = placeholderImage;
@@ -170,7 +208,13 @@ const checkout = () => {
   }, 1500);
 };
 
+// Language watcher
+watch(currentLanguage, () => {
+  handleLanguageChange();
+});
+
 onMounted(() => {
+  window.addEventListener('language-changed', handleLanguageChange);
   store.loadCartFromLocalStorage();
 });
 </script>

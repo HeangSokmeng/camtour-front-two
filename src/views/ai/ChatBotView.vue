@@ -158,8 +158,8 @@
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
               fill="currentColor"
-              width="18"
-              height="18"
+              width="24"
+              height="24"
             >
               <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" />
             </svg>
@@ -656,6 +656,7 @@ export default {
   max-height: 90vh;
   background-color: white;
   border-radius: var(--border-radius);
+  border-radius: 20px;
   box-shadow: var(--shadow);
   display: none;
   flex-direction: column;

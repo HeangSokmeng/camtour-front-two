@@ -46,7 +46,7 @@ header {
   font-size: 15px;
   cursor: pointer;
   height: 40px;
-  width: 80px;
+  width: 100px;
   transition: all 0.3s;
 }
 
@@ -97,7 +97,7 @@ header {
   transition: all 0.3s;
   padding: 10px 15px;
   border-radius: 5px;
-  text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
   position: relative;
 }
 
@@ -109,8 +109,8 @@ header {
   width: 0;
   height: 3px;
   background: var(--primary-color);
-  transition: all 0.3s;
   transform: translateX(-50%);
+  transition: width 0.3s;
 }
 
 .nav-link:hover::after {
@@ -121,6 +121,16 @@ header {
   color: var(--primary-color);
   background-color: rgba(255, 255, 255, 0.1);
 }
+
+/* 🔴 Active link style */
+.nav-link.active {
+    color: var(--primary-color);
+
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+  background-color: rgba(255, 255, 255, 0.1);
+
+}
+
 
 /* Auth Buttons */
 .auth-buttons {
@@ -684,7 +694,7 @@ header {
 
   .language-selector {
     order: 1;
-    width: 70px;
+    width: 80px;
     font-size: 14px;
   }
 
@@ -866,7 +876,7 @@ header {
   }
 
   .language-selector {
-    width: 60px;
+    width: 80px;
     font-size: 12px;
     padding: 0 15px 0 8px;
   }
@@ -1128,7 +1138,7 @@ header {
   }
 
   .language-selector {
-    width: 50px;
+    width: 80px;
     font-size: 11px;
     padding: 0 12px 0 6px;
   }

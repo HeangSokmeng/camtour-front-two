@@ -342,10 +342,10 @@
 </template>
 
 <script setup>
+import imgBanner from '@/assets/adventure/banner.png';
 import "@/assets/css/adventure.css"; // Import the responsive CSS
 import { useTranslation } from "@/components/useTranslation";
 import { useGlobalStore } from "@/stores/global";
-import imgBanner from '@/assets/adventure/banner.png'
 import axios from "axios";
 import { computed, onMounted, onUnmounted, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
@@ -1056,7 +1056,6 @@ onUnmounted(() => {
 
 .province-search-wrapper::before {
   content: "\f002";
-  font-family: "Font Awesome 6 Free";
   font-weight: 900;
   position: absolute;
   left: 16px;

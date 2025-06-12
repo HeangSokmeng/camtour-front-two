@@ -5,18 +5,50 @@
       :class="{ scrolled: isScrolled, hidden: isHeaderHidden }"
     >
       <div class="nav-container">
-        <select
-          v-model="currentLanguage"
-          class="language-selector"
-          @change="changeLanguage"
-        >
-          <option value="en">EN</option>
-          <option value="km">KH</option>
-        </select>
+        <!-- Updated Language Selector with Icons -->
+        <div class="language-selector-wrapper">
+          <button 
+            class="language-selector-btn"
+            @click="toggleLanguageDropdown"
+            :class="{ active: languageDropdownOpen }"
+          >
+            <img 
+              :src="currentLanguage === 'km' ? khmerIcon : englishIcon" 
+              :alt="currentLanguage === 'km' ? 'Khmer Flag' : 'English Flag'" 
+              class="flag-icon"
+            />
+            <span class="language-code">{{ currentLanguage === 'km' ? 'KH' : 'EN' }}</span>
+            <svg class="dropdown-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="6,9 12,15 18,9"></polyline>
+            </svg>
+          </button>
+          
+          <div class="language-dropdown" v-if="languageDropdownOpen">
+            <button 
+              class="language-option"
+              :class="{ active: currentLanguage === 'en' }"
+              @click="selectLanguage('en')"
+            >
+              <img :src="englishIcon" alt="English Flag" class="flag-icon" />
+              <span>English</span>
+            </button>
+            <button 
+              class="language-option"
+              :class="{ active: currentLanguage === 'km' }"
+              @click="selectLanguage('km')"
+            >
+              <img :src="khmerIcon" alt="Khmer Flag" class="flag-icon" />
+              <span>ខ្មែរ</span>
+            </button>
+          </div>
+        </div>
+
         <button class="menu-toggle" @click.stop="toggleMenu">
           <span v-if="!menuOpen" class="menu-icon">☰</span>
           <span v-else class="close-icon">&times;</span>
         </button>
+        
+        <!-- Rest of your navigation remains the same -->
         <nav :class="{ open: menuOpen }">
           <ul class="nav-menu">
             <li class="mobile-close-item">
@@ -25,32 +57,67 @@
               </button>
             </li>
             <li>
-              <RouterLink to="/" class="nav-link" @click="closeMenuOnNavigation">
+              <RouterLink
+                to="/"
+                class="nav-link"
+                active-class="active"
+                @click="closeMenuOnNavigation"
+              >
                 {{ t("home") }}
               </RouterLink>
             </li>
             <li>
-              <RouterLink to="/siem-reap" class="nav-link" @click="closeMenuOnNavigation">
+              <RouterLink
+                to="/siem-reap"
+                class="nav-link"
+                active-class="active"
+                @click="closeMenuOnNavigation"
+              >
                 {{ t("siem-reap") }}
               </RouterLink>
             </li>
             <li>
-              <RouterLink to="/adventure" class="nav-link" @click="closeMenuOnNavigation">
+              <RouterLink
+                to="/adventure"
+                class="nav-link"
+                active-class="active"
+                @click="closeMenuOnNavigation"
+              >
                 {{ t("adventure") }}
               </RouterLink>
             </li>
             <li>
-              <RouterLink to="/product" class="nav-link" @click="closeMenuOnNavigation">
+              <RouterLink
+                to="/plan"
+                class="nav-link"
+                active-class="active"
+                @click="closeMenuOnNavigation"
+              >
+                {{ t("trip-plan") }}
+              </RouterLink>
+            </li>
+            <li>
+              <RouterLink
+                to="/product"
+                class="nav-link"
+                active-class="active"
+                @click="closeMenuOnNavigation"
+              >
                 {{ t("shopping") }}
               </RouterLink>
             </li>
             <li>
-              <RouterLink to="/about-us" class="nav-link" @click="closeMenuOnNavigation">
+              <RouterLink
+                to="/about-us"
+                class="nav-link"
+                active-class="active"
+                @click="closeMenuOnNavigation"
+              >
                 {{ t("about-us") }}
               </RouterLink>
             </li>
           </ul>
-          
+
           <!-- Auth buttons inside navigation for mobile -->
           <div class="auth-buttons mobile-nav" v-if="!isAuthenticated">
             <RouterLink to="/register" class="auth-btn" @click="closeMenuOnNavigation">
@@ -62,7 +129,8 @@
           </div>
         </nav>
       </div>
-      
+
+      <!-- Rest of your header content remains the same -->
       <!-- Auth buttons for desktop -->
       <div class="auth-buttons desktop-auth" v-if="!isAuthenticated">
         <RouterLink to="/register" class="auth-btn" @click="closeMenuOnNavigation">
@@ -72,7 +140,7 @@
           {{ t("login") }}
         </RouterLink>
       </div>
-      
+
       <div class="user-profile" :class="{ open: menuOpen }" v-else>
         <div class="wishlist-btn-container">
           <RouterLink
@@ -153,7 +221,7 @@
                 class="dropdown-item"
                 @click="closeMenuOnNavigation"
               >
-              {{ t("my-orders") }}
+                {{ t("my-orders") }}
               </RouterLink>
             </li>
             <li>
@@ -175,8 +243,8 @@
         </div>
       </div>
     </header>
-    
-    <!-- Rest of your modals... -->
+
+    <!-- Rest of your modals remain the same -->
     <div class="modal-overlay" v-if="showLogoutModal" @click="cancelLogout">
       <div class="modal-content sad-animation" @click.stop>
         <div class="modal-header">
@@ -212,7 +280,6 @@
   </div>
 </template>
 
-// script
 <script setup>
 import "@/assets/css/appHeader.css";
 import CartHeaderIcon from "@/components/CartHeaderIcon.vue";
@@ -230,10 +297,12 @@ import {
   watch,
 } from "vue";
 import { useRouter } from "vue-router";
-// const cartStore = useCartStore();
+import khmerIcon from "../assets/icons/cambodia-icon.png";
+import englishIcon from "../assets/icons/english.png";
 const router = useRouter();
 const globalStore = useGlobalStore();
 const { currentLanguage, setLanguage, t } = useTranslation();
+const languageDropdownOpen = ref(false);
 const showProfileModal = ref(false);
 const menuOpen = ref(false);
 const profileMenuOpen = ref(false);
@@ -254,8 +323,7 @@ let scrollTimeout = null;
 let fetchWishlistTimeout = null;
 const heroImages = ref([
   {
-    src:
-      "https://c4.wallpaperflare.com/wallpaper/623/232/3/beautiful-village-wallpaper-preview.jpg",
+    src: "https://c4.wallpaperflare.com/wallpaper/623/232/3/beautiful-village-wallpaper-preview.jpg",
     alt: "Angkor Wat Temple Complex",
     title: "Angkor Wat",
     description: "Ancient temple complex",
@@ -267,13 +335,13 @@ const heroImages = ref([
     description: "Temple of faces",
   },
   {
-    src:
-      "https://images.travelandleisureasia.com/wp-content/uploads/sites/6/2025/01/28121636/phnom-penh-fi-1600x900.jpeg",
+    src: "https://images.travelandleisureasia.com/wp-content/uploads/sites/6/2025/01/28121636/phnom-penh-fi-1600x900.jpeg",
     alt: "Banteay Srei Temple",
     title: "Banteay Srei",
     description: "Pink sandstone temple",
   },
 ]);
+
 const userData = ref({
   id: null,
   first_name: "",
@@ -286,20 +354,47 @@ const userData = ref({
   role_id: null,
   created_at: "",
 });
+
 const userFullName = computed(() => {
   if (userData.value.first_name && userData.value.last_name) {
     return `${userData.value.first_name} ${userData.value.last_name}`;
   }
   return "User";
 });
+
 const userInitials = computed(() => {
   if (userData.value.first_name && userData.value.last_name) {
-    return `${userData.value.first_name.charAt(0)}${userData.value.last_name.charAt(
-      0
-    )}`.toUpperCase();
+    return `${userData.value.first_name.charAt(0)}${userData.value.last_name.charAt(0)}`.toUpperCase();
   }
   return "U";
 });
+
+const toggleLanguageDropdown = () => {
+  languageDropdownOpen.value = !languageDropdownOpen.value;
+};
+
+const selectLanguage = (lang) => {
+  currentLanguage.value = lang;
+  setLanguage(lang);
+  languageDropdownOpen.value = false;
+  notifyLanguageChange();
+};
+
+const handleDocumentClick = (e) => {
+  const profileEl = document.querySelector(".user-profile");
+  const menuToggleEl = document.querySelector(".menu-toggle");
+  const languageEl = document.querySelector(".language-selector-wrapper");
+  if (profileEl && !profileEl.contains(e.target) && profileMenuOpen.value) {
+    profileMenuOpen.value = false;
+  }
+  if (menuToggleEl && !menuToggleEl.contains(e.target) && !e.target.closest("nav") && menuOpen.value) {
+    menuOpen.value = false;
+  }
+  if (languageEl && !languageEl.contains(e.target) && languageDropdownOpen.value) {
+    languageDropdownOpen.value = false;
+  }
+};
+
 const handleScroll = () => {
   const currentScrollY = window.scrollY;
   isScrolled.value = currentScrollY > scrollThreshold;
@@ -314,6 +409,7 @@ const handleScroll = () => {
   }
   lastScrollY.value = currentScrollY;
 };
+
 const throttledHandleScroll = () => {
   if (scrollTimeout) return;
   scrollTimeout = setTimeout(() => {
@@ -321,6 +417,7 @@ const throttledHandleScroll = () => {
     scrollTimeout = null;
   }, 10);
 };
+
 const fetchWishlistCount = async () => {
   if (!isAuthenticated.value) {
     wishlistCount.value = 0;
@@ -404,11 +501,6 @@ const resetAutoSlide = () => {
 
 const handleProfileUpdated = () => {};
 
-const changeLanguage = () => {
-  setLanguage(currentLanguage.value);
-  notifyLanguageChange();
-};
-
 const toggleMenu = () => {
   menuOpen.value = !menuOpen.value;
   if (menuOpen.value && profileMenuOpen.value) {
@@ -429,28 +521,13 @@ const toggleProfileMenu = () => {
 const closeMenuOnNavigation = () => {
   menuOpen.value = false;
   profileMenuOpen.value = false;
+  languageDropdownOpen.value = false;
 };
 
 const notifyLanguageChange = () => {
   window.dispatchEvent(
     new CustomEvent("language-changed", { detail: { language: currentLanguage.value } })
   );
-};
-
-const handleDocumentClick = (e) => {
-  const profileEl = document.querySelector(".user-profile");
-  const menuToggleEl = document.querySelector(".menu-toggle");
-  if (profileEl && !profileEl.contains(e.target) && profileMenuOpen.value) {
-    profileMenuOpen.value = false;
-  }
-  if (
-    menuToggleEl &&
-    !menuToggleEl.contains(e.target) &&
-    !e.target.closest("nav") &&
-    menuOpen.value
-  ) {
-    menuOpen.value = false;
-  }
 };
 
 const fetchUserData = async () => {
@@ -575,6 +652,7 @@ watch(
   },
   { immediate: true }
 );
+
 watch(
   () => globalStore.token,
   (newToken) => {
@@ -587,6 +665,7 @@ watch(
     }
   }
 );
+
 watch(
   () => globalStore.profile,
   async (newProfile, oldProfile) => {
@@ -600,6 +679,7 @@ watch(
   },
   { deep: true }
 );
+
 watch(currentLanguage, (newLang) => {
   document.documentElement.setAttribute("lang", newLang);
   if (newLang === "km") {
@@ -608,6 +688,7 @@ watch(currentLanguage, (newLang) => {
     document.body.classList.remove("khmer-lang");
   }
 });
+
 onMounted(async () => {
   try {
     startAutoSlide();
@@ -627,12 +708,14 @@ onMounted(async () => {
         menuOpen.value = false;
         profileMenuOpen.value = false;
         showLogoutModal.value = false;
+        languageDropdownOpen.value = false;
       }
     });
   } catch (error) {
     console.error("Error during component mounting:", error);
   }
 });
+
 onUnmounted(() => {
   document.removeEventListener("click", handleDocumentClick);
   window.removeEventListener("wishlist-updated", handleWishlistUpdate);
@@ -645,11 +728,100 @@ onUnmounted(() => {
     clearTimeout(fetchWishlistTimeout);
   }
 });
+
 onBeforeUnmount(() => {
   stopAutoSlide();
 });
+
 defineExpose({ refreshWishlistCount, debugWishlistState });
 </script>
 
 <style scoped>
-</style>
+.language-selector-wrapper {
+  position: relative;
+  margin-right: 1rem;
+}
+
+.language-selector-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  background: transparent;
+  border: 1px solid #1a7f8c9d;
+  border-radius: 0.5rem;
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.language-selector-btn:hover,
+.language-selector-btn.active {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.flag-icon {
+  width: 20px;
+  height: 15px;
+  border-radius: 2px;
+  object-fit: cover;
+}
+
+.language-code {
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.dropdown-arrow {
+  width: 16px;
+  height: 16px;
+  transition: transform 0.3s ease;
+}
+
+.language-selector-btn.active .dropdown-arrow {
+  transform: rotate(180deg);
+}
+
+.language-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  margin-top: 0.5rem;
+  background: white;
+  border-radius: 0.5rem;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  overflow: hidden;
+}
+
+.language-option {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background: transparent;
+  border: none;
+  color: #374151;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  text-align: left;
+}
+
+.language-option:hover {
+  background: #f3f4f6;
+}
+
+.language-option.active {
+  background: #e0f2fe;
+  color: #0284c7;
+}
+
+.language-option span {
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+</style>s
