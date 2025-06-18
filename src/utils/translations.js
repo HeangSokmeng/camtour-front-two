@@ -10,10 +10,15 @@ export const translations = {
     'adventure': 'Adventure',
     'about-page-title': 'About Us',
     // Auth
+    "kampong-speu": "Kampong Speu",
+    "kampong-thom": "Kampong Thom",
+    "kampot": "Kampot",
+    "kandal": "Kandal",
     'signup': 'Register',
     'login': 'Login',
     'logout': 'Logout',
     'my-orders': 'My Orders',
+    "other-locations-in-district": "Location in the same district",
     // Hero section
     'cambodia': 'CAMBODIA',
     'find-favorite-place': 'Find your Favorite place',
@@ -384,6 +389,7 @@ export const translations = {
     "contact-information-not-available": "Contact information not available",
     "currency-budget": "Currency & Budget",
     "atms": "ATMs",
+    "one-star": "One Star",
     "budget": "Budget",
     "currency-budget-information-not-available": "Currency and budget information not available",
     "local-transportation": "Local Transportation",
@@ -1511,7 +1517,10 @@ export const translations = {
     'no-views': 'គ្មានការមើល',
     'one-view': '១ ការមើល',
     'multiple-views': 'ការមើល',
-
+    "kampong-speu": "កំពង់ស្ពឺ",
+    "kampong-thom": "កំពង់ធំ",
+    "kampot": "កំពត",
+    "kandal": "កណ្ដាល",
     // Pagination
     'prev': 'មុន',
     'next': 'បន្ទាប់',
@@ -1785,7 +1794,8 @@ export const translations = {
     'all-villages': 'ភូមិទាំងអស់',
     'rating-filter': 'តម្រងការវាយតម្លៃ',
     'minimum-views': 'ចំនួនអ្នកមើលអប្បបរមា',
-
+    "one-star": "១ ផ្កាយ",
+    "other-locations-in-district": "ទីតាំងកម្សាន្តក្នុងស្រុកដូចគ្នា",
     // Star Ratings
     'stars-plus': '+ ផ្កាយ',
     'all-ratings': 'ការវាយតម្លៃទាំងអស់',

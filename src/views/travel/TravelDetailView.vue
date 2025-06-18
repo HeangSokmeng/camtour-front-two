@@ -2,22 +2,25 @@
   <div class="detail-container">
     <div v-if="isLoading" class="loading-overlay">
       <div class="loading-spinner"></div>
-      <p>{{ t('loading-location-details') }}</p>
+      <p>{{ t("loading-location-details") }}</p>
     </div>
     <div v-else-if="errorMessage" class="error-container">
       <div class="error-card">
-        <h2>{{ t('error-loading-location') }}</h2>
+        <h2>{{ t("error-loading-location") }}</h2>
         <p>{{ errorMessage }}</p>
-        <button @click="fetchLocationDetail" class="retry-btn">{{ t('try-again') }}</button>
+        <button @click="fetchLocationDetail" class="retry-btn">
+          {{ t("try-again") }}
+        </button>
       </div>
     </div>
     <div v-else-if="location">
       <div class="detail-hero-section">
-        <!-- <div class="breadcrumb fade-in">
+        <div class="breadcrumb fade-in">
           <router-link to="/">{{ t('home') }}</router-link> &gt;
-          <router-link to="/">{{ t('hiking') }}</router-link> &gt;
+          <router-link to="/adventure">{{ t('hiking') }}</router-link> &gt;
           <span>{{ getLocalizedLocationName(location) }}</span>
-        </div> -->
+        </div>
+        
 
         <div v-if="location.photos && location.photos.length > 0" class="hero-carousel">
           <div ref="carouselInner" class="carousel-inner">
@@ -29,7 +32,9 @@
             >
               <img
                 :src="photo.photo_url"
-                :alt="`${getLocalizedLocationName(location)} - ${t('photo')} ${index + 1}`"
+                :alt="`${getLocalizedLocationName(location)} - ${t('photo')} ${
+                  index + 1
+                }`"
                 @error="handleImageError"
               />
             </div>
@@ -75,12 +80,16 @@
                 {{ getLocalizedCategoryName(location.category) }}
               </div>
               <h1 class="location-title">{{ getLocalizedLocationName(location) }}</h1>
-              <h2 class="location-subtitle khmer-font">{{ getLocalizedLocationDescription(location) }}</h2>
+              <h2 class="location-subtitle khmer-font">
+                {{ getLocalizedLocationDescription(location) }}
+              </h2>
               <div class="location-meta">
                 <div class="location-rating">
                   <div class="star">★</div>
                   <div class="rating-score">{{ averageRating }}</div>
-                  <div class="review-count">({{ location.total_view || 0 }} {{ t('views') }})</div>
+                  <div class="review-count">
+                    ({{ location.total_view || 0 }} {{ t("views") }})
+                  </div>
                 </div>
                 <div class="location-address">
                   <span>{{ formatLocalizedAddress(location) }}</span>
@@ -110,12 +119,16 @@
                 {{ getLocalizedCategoryName(location.category) }}
               </div>
               <h1 class="location-title">{{ getLocalizedLocationName(location) }}</h1>
-              <h2 class="location-subtitle khmer-font">{{ getLocalizedLocationDescription(location) }}</h2>
+              <h2 class="location-subtitle khmer-font">
+                {{ getLocalizedLocationDescription(location) }}
+              </h2>
               <div class="location-meta">
                 <div class="location-rating">
                   <div class="star">★</div>
                   <div class="rating-score">{{ averageRating }}</div>
-                  <div class="review-count">({{ location.total_view || 0 }} {{ t('views') }})</div>
+                  <div class="review-count">
+                    ({{ location.total_view || 0 }} {{ t("views") }})
+                  </div>
                 </div>
                 <div class="location-address">
                   <span>{{ formatLocalizedAddress(location) }}</span>
@@ -125,20 +138,20 @@
           </div>
         </div>
         <div class="hero-actions slide-up">
-          <button class="action-btn favorite-btn" @click="toggleFavorite">
+          <!-- <button class="action-btn favorite-btn" @click="toggleFavorite">
             <svg viewBox="0 0 24 24" :class="{ filled: isFavorite }">
               <path
                 d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"
               ></path>
             </svg>
-          </button>
+          </button> -->
           <button class="action-btn share-btn" @click="shareLocation">
             <svg viewBox="0 0 24 24">
               <path
                 d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z"
               ></path>
             </svg>
-            <span>{{ t('share') }}</span>
+            <span>{{ t("share") }}</span>
           </button>
           <a
             v-if="location.url_location"
@@ -151,7 +164,7 @@
                 d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"
               ></path>
             </svg>
-            <span>{{ t('view-map') }}</span>
+            <span>{{ t("view-map") }}</span>
           </a>
         </div>
       </div>
@@ -177,7 +190,7 @@
               <div class="content-column">
                 <div class="content-card">
                   <div class="content-header">
-                    <h3>{{ t('about-this-location') }}</h3>
+                    <h3>{{ t("about-this-location") }}</h3>
                   </div>
                   <div class="content-body">
                     <p class="location-description">
@@ -198,9 +211,9 @@
                           </svg>
                         </div>
                         <div class="info-content">
-                          <div class="info-label">{{ t('best-time-to-visit') }}</div>
+                          <div class="info-label">{{ t("best-time-to-visit") }}</div>
                           <div class="info-value">
-                            {{ t('year-round-recommended-season') }}
+                            {{ t("year-round-recommended-season") }}
                           </div>
                         </div>
                       </div>
@@ -214,7 +227,7 @@
                           </svg>
                         </div>
                         <div class="info-content">
-                          <div class="info-label">{{ t('category') }}</div>
+                          <div class="info-label">{{ t("category") }}</div>
                           <div class="info-value">
                             {{ getLocalizedCategoryName(location.category) }}
                           </div>
@@ -230,9 +243,9 @@
                           </svg>
                         </div>
                         <div class="info-content">
-                          <div class="info-label">{{ t('popularity') }}</div>
+                          <div class="info-label">{{ t("popularity") }}</div>
                           <div class="info-value">
-                            {{ location.total_view || 0 }} {{ t('views') }}
+                            {{ location.total_view || 0 }} {{ t("views") }}
                           </div>
                         </div>
                       </div>
@@ -247,16 +260,20 @@
                         </div>
                         <div class="text-sm space-y-1 text-gray-700">
                           <div v-if="location?.village?.name">
-                            <strong>{{ t('village') }}:</strong> {{ getLocalizedLocationName(location.village) }}
+                            <strong>{{ t("village") }}:</strong>
+                            {{ getLocalizedLocationName(location.village) }}
                           </div>
                           <div v-if="location?.commune?.name">
-                            <strong>{{ t('commune') }}:</strong> {{ getLocalizedLocationName(location.commune) }}
+                            <strong>{{ t("commune") }}:</strong>
+                            {{ getLocalizedLocationName(location.commune) }}
                           </div>
                           <div v-if="location?.district?.name">
-                            <strong>{{ t('district') }}:</strong> {{ getLocalizedLocationName(location.district) }}
+                            <strong>{{ t("district") }}:</strong>
+                            {{ getLocalizedLocationName(location.district) }}
                           </div>
                           <div v-if="location?.province?.name">
-                            <strong>{{ t('province') }}:</strong> {{ getLocalizedLocationName(location.province) }}
+                            <strong>{{ t("province") }}:</strong>
+                            {{ getLocalizedLocationName(location.province) }}
                           </div>
                         </div>
                       </div>
@@ -267,7 +284,7 @@
                 <!-- Map Section -->
                 <div v-if="location.lat && location.lot" class="content-card">
                   <div class="content-header">
-                    <h3>{{ t('location-map') }}</h3>
+                    <h3>{{ t("location-map") }}</h3>
                   </div>
                   <div class="content-body">
                     <div class="location-map">
@@ -282,8 +299,8 @@
                       ></iframe>
 
                       <div class="mt-2 text-sm text-gray-700">
-                        <p>{{ t('latitude') }}: {{ location.lat }}</p>
-                        <p>{{ t('longitude') }}: {{ location.lot }}</p>
+                        <p>{{ t("latitude") }}: {{ location.lat }}</p>
+                        <p>{{ t("longitude") }}: {{ location.lot }}</p>
                         <a
                           :href="
                             location.url_location ||
@@ -292,7 +309,7 @@
                           target="_blank"
                           class="text-blue-600 hover:underline"
                         >
-                          {{ t('open-in-google-maps') }}
+                          {{ t("open-in-google-maps") }}
                         </a>
                       </div>
                     </div>
@@ -305,7 +322,7 @@
                   class="content-card"
                 >
                   <div class="content-header">
-                    <h3>{{ t('photo-gallery') }}</h3>
+                    <h3>{{ t("photo-gallery") }}</h3>
                   </div>
                   <div class="content-body">
                     <div class="photo-gallery">
@@ -317,7 +334,9 @@
                       >
                         <img
                           :src="photo.photo_url"
-                          :alt="`${getLocalizedLocationName(location)} - ${t('photo')} ${index + 1}`"
+                          :alt="`${getLocalizedLocationName(location)} - ${t('photo')} ${
+                            index + 1
+                          }`"
                           @error="handleImageError"
                         />
                       </div>
@@ -330,7 +349,7 @@
                 <!-- User Reviews -->
                 <div class="content-card sidebar-card">
                   <div class="content-header">
-                    <h3>{{ t('reviews') }}</h3>
+                    <h3>{{ t("reviews") }}</h3>
                   </div>
                   <div class="content-body">
                     <div class="rating-summary">
@@ -350,7 +369,8 @@
                           ></span>
                         </div>
                         <span class="rating-count">
-                          {{ location.total_view ? location.total_view : 0 }} {{ t('reviews') }}
+                          {{ location.total_view ? location.total_view : 0 }}
+                          {{ t("reviews") }}
                         </span>
                       </div>
                     </div>
@@ -380,20 +400,20 @@
                     </div>
 
                     <div v-else class="empty-reviews">
-                      <p>{{ t('no-reviews-yet') }}</p>
+                      <p>{{ t("no-reviews-yet") }}</p>
                     </div>
 
                     <!-- Review Section -->
                     <div class="review-section">
                       <!-- Review Button -->
                       <button @click="toggleReviewForm" class="review-btn">
-                        {{ t('write-a-review') }}
+                        {{ t("write-a-review") }}
                       </button>
 
                       <!-- Review Form Dropdown -->
                       <div v-if="showReviewForm" class="review-form-dropdown">
                         <div class="star-rating">
-                          <div class="rating-label">{{ t('your-rating') }}:</div>
+                          <div class="rating-label">{{ t("your-rating") }}:</div>
                           <div class="stars-container">
                             <span
                               v-for="n in 5"
@@ -421,8 +441,8 @@
                             @click="submitReview"
                             :disabled="isSubmitting"
                           >
-                            <span v-if="isSubmitting">{{ t('submitting') }}...</span>
-                            <span v-else>{{ t('submit') }}</span>
+                            <span v-if="isSubmitting">{{ t("submitting") }}...</span>
+                            <span v-else>{{ t("submit") }}</span>
                           </button>
                         </div>
 
@@ -438,7 +458,7 @@
                 <!-- Weather Widget -->
                 <div class="content-card sidebar-card">
                   <div class="content-header">
-                    <h3>{{ t('weather') }}</h3>
+                    <h3>{{ t("weather") }}</h3>
                   </div>
                   <div class="content-body">
                     <div class="weather-widget">
@@ -452,30 +472,32 @@
                         </div>
                         <div class="weather-info">
                           <div class="weather-temp">32°C</div>
-                          <div class="weather-desc">{{ t('sunny') }}</div>
+                          <div class="weather-desc">{{ t("sunny") }}</div>
                           <div class="weather-location">
-                            {{ getLocalizedLocationName(location.district) || t('cambodia') }}
+                            {{
+                              getLocalizedLocationName(location.district) || t("cambodia")
+                            }}
                           </div>
                         </div>
                       </div>
                       <div class="weather-forecast">
                         <div class="forecast-day">
-                          <div class="day-name">{{ t('mon') }}</div>
+                          <div class="day-name">{{ t("mon") }}</div>
                           <div class="day-icon">☀️</div>
                           <div class="day-temp">33°</div>
                         </div>
                         <div class="forecast-day">
-                          <div class="day-name">{{ t('tue') }}</div>
+                          <div class="day-name">{{ t("tue") }}</div>
                           <div class="day-icon">⛅</div>
                           <div class="day-temp">32°</div>
                         </div>
                         <div class="forecast-day">
-                          <div class="day-name">{{ t('wed') }}</div>
+                          <div class="day-name">{{ t("wed") }}</div>
                           <div class="day-icon">🌦️</div>
                           <div class="day-temp">31°</div>
                         </div>
                         <div class="forecast-day">
-                          <div class="day-name">{{ t('thu') }}</div>
+                          <div class="day-name">{{ t("thu") }}</div>
                           <div class="day-icon">🌧️</div>
                           <div class="day-temp">29°</div>
                         </div>
@@ -487,14 +509,16 @@
                 <!-- Related Destinations -->
                 <div class="content-card sidebar-card">
                   <div class="content-header">
-                    <h3>{{ t('nearby-places') }}</h3>
+                    <h3>{{ t("nearby-places") }}</h3>
                   </div>
                   <div class="content-body">
                     <div class="nearby-places">
                       <div class="empty-nearby">
                         <p>
-                          {{ t('explore-more-places-in') }}
-                          {{ getLocalizedLocationName(location.province) || t('cambodia') }}!
+                          {{ t("explore-more-places-in") }}
+                          {{
+                            getLocalizedLocationName(location.province) || t("cambodia")
+                          }}!
                         </p>
                       </div>
                     </div>
@@ -510,9 +534,9 @@
             class="tab-content products-section slide-up"
           >
             <div class="section-header-wrapper">
-              <div class="header">{{ t('shopping') }}</div>
-              <h2 class="title">{{ t('available-products') }}</h2>
-              <p class="subtitle">{{ t('discover-amazing-products-from-location') }}</p>
+              <div class="header">{{ t("shopping") }}</div>
+              <h2 class="title">{{ t("available-products") }}</h2>
+              <p class="subtitle">{{ t("discover-amazing-products-from-location") }}</p>
             </div>
 
             <div
@@ -525,7 +549,7 @@
                 class="product-card hover-float"
               >
                 <router-link :to="`/product/detail/${product.product_id}`">
-                  <div class="product-label sale">{{ t('sale') }}</div>
+                  <div class="product-label sale">{{ t("sale") }}</div>
                   <img
                     :src="product.is_thumbnail || placeholderImage"
                     :alt="product.product_name"
@@ -542,19 +566,19 @@
                   <div class="product-info">
                     <h3 class="product-brand">{{ product.product_name }}</h3>
                     <p class="product-name">
-                      {{ product.color }} - {{ t('size') }} {{ product.size }}
+                      {{ product.color }} - {{ t("size") }} {{ product.size }}
                     </p>
                     <div class="product-price">
                       <span class="current-price">${{ product.price }}</span>
                     </div>
                     <p class="stock-info" :class="{ low: product.qty < 10 }">
-                      {{ product.qty }} {{ t('in-stock') }}
+                      {{ product.qty }} {{ t("in-stock") }}
                     </p>
                     <p class="product-category">
                       {{
                         product.color && product.color.toLowerCase() === "red"
-                          ? t('featured')
-                          : t('regular')
+                          ? t("featured")
+                          : t("regular")
                       }}
                     </p>
                     <div class="rating-stars">
@@ -570,8 +594,8 @@
             </div>
             <div v-else class="empty-products">
               <div class="empty-icon"></div>
-              <h3>{{ t('no-products-available') }}</h3>
-              <p>{{ t('check-back-soon-products') }}</p>
+              <h3>{{ t("no-products-available") }}</h3>
+              <p>{{ t("check-back-soon-products") }}</p>
             </div>
           </div>
 
@@ -581,17 +605,17 @@
             class="tab-content activities-section slide-up"
           >
             <div class="section-header-wrapper">
-              <div class="header">{{ t('experiences') }}</div>
-              <h2 class="title">{{ t('available-activities') }}</h2>
+              <div class="header">{{ t("experiences") }}</div>
+              <h2 class="title">{{ t("available-activities") }}</h2>
               <p class="subtitle">
-                {{ t('explore-exciting-adventures-activities') }}
+                {{ t("explore-exciting-adventures-activities") }}
               </p>
             </div>
 
             <!-- Loading State -->
             <div v-if="isLoading" class="activities-loading">
               <div class="loading-spinner"></div>
-              <p>{{ t('loading-activities') }}</p>
+              <p>{{ t("loading-activities") }}</p>
             </div>
 
             <!-- Activities Grid -->
@@ -614,7 +638,7 @@
                     @error="handleImageError"
                   />
                   <div v-if="activity.is_active" class="activity-status active">
-                    {{ t('available') }}
+                    {{ t("available") }}
                   </div>
                 </div>
                 <div class="activity-content">
@@ -622,7 +646,7 @@
                   <p class="activity-desc">
                     {{
                       getLocalizedActivityDescription(activity) ||
-                      t('experience-amazing-activity-location')
+                      t("experience-amazing-activity-location")
                     }}
                   </p>
                   <div class="activity-details">
@@ -635,7 +659,7 @@
                       </svg>
                       <span
                         >{{ activity.duration_hours }}
-                        {{ activity.duration_hours === 1 ? t('hour') : t('hours') }}</span
+                        {{ activity.duration_hours === 1 ? t("hour") : t("hours") }}</span
                       >
                     </div>
                     <div class="activity-difficulty">
@@ -654,7 +678,7 @@
                     <div class="activity-price">
                       ${{ parseFloat(activity.price_per_person).toFixed(2) }}
                       <span class="currency">{{ activity.currency || "USD" }}</span>
-                      <span class="per-person">{{ t('per-person') }}</span>
+                      <span class="per-person">{{ t("per-person") }}</span>
                     </div>
                   </div>
 
@@ -666,7 +690,10 @@
                           d="M16 4c0-1.11.89-2 2-2s2 .89 2 2-.89 2-2 2-2-.89-2-2zm4 18v-6h2.5l-2.54-7.63A1.42 1.42 0 0 0 18.6 7c-.8 0-1.54.5-1.85 1.26L14.59 15H16v7h4zm-12.5 0v-7.5h1.75L7.5 7H6c-1.1 0-2 .9-2 2v13h3.5zm3.5-13c.83 0 1.5-.67 1.5-1.5S11.83 6 11 6s-1.5.67-1.5 1.5S10.17 9 11 9z"
                         />
                       </svg>
-                      <span>{{ t('max') }} {{ activity.max_participants }} {{ t('people') }}</span>
+                      <span
+                        >{{ t("max") }} {{ activity.max_participants }}
+                        {{ t("people") }}</span
+                      >
                     </div>
                   </div>
 
@@ -677,13 +704,13 @@
                       @click="bookActivity(activity)"
                       :disabled="!activity.is_active"
                     >
-                      {{ activity.is_active ? t('book-now') : t('not-available') }}
+                      {{ activity.is_active ? t("book-now") : t("not-available") }}
                     </button>
                     <button
                       class="btn-activity-details"
                       @click="viewActivityDetails(activity)"
                     >
-                      {{ t('view-details') }}
+                      {{ t("view-details") }}
                     </button>
                   </div>
                 </div>
@@ -699,12 +726,12 @@
                   />
                 </svg>
               </div>
-              <h3>{{ t('no-activities-available') }}</h3>
+              <h3>{{ t("no-activities-available") }}</h3>
               <p>
-                {{ t('no-activities-available-description') }}
+                {{ t("no-activities-available-description") }}
               </p>
               <button class="btn-suggest-activity" @click="suggestActivity">
-                {{ t('suggest-an-activity') }}
+                {{ t("suggest-an-activity") }}
               </button>
             </div>
 
@@ -729,27 +756,29 @@
                   </div>
                   <div class="activity-modal-info">
                     <div class="modal-description">
-                      <h4>{{ t('description') }}</h4>
+                      <h4>{{ t("description") }}</h4>
                       <p>
                         {{
                           getLocalizedActivityDescription(selectedActivity) ||
-                          t('experience-amazing-activity-professional-guides')
+                          t("experience-amazing-activity-professional-guides")
                         }}
                       </p>
                     </div>
 
                     <div class="modal-details-grid">
                       <div class="detail-item">
-                        <strong>{{ t('duration') }}:</strong>
+                        <strong>{{ t("duration") }}:</strong>
                         <span
                           >{{ selectedActivity?.duration_hours }}
                           {{
-                            selectedActivity?.duration_hours === 1 ? t('hour') : t('hours')
+                            selectedActivity?.duration_hours === 1
+                              ? t("hour")
+                              : t("hours")
                           }}</span
                         >
                       </div>
                       <div class="detail-item">
-                        <strong>{{ t('difficulty') }}:</strong>
+                        <strong>{{ t("difficulty") }}:</strong>
                         <span
                           :class="getDifficultyClass(selectedActivity?.difficulty_level)"
                         >
@@ -757,17 +786,19 @@
                         </span>
                       </div>
                       <div class="detail-item">
-                        <strong>{{ t('price') }}:</strong>
+                        <strong>{{ t("price") }}:</strong>
                         <span class="price-highlight">
                           ${{
                             parseFloat(selectedActivity?.price_per_person || 0).toFixed(2)
                           }}
-                          {{ selectedActivity?.currency || "USD" }} {{ t('per-person') }}
+                          {{ selectedActivity?.currency || "USD" }} {{ t("per-person") }}
                         </span>
                       </div>
                       <div v-if="selectedActivity?.max_participants" class="detail-item">
-                        <strong>{{ t('max-participants') }}:</strong>
-                        <span>{{ selectedActivity.max_participants }} {{ t('people') }}</span>
+                        <strong>{{ t("max-participants") }}:</strong>
+                        <span
+                          >{{ selectedActivity.max_participants }} {{ t("people") }}</span
+                        >
                       </div>
                     </div>
 
@@ -779,7 +810,7 @@
                       "
                       class="modal-section"
                     >
-                      <h4>{{ t('whats-included') }}</h4>
+                      <h4>{{ t("whats-included") }}</h4>
                       <ul class="included-list">
                         <li v-for="item in selectedActivity.included_items" :key="item">
                           <svg viewBox="0 0 24 24" class="check-icon">
@@ -800,7 +831,7 @@
                       "
                       class="modal-section"
                     >
-                      <h4>{{ t('requirements') }}</h4>
+                      <h4>{{ t("requirements") }}</h4>
                       <ul class="requirements-list">
                         <li
                           v-for="requirement in selectedActivity.requirements"
@@ -824,7 +855,9 @@
                     :disabled="!selectedActivity?.is_active"
                   >
                     {{
-                      selectedActivity?.is_active ? t('book-this-activity') : t('not-available')
+                      selectedActivity?.is_active
+                        ? t("book-this-activity")
+                        : t("not-available")
                     }}
                   </button>
                 </div>
@@ -834,17 +867,19 @@
 
           <div v-if="activeTab === 'tips'" class="tab-content tips-section slide-up">
             <div class="section-header-wrapper">
-              <div class="header">{{ t('travel-guide') }}</div>
-              <h2 class="title">{{ t('essential-travel-tips') }}</h2>
-              <p class="subtitle">{{ t('make-most-visit-insider-tips') }}</p>
+              <div class="header">{{ t("travel-guide") }}</div>
+              <h2 class="title">{{ t("essential-travel-tips") }}</h2>
+              <p class="subtitle">{{ t("make-most-visit-insider-tips") }}</p>
             </div>
             <div v-if="isLoadingGuide" class="tips-loading">
               <div class="loading-spinner"></div>
-              <p>{{ t('loading-travel-guide') }}</p>
+              <p>{{ t("loading-travel-guide") }}</p>
             </div>
             <div v-else-if="guideError" class="tips-error">
               <p>{{ guideError }}</p>
-              <button @click="fetchLocationGuide" class="retry-btn">{{ t('try-again') }}</button>
+              <button @click="fetchLocationGuide" class="retry-btn">
+                {{ t("try-again") }}
+              </button>
             </div>
             <div v-else-if="locationGuide" class="tips-grid">
               <div class="tip-card">
@@ -858,10 +893,12 @@
                     />
                   </svg>
                 </div>
-                <h3 class="tip-title">{{ t('best-time-to-visit') }}</h3>
+                <h3 class="tip-title">{{ t("best-time-to-visit") }}</h3>
                 <div class="tip-content">
                   <p>
-                    {{ locationGuide.best_time_to_visit || t('information-not-available') }}
+                    {{
+                      locationGuide.best_time_to_visit || t("information-not-available")
+                    }}
                   </p>
                 </div>
               </div>
@@ -873,9 +910,11 @@
                     />
                   </svg>
                 </div>
-                <h3 class="tip-title">{{ t('local-contacts') }}</h3>
+                <h3 class="tip-title">{{ t("local-contacts") }}</h3>
                 <div class="tip-content">
-                  <p v-if="locationGuide.local_contacts">{{ t('important-local-numbers') }}:</p>
+                  <p v-if="locationGuide.local_contacts">
+                    {{ t("important-local-numbers") }}:
+                  </p>
                   <ul v-if="locationGuide.local_contacts">
                     <li
                       v-for="(number, service) in locationGuide.local_contacts"
@@ -884,7 +923,7 @@
                       {{ service.replace(/([A-Z])/g, " $1").trim() }}: {{ number }}
                     </li>
                   </ul>
-                  <p v-else>{{ t('contact-information-not-available') }}</p>
+                  <p v-else>{{ t("contact-information-not-available") }}</p>
                 </div>
               </div>
               <div class="tip-card">
@@ -895,25 +934,26 @@
                     />
                   </svg>
                 </div>
-                <h3 class="tip-title">{{ t('currency-budget') }}</h3>
+                <h3 class="tip-title">{{ t("currency-budget") }}</h3>
                 <div class="tip-content">
                   <div v-if="locationGuide.currency_and_budget">
                     <p v-if="locationGuide.currency_and_budget.currency">
-                      <strong>{{ t('currency') }}:</strong>
+                      <strong>{{ t("currency") }}:</strong>
                       {{ locationGuide.currency_and_budget.currency }}
                     </p>
                     <p v-if="locationGuide.currency_and_budget.notes">
                       {{ locationGuide.currency_and_budget.notes }}
                     </p>
                     <p v-if="locationGuide.currency_and_budget.ATMs">
-                      <strong>{{ t('atms') }}:</strong> {{ locationGuide.currency_and_budget.ATMs }}
+                      <strong>{{ t("atms") }}:</strong>
+                      {{ locationGuide.currency_and_budget.ATMs }}
                     </p>
                     <p v-if="locationGuide.currency_and_budget.budget">
-                      <strong>{{ t('budget') }}:</strong>
+                      <strong>{{ t("budget") }}:</strong>
                       {{ locationGuide.currency_and_budget.budget }}
                     </p>
                   </div>
-                  <p v-else>{{ t('currency-budget-information-not-available') }}</p>
+                  <p v-else>{{ t("currency-budget-information-not-available") }}</p>
                 </div>
               </div>
               <div class="tip-card">
@@ -924,22 +964,23 @@
                     />
                   </svg>
                 </div>
-                <h3 class="tip-title">{{ t('local-transportation') }}</h3>
+                <h3 class="tip-title">{{ t("local-transportation") }}</h3>
                 <div class="tip-content">
                   <div v-if="locationGuide.local_transportation">
                     <p v-if="locationGuide.local_transportation.shortDistances">
-                      <strong>{{ t('short-distances') }}:</strong>
+                      <strong>{{ t("short-distances") }}:</strong>
                       {{ locationGuide.local_transportation.shortDistances }}
                     </p>
                     <p v-if="locationGuide.local_transportation.longDistances">
-                      <strong>{{ t('long-distances') }}:</strong>
+                      <strong>{{ t("long-distances") }}:</strong>
                       {{ locationGuide.local_transportation.longDistances }}
                     </p>
                     <p v-if="locationGuide.local_transportation.tip">
-                      <strong>{{ t('tip') }}:</strong> {{ locationGuide.local_transportation.tip }}
+                      <strong>{{ t("tip") }}:</strong>
+                      {{ locationGuide.local_transportation.tip }}
                     </p>
                   </div>
-                  <p v-else>{{ t('transportation-information-not-available') }}</p>
+                  <p v-else>{{ t("transportation-information-not-available") }}</p>
                 </div>
               </div>
               <div class="tip-card">
@@ -950,21 +991,21 @@
                     />
                   </svg>
                 </div>
-                <h3 class="tip-title">{{ t('what-to-pack') }}</h3>
+                <h3 class="tip-title">{{ t("what-to-pack") }}</h3>
                 <div class="tip-content">
                   <div
                     v-if="
                       locationGuide.what_to_pack && locationGuide.what_to_pack.length > 0
                     "
                   >
-                    <p>{{ t('essential-items-include') }}:</p>
+                    <p>{{ t("essential-items-include") }}:</p>
                     <ul>
                       <li v-for="item in locationGuide.what_to_pack" :key="item">
                         {{ item }}
                       </li>
                     </ul>
                   </div>
-                  <p v-else>{{ t('packing-information-not-available') }}</p>
+                  <p v-else>{{ t("packing-information-not-available") }}</p>
                 </div>
               </div>
               <div class="tip-card">
@@ -975,7 +1016,7 @@
                     />
                   </svg>
                 </div>
-                <h3 class="tip-title">{{ t('local-etiquette') }}</h3>
+                <h3 class="tip-title">{{ t("local-etiquette") }}</h3>
                 <div class="tip-content">
                   <div v-if="locationGuide.local_etiquette">
                     <p v-if="locationGuide.local_etiquette.greeting">
@@ -987,7 +1028,7 @@
                         locationGuide.local_etiquette.customs.length > 0
                       "
                     >
-                      <p>{{ t('important-customs') }}:</p>
+                      <p>{{ t("important-customs") }}:</p>
                       <ul>
                         <li
                           v-for="custom in locationGuide.local_etiquette.customs"
@@ -998,7 +1039,7 @@
                       </ul>
                     </div>
                   </div>
-                  <p v-else>{{ t('etiquette-information-not-available') }}</p>
+                  <p v-else>{{ t("etiquette-information-not-available") }}</p>
                 </div>
               </div>
               <div
@@ -1012,9 +1053,9 @@
                     />
                   </svg>
                 </div>
-                <h3 class="tip-title">{{ t('whats-on-sale') }}</h3>
+                <h3 class="tip-title">{{ t("whats-on-sale") }}</h3>
                 <div class="tip-content">
-                  <p>{{ t('local-products-available') }}:</p>
+                  <p>{{ t("local-products-available") }}:</p>
                   <ul>
                     <li v-for="item in locationGuide.what_on_sale" :key="item">
                       {{ item }}
@@ -1025,8 +1066,40 @@
             </div>
             <div v-else class="tips-fallback">
               <div class="empty-icon"></div>
-              <h3>{{ t('travel-guide-not-available') }}</h3>
-              <p>{{ t('no-travel-guide-information-available') }}</p>
+              <h3>{{ t("travel-guide-not-available") }}</h3>
+              <p>{{ t("no-travel-guide-information-available") }}</p>
+            </div>
+          </div>
+        </div>
+        <div
+          v-if="
+            location.same_district_locations &&
+            location.same_district_locations.length > 0
+          "
+        >
+          <h2>📍 {{ t("other-locations-in-district") }}</h2>
+          <div class="location-district-grid">
+            <div
+              v-for="loc in location.same_district_locations"
+              :key="loc.id"
+              class="product-card"
+            >
+              <router-link :to="`/location/detail/${loc.id}`">
+                <img
+                  :src="loc.thumbnail_url || placeholderImage"
+                  :alt="getLocalizedLocationName(loc)"
+                  @error="handleImageError"
+                />
+                <div class="product-info">
+                  <h4>{{ loc.name }}</h4>
+                  <p class="product-details text-sm text-gray-500">
+                    {{ loc.name_local }}
+                  </p>
+                  <div class="product-footer">
+                    <span class="price">👁️ {{ loc.total_view }} {{ t("views") }}</span>
+                  </div>
+                </div>
+              </router-link>
             </div>
           </div>
         </div>
@@ -1045,7 +1118,9 @@
           >
             <img
               :src="location.photos[lightboxIndex].photo_url"
-              :alt="`${getLocalizedLocationName(location)} - ${t('photo')} ${lightboxIndex + 1}`"
+              :alt="`${getLocalizedLocationName(location)} - ${t('photo')} ${
+                lightboxIndex + 1
+              }`"
               class="lightbox-image"
               @error="handleImageError"
             />
@@ -1103,16 +1178,16 @@
     <div v-else class="empty-state-container">
       <div class="empty-state-card">
         <div class="empty-icon"></div>
-        <h2>{{ t('location-not-found') }}</h2>
+        <h2>{{ t("location-not-found") }}</h2>
         <p>
-          {{ t('location-not-found-description') }}
+          {{ t("location-not-found-description") }}
         </p>
         <div class="empty-actions">
           <router-link to="/Locations" class="empty-btn primary">
-            {{ t('browse-locations') }}
+            {{ t("browse-locations") }}
           </router-link>
           <button @click="fetchLocationDetail" class="empty-btn secondary">
-            {{ t('try-again') }}
+            {{ t("try-again") }}
           </button>
         </div>
       </div>
@@ -1122,7 +1197,7 @@
 
 <script setup>
 import "@/assets/css/locationDetial.css";
-import { useTranslation } from '@/components/useTranslation';
+import { useTranslation } from "@/components/useTranslation";
 import axios from "axios";
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from "vue";
 import { useRoute } from "vue-router";
@@ -1154,111 +1229,111 @@ let autoRotateInterval = null;
 const placeholderImage =
   "https://placehold.co/600x400/19ADCF/ffffff?text=Cambodia+Travel";
 const getLocalizedLocationName = (location) => {
-  if (!location) return '';
-  
+  if (!location) return "";
+
   const currentLang = currentLanguage.value;
-  if (currentLang === 'km' && location.local_name) {
+  if (currentLang === "km" && location.local_name) {
     return location.local_name;
-  } else if (currentLang === 'km' && location.name_local) {
+  } else if (currentLang === "km" && location.name_local) {
     return location.name_local;
   }
-  return location.name || '';
+  return location.name || "";
 };
 
 const getLocalizedCategoryName = (category) => {
-  if (!category) return t('adventure');
-  
+  if (!category) return t("adventure");
+
   const currentLang = currentLanguage.value;
-  if (currentLang === 'km' && category.local_name) {
+  if (currentLang === "km" && category.local_name) {
     return category.local_name;
-  } else if (currentLang === 'km' && category.name_local) {
+  } else if (currentLang === "km" && category.name_local) {
     return category.name_local;
   }
-  return category.name || t('adventure');
+  return category.name || t("adventure");
 };
 
 const getLocalizedLocationDescription = (location) => {
-  if (!location) return '';
-  
+  if (!location) return "";
+
   const currentLang = currentLanguage.value;
-  if (currentLang === 'km' && location.description_local) {
+  if (currentLang === "km" && location.description_local) {
     return location.description_local;
   }
-  return location.name_local || location.local_name || '';
+  return location.name_local || location.local_name || "";
 };
 
 const getLocalizedDescription = (location) => {
-  if (!location) return t('no-description-available');
-  
+  if (!location) return t("no-description-available");
+
   const currentLang = currentLanguage.value;
-  if (currentLang === 'km' && location.description_local) {
+  if (currentLang === "km" && location.description_local) {
     return location.description_local;
   }
-  return location.description || t('no-description-available');
+  return location.description || t("no-description-available");
 };
 
 const getLocalizedShortDescription = (location) => {
-  if (!location) return t('explore-this-amazing-location');
-  
+  if (!location) return t("explore-this-amazing-location");
+
   const currentLang = currentLanguage.value;
-  if (currentLang === 'km' && location.short_description_local) {
+  if (currentLang === "km" && location.short_description_local) {
     return location.short_description_local;
   }
-  return location.short_description || t('explore-this-amazing-location');
+  return location.short_description || t("explore-this-amazing-location");
 };
 
 const getLocalizedTagName = (tag) => {
-  if (!tag) return '';
-  
+  if (!tag) return "";
+
   const currentLang = currentLanguage.value;
-  if (currentLang === 'km' && tag.local_name) {
+  if (currentLang === "km" && tag.local_name) {
     return tag.local_name;
-  } else if (currentLang === 'km' && tag.name_local) {
+  } else if (currentLang === "km" && tag.name_local) {
     return tag.name_local;
   }
-  return tag.name || '';
+  return tag.name || "";
 };
 
 const getLocalizedActivityName = (activity) => {
-  if (!activity) return '';
-  
+  if (!activity) return "";
+
   const currentLang = currentLanguage.value;
-  if (currentLang === 'km' && activity.title_local) {
+  if (currentLang === "km" && activity.title_local) {
     return activity.title_local;
-  } else if (currentLang === 'km' && activity.local_title) {
+  } else if (currentLang === "km" && activity.local_title) {
     return activity.local_title;
   }
-  return activity.title || '';
+  return activity.title || "";
 };
 
 const getLocalizedActivityDescription = (activity) => {
-  if (!activity) return '';
-  
+  if (!activity) return "";
+
   const currentLang = currentLanguage.value;
-  if (currentLang === 'km' && activity.description_local) {
+  if (currentLang === "km" && activity.description_local) {
     return activity.description_local;
-  } else if (currentLang === 'km' && activity.local_description) {
+  } else if (currentLang === "km" && activity.local_description) {
     return activity.local_description;
   }
-  return activity.description || '';
+  return activity.description || "";
 };
 
 const getLocalizedDifficulty = (difficulty) => {
-  if (!difficulty) return '';
-  
+  if (!difficulty) return "";
+
   const difficultyMap = {
-    'easy': t('easy'),
-    'moderate': t('moderate'), 
-    'hard': t('hard'),
-    'challenging': t('challenging')
+    easy: t("easy"),
+    moderate: t("moderate"),
+    hard: t("hard"),
+    challenging: t("challenging"),
   };
-  
+
   return difficultyMap[difficulty?.toLowerCase()] || difficulty;
 };
 
 const formatLocalizedAddress = (location) => {
-  if (!location) return '';
-  
+  if (!location) return "";
+
   const parts = [];
   if (location.village) {
     parts.push(getLocalizedLocationName(location.village));
@@ -1272,15 +1347,15 @@ const formatLocalizedAddress = (location) => {
   if (location.province) {
     parts.push(getLocalizedLocationName(location.province));
   }
-  return parts.join(', ');
+  return parts.join(", ");
 };
 
 const getLocalizedTabs = () => {
   return [
-    { id: "overview", label: t('overview') },
-    { id: "products", label: t('products') },
-    { id: "activities", label: t('activities') },
-    { id: "tips", label: t('travel-tips') },
+    { id: "overview", label: t("overview") },
+    { id: "products", label: t("products") },
+    { id: "activities", label: t("activities") },
+    { id: "tips", label: t("travel-tips") },
   ];
 };
 
@@ -1293,9 +1368,11 @@ const averageRating = computed(() => {
 });
 
 const handleLanguageChange = () => {
-  document.title = `${t('camtour-brand')} - ${getLocalizedLocationName(location.value) || t('location-detail')}`;
+  document.title = `${t("camtour-brand")} - ${
+    getLocalizedLocationName(location.value) || t("location-detail")
+  }`;
   if (errorMessage.value) {
-    errorMessage.value = t('error-loading-location-details');
+    errorMessage.value = t("error-loading-location-details");
   }
 };
 
@@ -1326,17 +1403,19 @@ const closeActivityModal = () => {
 
 const bookActivity = (activity) => {
   if (!activity.is_active) {
-    showSuccessToast(t('activity-not-available'));
+    showSuccessToast(t("activity-not-available"));
     return;
   }
-  showSuccessToast(t('booking-initiated-for') + ` ${getLocalizedActivityName(activity)}!`);
+  showSuccessToast(
+    t("booking-initiated-for") + ` ${getLocalizedActivityName(activity)}!`
+  );
   if (showActivityModal.value) {
     closeActivityModal();
   }
 };
 
 const suggestActivity = () => {
-  showSuccessToast(t('thank-you-suggestions'));
+  showSuccessToast(t("thank-you-suggestions"));
 };
 
 const fetchLocationGuide = async () => {
@@ -1360,7 +1439,7 @@ const fetchLocationGuide = async () => {
     }
   } catch (error) {
     console.error("Failed to fetch location guide:", error);
-    guideError.value = error.response?.data?.message || t('failed-to-load-travel-guide');
+    guideError.value = error.response?.data?.message || t("failed-to-load-travel-guide");
     locationGuide.value = null;
     if (typeof globalStore.onCheckError === "function") {
       await globalStore.onCheckError(error);
@@ -1373,7 +1452,7 @@ const fetchLocationGuide = async () => {
 const fetchLocationDetail = async () => {
   const locationId = route.params.id;
   if (!locationId) {
-    errorMessage.value = t('no-location-id-provided');
+    errorMessage.value = t("no-location-id-provided");
     isLoading.value = false;
     return;
   }
@@ -1388,14 +1467,16 @@ const fetchLocationDetail = async () => {
     ]);
     if (locationResponse.data.result && locationResponse.data.data) {
       location.value = { ...locationResponse.data.data };
-      document.title = `${t('camtour-brand')} - ${getLocalizedLocationName(location.value)}`;
+      document.title = `${t("camtour-brand")} - ${getLocalizedLocationName(
+        location.value
+      )}`;
       await checkFavoriteStatus(location.value.id);
       currentSlide.value = 0;
       await nextTick();
       startAutoRotation();
     } else {
       errorMessage.value =
-        locationResponse.data.message || t('failed-to-load-location-data');
+        locationResponse.data.message || t("failed-to-load-location-data");
       location.value = null;
     }
   } catch (error) {
@@ -1403,7 +1484,7 @@ const fetchLocationDetail = async () => {
     errorMessage.value =
       error.response?.data?.message ||
       error.message ||
-      t('error-occurred-loading-location-details');
+      t("error-occurred-loading-location-details");
     location.value = null;
     if (typeof globalStore.onCheckError === "function") {
       await globalStore.onCheckError(error);
@@ -1491,55 +1572,56 @@ const checkFavoriteStatus = async (locationId) => {
   }
 };
 
-const toggleFavorite = async () => {
-  if (!globalStore.isLoggedIn) {
-    if (typeof globalStore.showLoginModal === "function") {
-      globalStore.showLoginModal();
-    }
-    return;
-  }
-  if (!location.value) return;
+// const toggleFavorite = async () => {
+//   if (!globalStore.isLoggedIn) {
+//     if (typeof globalStore.showLoginModal === "function") {
+//       globalStore.showLoginModal();
+//     }
+//     return;
+//   }
+//   if (!location.value) return;
 
-  try {
-    const url = isFavorite.value
-      ? `/api/web/user/favorites/remove/${location.value.id}`
-      : `/api/web/user/favorites/add/${location.value.id}`;
-    const response = await axios.post(
-      url,
-      {},
-      {
-        ...globalStore.getAxiosHeader(),
-      }
-    );
-    if (response.data.result) {
-      isFavorite.value = !isFavorite.value;
-      showSuccessToast(
-        isFavorite.value
-          ? t('location-added-to-favorites')
-          : t('location-removed-from-favorites')
-      );
-    }
-  } catch (error) {
-    console.error("Failed to toggle favorite:", error);
-    showSuccessToast(t('failed-to-update-favorites'));
-  }
-};
+//   try {
+//     const url = isFavorite.value
+//       ? `/api/web/user/favorites/remove/${location.value.id}`
+//       : `/api/web/user/favorites/add/${location.value.id}`;
+//     const response = await axios.post(
+//       url,
+//       {},
+//       {
+//         ...globalStore.getAxiosHeader(),
+//       }
+//     );
+//     if (response.data.result) {
+//       isFavorite.value = !isFavorite.value;
+//       showSuccessToast(
+//         isFavorite.value
+//           ? t("location-added-to-favorites")
+//           : t("location-removed-from-favorites")
+//       );
+//     }
+//   } catch (error) {
+//     console.error("Failed to toggle favorite:", error);
+//     showSuccessToast(t("failed-to-update-favorites"));
+//   }
+// };
 
 // Share functionality
 const shareLocation = () => {
   if (navigator.share && window.location.href) {
     navigator
       .share({
-        title: getLocalizedLocationName(location.value) || t('camtour-brand'),
+        title: getLocalizedLocationName(location.value) || t("camtour-brand"),
         text:
-          getLocalizedShortDescription(location.value) || t('check-out-amazing-place-cambodia'),
+          getLocalizedShortDescription(location.value) ||
+          t("check-out-amazing-place-cambodia"),
         url: window.location.href,
       })
       .catch((error) => console.error("Error sharing:", error));
   } else {
     navigator.clipboard
       .writeText(window.location.href)
-      .then(() => showSuccessToast(t('link-copied-to-clipboard')))
+      .then(() => showSuccessToast(t("link-copied-to-clipboard")))
       .catch((err) => console.error("Failed to copy:", err));
   }
 };
@@ -1560,11 +1642,11 @@ const toggleReviewForm = () => {
 
 const submitReview = async () => {
   if (rating.value === 0) {
-    reviewError.value = t('please-select-rating');
+    reviewError.value = t("please-select-rating");
     return;
   }
   if (!comment.value.trim()) {
-    reviewError.value = t('please-enter-review');
+    reviewError.value = t("please-enter-review");
     return;
   }
 
@@ -1588,9 +1670,9 @@ const submitReview = async () => {
       resetForm();
       showReviewForm.value = false;
       await fetchLocationDetail();
-      showSuccessToast(t('review-submitted-successfully'));
+      showSuccessToast(t("review-submitted-successfully"));
     } else {
-      reviewError.value = response.data.message || t('failed-to-submit-review');
+      reviewError.value = response.data.message || t("failed-to-submit-review");
     }
   } catch (error) {
     console.error("Review submission error:", error);
@@ -1599,10 +1681,9 @@ const submitReview = async () => {
       error.response.data &&
       error.response.data.message === "You need to login first."
     ) {
-      reviewError.value = t('please-log-in-to-submit-review');
+      reviewError.value = t("please-log-in-to-submit-review");
     } else {
-      reviewError.value =
-        error.response?.data?.message || t('error-occurred-try-again');
+      reviewError.value = error.response?.data?.message || t("error-occurred-try-again");
     }
     try {
       if (typeof globalStore.onCheckError === "function") {
@@ -1660,7 +1741,7 @@ const cleanup = () => {
   showSuccessMessage.value = false;
   successMessage.value = "";
   selectedActivity.value = null;
-  document.title = t('camtour-brand');
+  document.title = t("camtour-brand");
 };
 
 // Route watchers
@@ -1690,14 +1771,87 @@ watch(currentLanguage, () => {
 
 // Lifecycle hooks
 onMounted(async () => {
-  window.addEventListener('language-changed', handleLanguageChange);
+  window.addEventListener("language-changed", handleLanguageChange);
   await fetchLocationDetail();
 });
 
 onBeforeUnmount(() => {
-  window.removeEventListener('language-changed', handleLanguageChange);
+  window.removeEventListener("language-changed", handleLanguageChange);
   cleanup();
   if (routeWatcher) routeWatcher();
   if (routeLeaveWatcher) routeLeaveWatcher();
 });
 </script>
+<style scoped>
+.breadcrumb {
+  display: flex;
+  margin-top: 50px;
+  align-items: center;
+  /* margin: 0 0 20px; */
+  font-size: 14px;
+      margin-bottom: -50px;
+  color: var(--text-medium);
+}
+
+.breadcrumb a {
+  color: var(--primary-color);
+  text-decoration: none;
+  margin: 0 8px;
+  transition: color 0.3s;
+}
+
+.breadcrumb a:first-child {
+  margin-left: 0;
+}
+
+.breadcrumb a:hover {
+  color: var(--primary-dark);
+}
+.location-district-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 16px; /* Adjust spacing between items */
+  padding: 16px;
+}
+
+.product-card {
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  overflow: hidden;
+  background-color: #fff;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.product-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.product-card img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+.product-info {
+  padding: 12px;
+}
+
+.product-info h4 {
+  margin: 0 0 6px;
+  font-size: 16px;
+  color: #333;
+}
+
+.product-details {
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.product-footer {
+  margin-top: 8px;
+  font-size: 14px;
+  color: #555;
+}
+</style>

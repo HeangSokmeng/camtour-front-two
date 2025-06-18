@@ -1588,8 +1588,9 @@ onBeforeUnmount(() => {
               <h3 class="cta-title">{{ t("cta-title") }}</h3>
               <p class="cta-desc">{{ t("cta-description") }}</p>
               <div class="cta-buttons">
-                <a href="/Locations" class="cta-btn">{{ t("explore-tours") }}</a>
-                <a href="/Contact" class="cta-btn secondary">{{ t("contact-us") }}</a>
+                <router-link to="/adventure"  class="cta-btn">{{ t("explore-tours") }}</router-link>
+                <!-- <a href="/Locations" class="cta-btn">{{ t("explore-tours") }}</a> -->
+                <!-- <a href="/Contact" class="cta-btn secondary">{{ t("contact-us") }}</a> -->
               </div>
             </div>
             <div class="cta-image">

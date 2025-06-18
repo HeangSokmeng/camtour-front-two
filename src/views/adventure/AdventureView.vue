@@ -340,18 +340,19 @@
     </div>
   </div>
 </template>
-
 <script setup>
 import imgBanner from '@/assets/adventure/banner.png';
-import "@/assets/css/adventure.css"; // Import the responsive CSS
+import "@/assets/css/adventure.css";
 import { useTranslation } from "@/components/useTranslation";
 import { useGlobalStore } from "@/stores/global";
 import axios from "axios";
-import { computed, onMounted, onUnmounted, ref, watch } from "vue";
+import { computed, onMounted, onUnmounted, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
+
 const { currentLanguage, t } = useTranslation();
 const router = useRouter();
 const route = useRoute();
+
 const isLoading = ref(true);
 const locations = ref([]);
 const topViewLocations = ref([]);
@@ -362,6 +363,7 @@ const districts = ref([]);
 const communes = ref([]);
 const villages = ref([]);
 const categories = ref([]);
+
 const isMobile = ref(false);
 const showMobileFilters = ref(false);
 const searchQuery = ref("");
@@ -372,6 +374,7 @@ const selectedVillageId = ref(null);
 const selectedCategoryId = ref(null);
 const selectedStar = ref(null);
 let searchDebounceTimer = null;
+
 const isFiltered = computed(() => {
   return (
     searchQuery.value ||
@@ -384,9 +387,7 @@ const isFiltered = computed(() => {
   );
 });
 
-const isKhmerLanguage = computed(() => {
-  return currentLanguage.value === "km";
-});
+const isKhmerLanguage = computed(() => currentLanguage.value === "km");
 const placeholderImage = "https://placehold.co/400x300/0085FF/FFFFFF?text=Camtour";
 
 const checkMobile = () => {
@@ -463,6 +464,7 @@ const formatDate = (date) => {
   }
 };
 
+// Fetch location options
 const fetchProvinces = async () => {
   try {
     const globalStore = useGlobalStore();
@@ -490,7 +492,6 @@ const fetchDistricts = async (provinceId) => {
       `/api/web/view/location/districts/${provinceId}`,
       ...globalStore.getAxiosHeader()
     );
-
     if (response.data.result) {
       districts.value = response.data.data || [];
     }
@@ -551,7 +552,6 @@ const fetchCategories = async () => {
       params: { lang: currentLanguage.value },
       ...globalStore.getAxiosHeader(),
     });
-
     if (response.data.result) {
       categories.value = response.data.data || [];
     }
@@ -560,33 +560,20 @@ const fetchCategories = async () => {
   }
 };
 
+// Fetch adventure data with filters and pagination
 const fetchAdventureData = async (page = 1) => {
   const globalStore = useGlobalStore();
   const params = {
     page,
     lang: currentLanguage.value,
   };
-  if (searchQuery.value) {
-    params.search = searchQuery.value;
-  }
-  if (selectedProvinceId.value) {
-    params.province_id = selectedProvinceId.value;
-  }
-  if (selectedDistrictId.value) {
-    params.district_id = selectedDistrictId.value;
-  }
-  if (selectedCommuneId.value) {
-    params.commune_id = selectedCommuneId.value;
-  }
-  if (selectedVillageId.value) {
-    params.village_id = selectedVillageId.value;
-  }
-  if (selectedCategoryId.value) {
-    params.category_id = selectedCategoryId.value;
-  }
-  if (selectedStar.value) {
-    params.star = selectedStar.value;
-  }
+  if (searchQuery.value) params.search = searchQuery.value;
+  if (selectedProvinceId.value) params.province_id = selectedProvinceId.value;
+  if (selectedDistrictId.value) params.district_id = selectedDistrictId.value;
+  if (selectedCommuneId.value) params.commune_id = selectedCommuneId.value;
+  if (selectedVillageId.value) params.village_id = selectedVillageId.value;
+  if (selectedCategoryId.value) params.category_id = selectedCategoryId.value;
+  if (selectedStar.value) params.star = selectedStar.value;
 
   try {
     const response = await axios.get("/api/web/view/adventure", {
@@ -601,20 +588,19 @@ const fetchAdventureData = async (page = 1) => {
       totalResults.value = pagination.value?.total || 0;
       document.body.style.overflow = "";
       document.title = `${t("camtour-brand")} - ${t("adventure-page-title")}`;
-      if (isMobile.value) {
-        closeMobileFilters();
-      }
+      if (isMobile.value) closeMobileFilters();
     } else {
       console.error("API Error:", response.data.message);
     }
   } catch (error) {
     console.error("Failed to fetch adventure data:", error);
-    await globalStore.onCheckError(error);
+    await useGlobalStore().onCheckError(error);
   } finally {
     isLoading.value = false;
   }
 };
 
+// Format location address
 const formatLocationAddress = (location) => {
   const parts = [];
   if (location.village) {
@@ -624,7 +610,6 @@ const formatLocationAddress = (location) => {
       parts.push(location.village.name);
     }
   }
-
   if (location.commune) {
     if (isKhmerLanguage.value && location.commune.local_name) {
       parts.push(location.commune.local_name);
@@ -632,7 +617,6 @@ const formatLocationAddress = (location) => {
       parts.push(location.commune.name);
     }
   }
-
   if (location.district) {
     parts.push(getLocalizedName(location.district, "district"));
   }
@@ -642,10 +626,12 @@ const formatLocationAddress = (location) => {
   return parts.length > 0 ? parts.join(", ") : t("cambodia");
 };
 
+// Handle image error fallback
 const handleImageError = (event) => {
   event.target.src = placeholderImage;
 };
 
+// Filter functions
 const filterByProvince = async (provinceId) => {
   selectedProvinceId.value = provinceId;
   selectedDistrictId.value = null;
@@ -677,7 +663,6 @@ const filterByDistrict = async (districtId) => {
 const filterByCommune = async (communeId) => {
   selectedCommuneId.value = communeId;
   selectedVillageId.value = null;
-
   if (communeId) {
     await fetchVillages(communeId);
   } else {
@@ -701,6 +686,7 @@ const filterByStar = (starRating) => {
   fetchAdventureData(1);
 };
 
+// Reset all filters
 const resetFilters = () => {
   searchQuery.value = "";
   selectedProvinceId.value = null;
@@ -715,6 +701,7 @@ const resetFilters = () => {
   fetchAdventureData(1);
 };
 
+// Pagination controls
 const changePage = (page) => {
   if (page > 0 && (!pagination.value || page <= pagination.value.last_page)) {
     fetchAdventureData(page);
@@ -728,6 +715,7 @@ const getPageNumbers = () => {
   const totalPages = pagination.value.last_page;
   const currentPage = pagination.value.current_page;
   const maxVisible = isMobile.value ? 3 : 5;
+
   if (totalPages <= maxVisible) {
     for (let i = 1; i <= totalPages; i++) {
       pages.push(i);
@@ -750,100 +738,67 @@ const getPageNumbers = () => {
       pages.push(totalPages);
     }
   }
-
   return pages;
 };
 
+// View location detail
 const viewLocation = (locationId) => {
   router.push(`/location/detail/${locationId}`);
 };
 
-const handleLanguageChange = () => {
-  document.title = `${t("camtour-brand")} - ${t("adventure-page-title")}`;
-  loadInitialData();
-};
+// Apply filters based on route query
+const applyRouteFilters = async () => {
+  const query = route.query;
 
-const loadInitialData = async () => {
-  await Promise.all([fetchProvinces(), fetchCategories()]);
+  if (query.province_id) {
+    selectedProvinceId.value = parseInt(query.province_id);
+    await fetchDistricts(selectedProvinceId.value);
+  }
+
+  if (query.district_id) {
+    selectedDistrictId.value = parseInt(query.district_id);
+    await fetchCommunes(selectedDistrictId.value);
+  }
+
+  if (query.commune_id) {
+    selectedCommuneId.value = parseInt(query.commune_id);
+    await fetchVillages(selectedCommuneId.value);
+  }
+
+  if (query.village_id) {
+    selectedVillageId.value = parseInt(query.village_id);
+  }
+
+  if (query.category_id) {
+    selectedCategoryId.value = parseInt(query.category_id);
+  }
+
+  if (query.star) {
+    selectedStar.value = parseInt(query.star);
+  }
+
+  // Fetch data after setting filters
   fetchAdventureData();
 };
 
-const handleResize = () => {
-  checkMobile();
-};
-
-const handleKeydown = (event) => {
-  if (event.key === "Escape" && showMobileFilters.value) {
-    closeMobileFilters();
-  }
-};
-
-watch(currentLanguage, () => {
-  document.title = `${t("camtour-brand")} - ${t("adventure-page-title")}`;
-  loadInitialData();
-});
-
+// Load initial data on mounted
 onMounted(() => {
-  document.body.style.overflow = "";
+  window.addEventListener("resize", checkMobile);
   checkMobile();
-  window.addEventListener("resize", handleResize);
-  window.addEventListener("language-changed", handleLanguageChange);
-  document.addEventListener("keydown", handleKeydown);
   loadInitialData();
-  document.title = `${t("camtour-brand")} - ${t("adventure-page-title")}`;
 });
 
-watch(
-  () => route.query,
-  (newQuery) => {
-    if (newQuery.province_id) {
-      selectedProvinceId.value = parseInt(newQuery.province_id);
-      fetchDistricts(selectedProvinceId.value);
-    }
-
-    if (newQuery.district_id) {
-      selectedDistrictId.value = parseInt(newQuery.district_id);
-      fetchCommunes(selectedDistrictId.value);
-    }
-
-    if (newQuery.commune_id) {
-      selectedCommuneId.value = parseInt(newQuery.commune_id);
-      fetchVillages(selectedCommuneId.value);
-    }
-
-    if (newQuery.village_id) {
-      selectedVillageId.value = parseInt(newQuery.village_id);
-    }
-
-    if (newQuery.category_id) {
-      selectedCategoryId.value = parseInt(newQuery.category_id);
-    }
-
-    if (newQuery.star) {
-      selectedStar.value = parseFloat(newQuery.star);
-    }
-
-    if (newQuery.search) {
-      searchQuery.value = newQuery.search;
-    }
-
-    fetchAdventureData(parseInt(newQuery.page) || 1);
-  },
-  { deep: true }
-);
-
+// Remove event listener on unmount
 onUnmounted(() => {
-  if (searchDebounceTimer) {
-    clearTimeout(searchDebounceTimer);
-  }
-
-  window.removeEventListener("resize", handleResize);
-  window.removeEventListener("language-changed", handleLanguageChange);
-  document.removeEventListener("keydown", handleKeydown);
-
-  document.body.style.overflow = "";
-  showMobileFilters.value = false;
+  window.removeEventListener("resize", checkMobile);
 });
+
+// Load initial data function
+const loadInitialData = async () => {
+  await Promise.all([fetchProvinces(), fetchCategories()]);
+  await applyRouteFilters();
+  fetchAdventureData();
+};
 </script>
 
 <style scoped>

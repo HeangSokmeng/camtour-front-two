@@ -21,7 +21,13 @@
           <h4>{{ t("adventure") }}</h4>
           <ul>
             <li v-for="adventure in adventureLocations" :key="adventure.key">
-              <RouterLink :to="adventure.route">
+              <!-- Updated to use query parameters for filtering -->
+              <RouterLink 
+                :to="{ 
+                  path: '/adventure', 
+                  query: adventure.query 
+                }"
+              >
                 {{ t(adventure.translationKey) }}
               </RouterLink>
             </li>
@@ -83,8 +89,11 @@
 <script setup>
 import { useTranslation } from "@/components/useTranslation";
 import { computed, h, onMounted, onUnmounted } from "vue";
-const {  t } = useTranslation();
+
+const { t } = useTranslation();
 const currentYear = computed(() => new Date().getFullYear());
+
+// Icon components (unchanged)
 const PhoneIcon = () => h('svg', {
   xmlns: 'http://www.w3.org/2000/svg',
   viewBox: '0 0 24 24',
@@ -174,18 +183,58 @@ const siemReapLocations = [
   { key: "varin", translationKey: "varin", route: "/location/varin" },
 ];
 
+// Updated adventure locations with query parameters for filtering
 const adventureLocations = [
-  { key: "banteay-meanchey", translationKey: "banteay-meanchey", route: "/adventure/banteay-meanchey" },
-  { key: "battambang", translationKey: "battambang", route: "/adventure/battambang" },
-  { key: "kampong-cham", translationKey: "kampong-cham", route: "/adventure/kampong-cham" },
-  { key: "kep", translationKey: "kep", route: "/adventure/kep" },
-  { key: "koh-kong", translationKey: "koh-kong", route: "/adventure/koh-kong" },
-  { key: "kampong-chhnang", translationKey: "kampong-chhnang", route: "/adventure/kampong-chhnang" },
-  { key: "kratie", translationKey: "kratie", route: "/adventure/kratie" },
-  { key: "mondulkiri", translationKey: "mondulkiri", route: "/adventure/mondulkiri" },
-  { key: "ratanakiri", translationKey: "ratanakiri", route: "/adventure/ratanakiri" },
-  { key: "siem-reap-adventure", translationKey: "siem-reap-adventure", route: "/adventure/siem-reap" },
-  { key: "takeo", translationKey: "takeo", route: "/adventure/takeo" },
+   {
+    key: "banteay-meanchey",
+    translationKey: "banteay-meanchey",
+    query: { province_id: 17 } // Banteay Meanchey
+  },
+  {
+    key: "battambang",
+    translationKey: "battambang",
+    query: { province_id: 18 } // Battambang
+  },
+  {
+    key: "kampong-cham",
+    translationKey: "kampong-cham",
+    query: { province_id: 19 } // Kampong Cham
+  },
+  {
+    key: "kampong-chhnang",
+    translationKey: "kampong-chhnang",
+    query: { province_id: 20 } // Kampong Chhnang
+  },
+  {
+    key: "kampong-speu",
+    translationKey: "kampong-speu",
+    query: { province_id: 21 } // Kampong Speu
+  },
+  {
+    key: "kampong-thom",
+    translationKey: "kampong-thom",
+    query: { province_id: 22 } // Kampong Thom
+  },
+  {
+    key: "kampot",
+    translationKey: "kampot",
+    query: { province_id: 23 } // Kampot
+  },
+  {
+    key: "kandal",
+    translationKey: "kandal",
+    query: { province_id: 24 } // Kandal
+  },
+  {
+    key: "kep",
+    translationKey: "kep",
+    query: { province_id: 14 } // Kep
+  },
+  {
+    key: "koh-kong",
+    translationKey: "koh-kong",
+    query: { province_id: 25 } // Koh Kong
+  }
 ];
 
 const shoppingCategories = [
@@ -222,6 +271,7 @@ const legalLinks = [
 ];
 
 const handleLanguageChange = () => {
+  // Handle language change if needed
 };
 
 onMounted(() => {
