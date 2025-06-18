@@ -17,7 +17,7 @@
               :alt="currentLanguage === 'km' ? 'Khmer Flag' : 'English Flag'" 
               class="flag-icon"
             />
-            <span class="language-code">{{ currentLanguage === 'km' ? 'KH' : 'EN' }}</span>
+            <!-- <span class="language-code">{{ currentLanguage === 'km' ? 'KH' : 'EN' }}</span> -->
             <svg class="dropdown-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <polyline points="6,9 12,15 18,9"></polyline>
             </svg>
@@ -30,7 +30,7 @@
               @click="selectLanguage('en')"
             >
               <img :src="englishIcon" alt="English Flag" class="flag-icon" />
-              <span>English</span>
+              <!-- <span>English</span> -->
             </button>
             <button 
               class="language-option"
@@ -38,7 +38,7 @@
               @click="selectLanguage('km')"
             >
               <img :src="khmerIcon" alt="Khmer Flag" class="flag-icon" />
-              <span>ខ្មែរ</span>
+              <!-- <span>ខ្មែរ</span> -->
             </button>
           </div>
         </div>
@@ -66,7 +66,7 @@
                 {{ t("home") }}
               </RouterLink>
             </li>
-            <li>
+            <li class="nav-item-dropdown" @mouseenter="showSiemReapDropdown" @mouseleave="hideSiemReapDropdown">
               <RouterLink
                 to="/siem-reap"
                 class="nav-link"
@@ -74,7 +74,40 @@
                 @click="closeMenuOnNavigation"
               >
                 {{ t("siem-reap") }}
+                <svg class="nav-dropdown-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="6,9 12,15 18,9"></polyline>
+                </svg>
               </RouterLink>
+              
+              <!-- Siem Reap Dropdown Menu -->
+              <div class="nav-dropdown" v-show="siemReapDropdownOpen">
+                <RouterLink
+                  to="/siem-reap/hotels"
+                  class="nav-dropdown-item"
+                  @click="closeMenuOnNavigation"
+                >
+                  <svg class="dropdown-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                    <polyline points="9,22 9,12 15,12 15,22"></polyline>
+                  </svg>
+                  <!-- {{ t("hotels") }} -->
+                  restaurants
+
+                </RouterLink>
+                <RouterLink
+                  to="/siem-reap/restaurants"
+                  class="nav-dropdown-item"
+                  @click="closeMenuOnNavigation"
+                >
+                  <svg class="dropdown-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"></path>
+                    <path d="M7 2v20"></path>
+                    <path d="M21 15V2v0a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3z"></path>
+                  </svg>
+                  <!-- {{ t("restaurants") }} -->
+                  restaurants
+                </RouterLink>
+              </div>
             </li>
             <li>
               <RouterLink
@@ -299,10 +332,12 @@ import {
 import { useRouter } from "vue-router";
 import khmerIcon from "../assets/icons/cambodia-icon.png";
 import englishIcon from "../assets/icons/english.png";
+
 const router = useRouter();
 const globalStore = useGlobalStore();
 const { currentLanguage, setLanguage, t } = useTranslation();
 const languageDropdownOpen = ref(false);
+const siemReapDropdownOpen = ref(false); // New ref for Siem Reap dropdown
 const showProfileModal = ref(false);
 const menuOpen = ref(false);
 const profileMenuOpen = ref(false);
@@ -321,6 +356,8 @@ const hideThreshold = 200;
 let autoSlideInterval = null;
 let scrollTimeout = null;
 let fetchWishlistTimeout = null;
+let siemReapTimeout = null; // Timeout for Siem Reap dropdown
+
 const heroImages = ref([
   {
     src: "https://c4.wallpaperflare.com/wallpaper/623/232/3/beautiful-village-wallpaper-preview.jpg",
@@ -369,6 +406,20 @@ const userInitials = computed(() => {
   return "U";
 });
 
+// Siem Reap dropdown functions
+const showSiemReapDropdown = () => {
+  if (siemReapTimeout) {
+    clearTimeout(siemReapTimeout);
+  }
+  siemReapDropdownOpen.value = true;
+};
+
+const hideSiemReapDropdown = () => {
+  siemReapTimeout = setTimeout(() => {
+    siemReapDropdownOpen.value = false;
+  }, 150); // Small delay to prevent flickering
+};
+
 const toggleLanguageDropdown = () => {
   languageDropdownOpen.value = !languageDropdownOpen.value;
 };
@@ -384,6 +435,8 @@ const handleDocumentClick = (e) => {
   const profileEl = document.querySelector(".user-profile");
   const menuToggleEl = document.querySelector(".menu-toggle");
   const languageEl = document.querySelector(".language-selector-wrapper");
+  const siemReapEl = document.querySelector(".nav-item-dropdown");
+  
   if (profileEl && !profileEl.contains(e.target) && profileMenuOpen.value) {
     profileMenuOpen.value = false;
   }
@@ -392,6 +445,9 @@ const handleDocumentClick = (e) => {
   }
   if (languageEl && !languageEl.contains(e.target) && languageDropdownOpen.value) {
     languageDropdownOpen.value = false;
+  }
+  if (siemReapEl && !siemReapEl.contains(e.target) && siemReapDropdownOpen.value) {
+    siemReapDropdownOpen.value = false;
   }
 };
 
@@ -522,6 +578,7 @@ const closeMenuOnNavigation = () => {
   menuOpen.value = false;
   profileMenuOpen.value = false;
   languageDropdownOpen.value = false;
+  siemReapDropdownOpen.value = false; // Close Siem Reap dropdown
 };
 
 const notifyLanguageChange = () => {
@@ -709,6 +766,7 @@ onMounted(async () => {
         profileMenuOpen.value = false;
         showLogoutModal.value = false;
         languageDropdownOpen.value = false;
+        siemReapDropdownOpen.value = false; // Close Siem Reap dropdown on Escape
       }
     });
   } catch (error) {
@@ -726,6 +784,9 @@ onUnmounted(() => {
   }
   if (fetchWishlistTimeout) {
     clearTimeout(fetchWishlistTimeout);
+  }
+  if (siemReapTimeout) {
+    clearTimeout(siemReapTimeout);
   }
 });
 

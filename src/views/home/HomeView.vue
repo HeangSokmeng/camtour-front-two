@@ -590,7 +590,7 @@ const toggleFavorite = async (locationId) => {
         await refreshWishlistState();
       }
     } catch (error) {
-      showToastNotification("Error updating wishlist", "error");
+      showToastNotification(location.message, "error");
     }
   }
 
@@ -1388,7 +1388,7 @@ onBeforeUnmount(() => {
 
         <div class="pagination scale-in">
           <button class="active"><span>1</span></button>
-          <button><span>2</span></button>
+          <!-- <button><span>2</span></button> -->
           <router-link to="/adventure">
             <button class="more-btn">{{ t("more") }}</button>
           </router-link>
@@ -1543,7 +1543,7 @@ onBeforeUnmount(() => {
 
           <div class="pagination scale-in">
             <button class="active"><span>1</span></button>
-            <button><span>2</span></button>
+            <!-- <button><span>2</span></button> -->
             <router-link to="/product">
               <button class="more-btn">{{ t("more") }}</button>
             </router-link>
