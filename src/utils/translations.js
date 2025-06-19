@@ -443,6 +443,11 @@ export const translations = {
     "windy": "Windy",
     "hot": "Hot",
     "warm": "Warm",
+    'password-strong': 'Password Strong',
+    'password-complexity-required': 'Make Strong Password',
+    'password-weak': 'Password Weak',
+    'password-good': 'Password Good',
+    'password-fair': 'Password Fair',
     "cool": "Cool",
     "cold": "Cold",
     // Validation messages - Register specific
@@ -1527,8 +1532,13 @@ export const translations = {
     'previous-page': 'ទំព័រមុន',
     'next-page': 'ទំព័របន្ទាប់',
     'more-pages': 'ទំព័របន្ថែម',
+    'password-strong': 'ពាក្យសម្ងាត់សុវត្តិភាព',
+    'password-complexity-required': 'បំពេញពាក្យសម្ងាត់ដែលមានសុវត្តិភាព',
+    'password-weak': 'ពាក្យសម្ងាត់ខ្សោយ',
+    'password-good': 'ពាក្យសម្ងាត់ល្អ',
+    'password-fair': 'ពាក្យសម្ងាត់កម្រិតមធ្យម',
     'page-number': 'ទំព័រ {number}',
-
+    
 
     // Provinces
     'province-battambang': 'បាត់ដំបង',

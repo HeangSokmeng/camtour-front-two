@@ -30,7 +30,7 @@
                 <input
                   type="file"
                   id="profileImageUpload"
-                  accept="image/*"
+                  accept="image/jpeg,image/png,image/webp"
                   @change="handleImageUpload"
                   class="hidden-input"
                 />
@@ -62,7 +62,11 @@
                       v-model="formData.first_name"
                       :placeholder="t('enter-first-name')"
                       required
+                      maxlength="50"
+                      pattern="[a-zA-Z\s\u00C0-\u017F]+"
                       :class="{ 'input-error': errors.first_name }"
+                      @input="validateFirstName"
+                      @blur="validateFirstName"
                     />
                     <span v-if="errors.first_name" class="error-message">
                       {{ errors.first_name }}
@@ -79,7 +83,11 @@
                       v-model="formData.last_name"
                       :placeholder="t('enter-last-name')"
                       required
+                      maxlength="50"
+                      pattern="[a-zA-Z\s\u00C0-\u017F]+"
                       :class="{ 'input-error': errors.last_name }"
+                      @input="validateLastName"
+                      @blur="validateLastName"
                     />
                     <span v-if="errors.last_name" class="error-message">
                       {{ errors.last_name }}
@@ -97,6 +105,7 @@
                       v-model="formData.gender"
                       :class="{ 'input-error': errors.gender }"
                       class="form-select"
+                      @change="validateGender"
                     >
                       <option value="0">{{ t("prefer-not-to-say") }}</option>
                       <option value="1">{{ t("male") }}</option>
@@ -117,7 +126,11 @@
                       v-model="formData.phone"
                       :placeholder="t('enter-phone')"
                       required
+                      maxlength="20"
+                      pattern="[\+]?[0-9\s\-\(\)]+"
                       :class="{ 'input-error': errors.phone }"
+                      @input="validatePhone"
+                      @blur="validatePhone"
                     />
                     <span v-if="errors.phone" class="error-message">
                       {{ errors.phone }}
@@ -135,6 +148,7 @@
                     v-model="formData.email"
                     :placeholder="t('enter-email')"
                     required
+                    maxlength="254"
                     :class="{ 'input-error': errors.email }"
                     disabled
                   />
@@ -149,11 +163,7 @@
             <div class="form-section" v-if="showPasswordSection">
               <h4>{{ t("change-password") }}</h4>
               <div class="toggle-section">
-                <button
-                  type="button"
-                  class="toggle-btn"
-                  @click="showPasswordSection = false"
-                >
+                <button type="button" class="toggle-btn" @click="cancelPasswordChange">
                   {{ t("cancel") }}
                 </button>
               </div>
@@ -166,7 +176,10 @@
                     id="currentPassword"
                     v-model="passwordData.current_password"
                     :placeholder="t('enter-current-password')"
+                    maxlength="128"
                     :class="{ 'input-error': errors.current_password }"
+                    @input="validateCurrentPassword"
+                    autocomplete="current-password"
                   />
                   <button
                     type="button"
@@ -191,7 +204,10 @@
                     id="newPassword"
                     v-model="passwordData.new_password"
                     :placeholder="t('enter-new-password')"
+                    maxlength="128"
                     :class="{ 'input-error': errors.new_password }"
+                    @input="validateNewPassword"
+                    autocomplete="new-password"
                   />
                   <button
                     type="button"
@@ -204,6 +220,17 @@
                     {{ errors.new_password }}
                   </span>
                 </div>
+                <div class="password-strength" v-if="passwordData.new_password">
+                  <div class="strength-bar">
+                    <div
+                      :class="['strength-fill', passwordStrength.level]"
+                      :style="{ width: passwordStrength.percentage + '%' }"
+                    ></div>
+                  </div>
+                  <span :class="['strength-text', passwordStrength.level]">{{
+                    passwordStrength.text
+                  }}</span>
+                </div>
               </div>
 
               <div class="form-group">
@@ -214,7 +241,10 @@
                     id="confirmNewPassword"
                     v-model="passwordData.new_password_confirmation"
                     :placeholder="t('confirm-new-password')"
+                    maxlength="128"
                     :class="{ 'input-error': errors.new_password_confirmation }"
+                    @input="validateConfirmPassword"
+                    autocomplete="new-password"
                   />
                   <button
                     type="button"
@@ -232,17 +262,13 @@
               </div>
 
               <div class="form-actions password-actions">
-                <button
-                  type="button"
-                  class="cancel-btn"
-                  @click="showPasswordSection = false"
-                >
+                <button type="button" class="cancel-btn" @click="cancelPasswordChange">
                   {{ t("cancel") }}
                 </button>
                 <button
                   type="button"
                   class="update-btn"
-                  :disabled="isSubmittingPassword"
+                  :disabled="isSubmittingPassword || !isPasswordFormValid"
                   @click="updatePassword"
                 >
                   <span v-if="isSubmittingPassword" class="spinner"></span>
@@ -268,7 +294,11 @@
               <button type="button" class="cancel-btn" @click="closeModal">
                 {{ t("cancel") }}
               </button>
-              <button type="submit" class="update-btn" :disabled="isSubmitting">
+              <button
+                type="submit"
+                class="update-btn"
+                :disabled="isSubmitting || !isFormValid"
+              >
                 <span v-if="isSubmitting" class="spinner"></span>
                 <span v-else>{{ t("update-profile") }}</span>
               </button>
@@ -298,6 +328,114 @@ export default {
   setup(props, { emit }) {
     const globalStore = useGlobalStore();
     const { t } = useTranslation();
+
+    // Utility for sanitizing input
+    const sanitizeInput = (input) => {
+      if (typeof input !== "string") return "";
+      return input
+        .trim()
+        .replace(/[<>]/g, "")
+        .replace(/javascript:/gi, "")
+        .replace(/on\w+\s*=/gi, "")
+        .replace(/<script>/gi, "")
+        .replace(/<\/script>/gi, "")
+        .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, "")
+        .replace(/[^\w\s\u00C0-\u017F@.\-+()]/g, "");
+    };
+
+    // Validation functions
+
+    const validatePhoneFormat = (phone) => {
+      const phoneRegex = /^[+]?[\d\s\-()]+$/; // Clean version
+      const sanitized = phone.replace(/[\s\-()]/g, "");
+
+      if (!sanitized || sanitized.length < 9 || sanitized.length > 10) {
+        return { isValid: false, error: t("invalid-phone-format") };
+      }
+      if (!phoneRegex.test(phone)) {
+        return { isValid: false, error: t("invalid-phone-format") };
+      }
+      return { isValid: true, sanitized };
+    };
+
+    const validateNameFormat = (name) => {
+      const nameRegex = /^[a-zA-Z\s\u00C0-\u017F]{1,50}$/;
+      const sanitized = sanitizeInput(name);
+      if (!sanitized || sanitized.length < 1 || sanitized.length > 50) {
+        return { isValid: false, error: t("name-length-invalid") };
+      }
+      if (!nameRegex.test(sanitized)) {
+        return { isValid: false, error: t("name-format-invalid") };
+      }
+      if (sanitized.trim() !== sanitized || /\s{2,}/.test(sanitized)) {
+        return { isValid: false, error: t("name-format-invalid") };
+      }
+      return { isValid: true, sanitized };
+    };
+
+    const calculatePasswordStrength = (password) => {
+      if (!password) return { level: "none", percentage: 0, text: "" };
+
+      let score = 0;
+      const checks = {
+        length: password.length >= 8,
+        uppercase: /[A-Z]/.test(password),
+        lowercase: /[a-z]/.test(password),
+        numbers: /\d/.test(password),
+        special: /[!@#$%^&*(),.?":{}|<>]/.test(password),
+        long: password.length >= 12,
+      };
+
+      Object.values(checks).forEach((check) => check && score++);
+
+      if (score < 3) return { level: "weak", percentage: 25, text: t("password-weak") };
+      if (score < 4) return { level: "fair", percentage: 50, text: t("password-fair") };
+      if (score < 5) return { level: "good", percentage: 75, text: t("password-good") };
+      return { level: "strong", percentage: 100, text: t("password-strong") };
+    };
+
+    const validatePasswordSecurity = (password) => {
+      if (!password) {
+        return { isValid: false, error: t("password-required") };
+      }
+
+      if (password.length < 8) {
+        return { isValid: false, error: t("password-min-length") };
+      }
+
+      if (password.length > 128) {
+        return { isValid: false, error: t("password-max-length") };
+      }
+
+      const hasUppercase = /[A-Z]/.test(password);
+      const hasLowercase = /[a-z]/.test(password);
+      const hasNumbers = /\d/.test(password);
+      // const hasSpecial = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+
+      if (!(hasUppercase && hasLowercase && hasNumbers)) {
+        return { isValid: false, error: t("password-complexity-required") };
+      }
+
+      const commonPasswords = [
+        "password",
+        "123456",
+        "123456789",
+        "qwerty",
+        "abc123",
+        "password123",
+        "admin",
+        "letmein",
+        "welcome",
+        "1234567890",
+      ];
+
+      if (commonPasswords.includes(password.toLowerCase())) {
+        return { isValid: false, error: t("password-too-common") };
+      }
+
+      return { isValid: true };
+    };
+
     const formData = reactive({
       first_name: "",
       last_name: "",
@@ -306,11 +444,13 @@ export default {
       gender: "0",
       image: "",
     });
+
     const passwordData = reactive({
       current_password: "",
       new_password: "",
       new_password_confirmation: "",
     });
+
     const isSubmitting = ref(false);
     const isSubmittingPassword = ref(false);
     const showPasswordSection = ref(false);
@@ -320,6 +460,7 @@ export default {
     const profileImageLoaded = ref(true);
     const statusMessage = ref("");
     const statusType = ref("success");
+
     const errors = reactive({
       first_name: "",
       last_name: "",
@@ -347,15 +488,120 @@ export default {
       }
       return "T";
     });
+
+    const passwordStrength = computed(() => {
+      return calculatePasswordStrength(passwordData.new_password);
+    });
+
+    const isFormValid = computed(() => {
+      return (
+        !errors.first_name &&
+        !errors.last_name &&
+        !errors.phone &&
+        !errors.gender &&
+        formData.first_name.trim() &&
+        formData.last_name.trim() &&
+        formData.phone.trim()
+      );
+    });
+
+    const isPasswordFormValid = computed(() => {
+      return (
+        !errors.current_password &&
+        !errors.new_password &&
+        !errors.new_password_confirmation &&
+        passwordData.current_password &&
+        passwordData.new_password &&
+        passwordData.new_password_confirmation &&
+        passwordData.new_password === passwordData.new_password_confirmation
+      );
+    });
+
+    // Validation methods
+    const validateFirstName = () => {
+      const validation = validateNameFormat(formData.first_name);
+      if (!validation.isValid) {
+        errors.first_name = validation.error;
+      } else {
+        errors.first_name = "";
+        formData.first_name = validation.sanitized;
+      }
+    };
+
+    const validateLastName = () => {
+      const validation = validateNameFormat(formData.last_name);
+      if (!validation.isValid) {
+        errors.last_name = validation.error;
+      } else {
+        errors.last_name = "";
+        formData.last_name = validation.sanitized;
+      }
+    };
+
+    const validatePhone = () => {
+      const validation = validatePhoneFormat(formData.phone);
+      if (!validation.isValid) {
+        errors.phone = validation.error;
+      } else {
+        errors.phone = "";
+        formData.phone = validation.sanitized;
+      }
+    };
+
+    const validateGender = () => {
+      const allowedValues = ["0", "1", "2"];
+      if (!allowedValues.includes(formData.gender)) {
+        errors.gender = t("invalid-gender-selection");
+        formData.gender = "0";
+      } else {
+        errors.gender = "";
+      }
+    };
+
+    const validateCurrentPassword = () => {
+      if (!passwordData.current_password) {
+        errors.current_password = t("current-password-required");
+      } else if (passwordData.current_password.length > 128) {
+        errors.current_password = t("password-max-length");
+      } else {
+        errors.current_password = "";
+      }
+    };
+
+    const validateNewPassword = () => {
+      const validation = validatePasswordSecurity(passwordData.new_password);
+      if (!validation.isValid) {
+        errors.new_password = validation.error;
+      } else {
+        errors.new_password = "";
+      }
+      // Re-validate confirmation if needed
+      if (passwordData.new_password_confirmation) {
+        validateConfirmPassword();
+      }
+    };
+
+    const validateConfirmPassword = () => {
+      if (!passwordData.new_password_confirmation) {
+        errors.new_password_confirmation = t("confirm-password-required");
+      } else if (passwordData.new_password !== passwordData.new_password_confirmation) {
+        errors.new_password_confirmation = t("passwords-dont-match");
+      } else {
+        errors.new_password_confirmation = "";
+      }
+    };
+
+    // Watch for modal show to load user data
     watch(
       () => props.show,
-      (newValue) => {
-        if (newValue) {
+      (newVal) => {
+        if (newVal) {
           loadUserData();
         }
       }
     );
-    function loadUserData() {
+
+    const loadUserData = () => {
       const userData = globalStore.profile;
       if (userData) {
         Object.keys(formData).forEach((key) => {
@@ -374,17 +620,28 @@ export default {
       } else {
         fetchUserData();
       }
+      resetPasswordForm();
+      resetErrors();
+    };
+
+    const resetPasswordForm = () => {
       passwordData.current_password = "";
       passwordData.new_password = "";
       passwordData.new_password_confirmation = "";
       showPasswordSection.value = false;
+      showCurrentPassword.value = false;
+      showNewPassword.value = false;
+      showConfirmPassword.value = false;
+    };
+
+    const resetErrors = () => {
       statusMessage.value = "";
       Object.keys(errors).forEach((key) => {
         errors[key] = "";
       });
-    }
+    };
 
-    async function fetchUserData() {
+    const fetchUserData = async () => {
       try {
         const response = await axios.get(
           "/api/web/auth/me",
@@ -414,118 +671,114 @@ export default {
         showStatusMessage("error", t("error-fetching-profile"));
         await globalStore.onCheckError(error);
       }
-    }
-    function handleProfileImageError() {
-      profileImageLoaded.value = false;
-    }
+    };
 
-    function handleImageUpload(event) {
+    const handleProfileImageError = () => {
+      profileImageLoaded.value = false;
+    };
+
+    const handleImageUpload = (event) => {
       const file = event.target.files[0];
       if (!file) return;
-      if (!file.type.match("image.*")) {
+
+      const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
+      if (!allowedTypes.includes(file.type)) {
         showStatusMessage("error", t("invalid-image-format"));
+        event.target.value = "";
         return;
       }
-      if (file.size > 5 * 1024 * 1024) {
+
+      const maxSize = 5 * 1024 * 1024; // 5MB
+      if (file.size > maxSize) {
         showStatusMessage("error", t("image-too-large"));
+        event.target.value = "";
         return;
       }
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        formData.image = e.target.result;
-        profileImageLoaded.value = true;
+
+      const img = new Image();
+      img.onload = () => {
+        if (img.width > 2048 || img.height > 2048) {
+          showStatusMessage("error", t("image-dimensions-too-large"));
+          event.target.value = "";
+          return;
+        }
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          formData.image = e.target.result;
+          profileImageLoaded.value = true;
+        };
+        reader.onerror = () => {
+          showStatusMessage("error", t("image-read-error"));
+          event.target.value = "";
+        };
+        reader.readAsDataURL(file);
       };
-      reader.readAsDataURL(file);
-    }
-    function showStatusMessage(type, message) {
+      img.onerror = () => {
+        showStatusMessage("error", t("invalid-image-file"));
+        event.target.value = "";
+      };
+      img.src = URL.createObjectURL(file);
+    };
+
+    const showStatusMessage = (type, message) => {
       statusType.value = type;
       statusMessage.value = message;
       setTimeout(() => {
         statusMessage.value = "";
       }, 5000);
-    }
+    };
 
-    function validateForm() {
-      let isValid = true;
-      Object.keys(errors).forEach((key) => {
-        errors[key] = "";
-      });
-      if (!formData.first_name.trim()) {
-        errors.first_name = t("first-name-required");
-        isValid = false;
-      }
-      if (!formData.last_name.trim()) {
-        errors.last_name = t("last-name-required");
-        isValid = false;
-      }
-      if (!formData.phone.trim()) {
-        errors.phone = t("phone-required");
-        isValid = false;
-      }
-      return isValid;
-    }
+    const validateForm = () => {
+      validateFirstName();
+      validateLastName();
+      validatePhone();
+      validateGender();
+      return isFormValid.value;
+    };
 
-    function validatePasswordForm() {
-      let isValid = true;
-      errors.current_password = "";
-      errors.new_password = "";
-      errors.new_password_confirmation = "";
-      if (!passwordData.current_password) {
-        errors.current_password = t("current-password-required");
-        isValid = false;
-      }
-      if (!passwordData.new_password) {
-        errors.new_password = t("new-password-required");
-        isValid = false;
-      } else if (passwordData.new_password.length < 8) {
-        errors.new_password = t("password-min-length");
-        isValid = false;
-      }
-      if (!passwordData.new_password_confirmation) {
-        errors.new_password_confirmation = t("confirm-password-required");
-        isValid = false;
-      } else if (passwordData.new_password !== passwordData.new_password_confirmation) {
-        errors.new_password_confirmation = t("passwords-dont-match");
-        isValid = false;
-      }
-      return isValid;
-    }
+    const validatePasswordForm = () => {
+      validateCurrentPassword();
+      validateNewPassword();
+      validateConfirmPassword();
+      return isPasswordFormValid.value;
+    };
 
-    async function updateProfile() {
+    const updateProfile = async () => {
       if (!validateForm()) return;
       isSubmitting.value = true;
       try {
         const formDataToSend = new FormData();
         formDataToSend.append("_method", "PUT");
-        formDataToSend.append("first_name", formData.first_name);
-        formDataToSend.append("last_name", formData.last_name);
+        formDataToSend.append("first_name", sanitizeInput(formData.first_name));
+        formDataToSend.append("last_name", sanitizeInput(formData.last_name));
         formDataToSend.append("phone", formData.phone);
         formDataToSend.append("gender", formData.gender);
-        if (formData.image) {
-          if (
-            typeof formData.image === "string" &&
-            formData.image.startsWith("data:image")
-          ) {
-            try {
-              const response = await fetch(formData.image);
-              const blob = await response.blob();
-              const file = new File([blob], "profile-image.jpg", { type: blob.type });
-              formDataToSend.append("image", file);
-            } catch (imgError) {
-              console.error("Error converting base64 to file:", imgError);
-            }
-          } else if (formData.image instanceof File) {
-            formDataToSend.append("image", formData.image);
-          } else
-            typeof formData.image === "string" && !formData.image.startsWith("data:");
+
+        // Handling image uploads
+        if (
+          formData.image &&
+          typeof formData.image === "string" &&
+          formData.image.startsWith("data:image")
+        ) {
+          try {
+            const response = await fetch(formData.image);
+            const blob = await response.blob();
+            const file = new File([blob], "profile-image.jpg", { type: blob.type });
+            formDataToSend.append("image", file);
+          } catch (imgError) {
+            console.error("Error converting base64 to file:", imgError);
+          }
+        } else if (formData.image instanceof File) {
+          formDataToSend.append("image", formData.image);
         }
+
         const response = await axios.post("/api/web/customer/update", formDataToSend, {
-          ...globalStore.getAxiosHeader(),
           headers: {
             ...globalStore.getAxiosHeader().headers,
             "Content-Type": "multipart/form-data",
           },
         });
+
         if (response.data.result) {
           await globalStore.fetchUserProfile();
           showStatusMessage("success", t("profile-updated-successfully"));
@@ -538,10 +791,6 @@ export default {
         }
       } catch (error) {
         console.error("Profile update error:", error);
-        if (error.response) {
-          console.error("Error response data:", error.response.data);
-          console.error("Error response status:", error.response.status);
-        }
         if (error.response && error.response.data && error.response.data.errors) {
           const apiErrors = error.response.data.errors;
           Object.keys(apiErrors).forEach((key) => {
@@ -555,9 +804,9 @@ export default {
       } finally {
         isSubmitting.value = false;
       }
-    }
+    };
 
-    async function updatePassword() {
+    const updatePassword = async () => {
       if (!validatePasswordForm()) return;
       isSubmittingPassword.value = true;
       try {
@@ -566,6 +815,7 @@ export default {
           new_password: passwordData.new_password,
           new_password_confirmation: passwordData.new_password_confirmation,
         };
+
         const response = await axios.post(
           "/api/profile/pass",
           passwordFormData,
@@ -573,10 +823,7 @@ export default {
         );
         if (response.data.result) {
           showStatusMessage("success", t("password-updated-successfully"));
-          passwordData.current_password = "";
-          passwordData.new_password = "";
-          passwordData.new_password_confirmation = "";
-          showPasswordSection.value = false;
+          resetPasswordForm();
           setTimeout(() => {
             closeModal();
           }, 1500);
@@ -604,11 +851,19 @@ export default {
       } finally {
         isSubmittingPassword.value = false;
       }
-    }
-    function closeModal() {
+    };
+
+    const cancelPasswordChange = () => {
+      resetPasswordForm();
+      resetErrors();
+    };
+
+    const closeModal = () => {
       emit("close");
-    }
+    };
+
     return {
+      t,
       formData,
       passwordData,
       errors,
@@ -623,12 +878,24 @@ export default {
       statusType,
       fullName,
       userInitials,
-      t,
+      passwordStrength,
+      isFormValid,
+      isPasswordFormValid,
+      validateFirstName,
+      validateLastName,
+      validatePhone,
+      validateGender,
+      validateCurrentPassword,
+      validateNewPassword,
+      validateConfirmPassword,
       handleProfileImageError,
       handleImageUpload,
+      showStatusMessage,
       updateProfile,
       updatePassword,
+      cancelPasswordChange,
       closeModal,
+      loadUserData,
     };
   },
 };
