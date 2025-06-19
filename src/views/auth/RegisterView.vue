@@ -17,7 +17,8 @@
           @click="loginWithGoogle"
           :aria-label="t('continue-with-google')"
         >
-          <img src="../../assets/icons/google.png" :alt="t('google')" class="social-icon" />
+          <img src="../../assets/icons/google.png" :alt="t('google')" class="social-icon" /> 
+          <span style="font-size:small">Continue with Google</span>
         </button>
       </div>
 
@@ -649,10 +650,6 @@ const handleImageUpload = (event) => {
   reader.readAsDataURL(file);
 };
 
-const loginWithGoogle = () => {
-  
-};
-
 const registerUser = async () => {
   if (!validateForm()) return;
 
@@ -706,6 +703,21 @@ const registerUser = async () => {
     }
   } finally {
     isSubmitting.value = false;
+  }
+};
+const errorMessage = ref("");
+const isLoading = ref(false);
+const loginWithGoogle = async () => {
+  errorMessage.value = "";
+  isLoading.value = true;
+  try {
+    const redirectUrl = `${axios.defaults.baseURL}/api/auth/redirect/google`;
+    window.location.href = redirectUrl;
+  } catch (error) {
+    console.error("Google login error:", error);
+    errorMessage.value = t("login-failed");
+  } finally {
+    isLoading.value = false;
   }
 };
 

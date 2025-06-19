@@ -333,7 +333,6 @@ export default {
     const sanitizeInput = (input) => {
       if (typeof input !== "string") return "";
       return input
-        .trim()
         .replace(/[<>]/g, "")
         .replace(/javascript:/gi, "")
         .replace(/on\w+\s*=/gi, "")
@@ -367,7 +366,7 @@ export default {
       if (!nameRegex.test(sanitized)) {
         return { isValid: false, error: t("name-format-invalid") };
       }
-      if (sanitized.trim() !== sanitized || /\s{2,}/.test(sanitized)) {
+      if (sanitized !== sanitized || /\s{2,}/.test(sanitized)) {
         return { isValid: false, error: t("name-format-invalid") };
       }
       return { isValid: true, sanitized };
@@ -499,9 +498,9 @@ export default {
         !errors.last_name &&
         !errors.phone &&
         !errors.gender &&
-        formData.first_name.trim() &&
-        formData.last_name.trim() &&
-        formData.phone.trim()
+        formData.first_name &&
+        formData.last_name &&
+        formData.phone
       );
     });
 

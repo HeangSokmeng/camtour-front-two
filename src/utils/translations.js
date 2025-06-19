@@ -552,6 +552,8 @@ export const translations = {
     "daily-activities": "Daily Activities",
     "meals-plan": "Meals Plan",
     "snack": "Snack",
+    'try-different-category': 'Try Different Category',
+    'show-all-locations': 'Show All Locations',
     "transport-today": "Transport Today",
     "daily-transport-service": "Daily transport service",
     "share-your-plan": "Share Your Plan",
@@ -1218,7 +1220,7 @@ export const translations = {
     'popular': 'ពេញនិយម',
     'view': 'អ្នកទស្សនា',
     'views': 'អ្នកទស្សនា',
-    'no-locations-available': 'មិនមានទីតាំងអាច',
+    'no-locations-available': 'មិនមានទីតាំង',
 
     // Category filters
     'all': 'ទាំងអស់',
@@ -1495,6 +1497,8 @@ export const translations = {
     'hero-subtitle': 'រុករកសម្រស់ធម្មជាតិរបស់កម្ពុជា',
     'hero-description': 'ការឡើងភ្នំនៅកម្ពុជាផ្តល់នូវការផ្សងព្រេងដែលមិនអាចបំភ្លេចបានតាមរយៈព្រៃឈើខៀវស្រងាត់ ភ្នំដាច់ស្រយាល និងផ្លូវប្រាសាទបុរាណ។ ពីកំពូលភ្នំគុលែនដែលមានអ័ព្ទ រហូតដល់ទឹកធ្លាក់ស្ងប់ស្ងាត់នៃមណ្ឌលគិរី និងផ្លូវលាក់កំបាំងជុំវិញភ្នំក្រវាញ កម្ពុជាគឺជាសួនសុខសម្រាប់អ្នកស្រលាញ់ធម្មជាតិ។',
     'hiking-adventure-alt': 'ការផ្សងព្រេងឡើងភ្នំ',
+    'try-different-category': 'ស្វែងរកប្រភេទទីតាំងផ្សេងទៀត',
+    'show-all-locations': 'បង្ហាញទីតាំងទាំងអស់',
 
     // Header section
     'adventure-tourism-tag': 'ទេសចរណ៍ផ្សងព្រេង',
@@ -1538,7 +1542,7 @@ export const translations = {
     'password-good': 'ពាក្យសម្ងាត់ល្អ',
     'password-fair': 'ពាក្យសម្ងាត់កម្រិតមធ្យម',
     'page-number': 'ទំព័រ {number}',
-    
+
 
     // Provinces
     'province-battambang': 'បាត់ដំបង',

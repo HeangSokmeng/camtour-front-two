@@ -84,19 +84,20 @@
         <div class="divider">
           <span>{{ t("or-continue-with") }}</span>
         </div>
-
-        <!-- Uncomment when social login is implemented -->
-        <!-- <div class="social-login">
-          <button class="social-btn google" @click="loginWithGoogle" :aria-label="t('login-with-google')">
-            <img src="../assets/icon/google-icon.svg" :alt="t('google')" />
+        <div class="social-login">
+          <button
+            class="social-btn google"
+            @click="loginWithGoogle"
+            :aria-label="t('continue-with-google')"
+          >
+            <img
+              src="../../assets/icons/google.png"
+              :alt="t('google')"
+              class="social-icon"
+            />
+            <span style="font-size: small">Continue with Google</span>
           </button>
-          <button class="social-btn apple" @click="loginWithApple" :aria-label="t('login-with-apple')">
-            <img src="../assets/icon/apple-icon.svg" :alt="t('apple')" />
-          </button>
-          <button class="social-btn facebook" @click="loginWithFacebook" :aria-label="t('login-with-facebook')">
-            <img src="../assets/icon/facebook-icon.svg" :alt="t('facebook')" />
-          </button>
-        </div> -->
+        </div>
 
         <div class="register-prompt">
           <p>
@@ -159,6 +160,19 @@ const validateForm = () => {
   }
   return isValid;
 };
+const loginWithGoogle = async () => {
+  errorMessage.value = "";
+  isLoading.value = true;
+  try {
+    const redirectUrl = `${axios.defaults.baseURL}/api/auth/redirect/google`;
+    window.location.href = redirectUrl;
+  } catch (error) {
+    console.error("Google login error:", error);
+    errorMessage.value = t("login-failed");
+  } finally {
+    isLoading.value = false;
+  }
+};
 
 const handleLogin = async () => {
   errorMessage.value = "";
@@ -219,8 +233,20 @@ watch(currentLanguage, () => {
 });
 
 onMounted(() => {
+  // Check for token from query string (e.g. after social login redirect)
+  const token = new URLSearchParams(window.location.search).get("token");
+  if (token) {
+    localStorage.setItem("token", token);
+    globalStore.updateToken(token); // Optional: update store if needed
+    globalStore.fetchUserProfile().then(() => {
+      router.push("/dashboard"); // Redirect after token is stored
+    });
+    return; // Prevent duplicate redirects below
+  }
+
   returnUrl.value = route.query.returnUrl || "/";
   window.addEventListener("language-changed", handleLanguageChange);
+
   if (globalStore.getIsAuthenticated) {
     router.push(returnUrl.value);
   }
