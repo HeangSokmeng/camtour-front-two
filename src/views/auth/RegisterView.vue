@@ -17,8 +17,12 @@
           @click="loginWithGoogle"
           :aria-label="t('continue-with-google')"
         >
-          <img src="../../assets/icons/google.png" :alt="t('google')" class="social-icon" /> 
-          <span style="font-size:small">Continue with Google</span>
+          <img
+            src="../../assets/icons/google.png"
+            :alt="t('google')"
+            class="social-icon"
+          />
+          <span style="font-size: small">Continue with Google</span>
         </button>
       </div>
 
@@ -37,14 +41,19 @@
                 v-model="formData.firstName"
                 :placeholder="t('first-name-placeholder')"
                 required
-                :class="{ 'input-error': errors.firstName, 'input-focus': focusedInput === 'firstName' }"
+                :class="{
+                  'input-error': errors.firstName,
+                  'input-focus': focusedInput === 'firstName',
+                }"
                 @focus="focusedInput = 'firstName'"
                 @blur="focusedInput = null"
               />
               <i class="input-icon user-icon">
                 <UserIcon />
               </i>
-              <span v-if="errors.firstName" class="error-message">{{ errors.firstName }}</span>
+              <span v-if="errors.firstName" class="error-message">{{
+                errors.firstName
+              }}</span>
               <div v-if="focusedInput === 'firstName'" class="key-hint">
                 <div class="keyboard-key">A-Z</div>
               </div>
@@ -60,14 +69,19 @@
                 v-model="formData.lastName"
                 :placeholder="t('last-name-placeholder')"
                 required
-                :class="{ 'input-error': errors.lastName, 'input-focus': focusedInput === 'lastName' }"
+                :class="{
+                  'input-error': errors.lastName,
+                  'input-focus': focusedInput === 'lastName',
+                }"
                 @focus="focusedInput = 'lastName'"
                 @blur="focusedInput = null"
               />
               <i class="input-icon user-icon">
                 <UserIcon />
               </i>
-              <span v-if="errors.lastName" class="error-message">{{ errors.lastName }}</span>
+              <span v-if="errors.lastName" class="error-message">{{
+                errors.lastName
+              }}</span>
               <div v-if="focusedInput === 'lastName'" class="key-hint">
                 <div class="keyboard-key">A-Z</div>
               </div>
@@ -83,7 +97,10 @@
               id="dob"
               v-model="formData.dob"
               required
-              :class="{ 'input-error': errors.dob, 'input-focus': focusedInput === 'dob' }"
+              :class="{
+                'input-error': errors.dob,
+                'input-focus': focusedInput === 'dob',
+              }"
               @focus="focusedInput = 'dob'"
               @blur="focusedInput = null"
             />
@@ -132,7 +149,10 @@
               id="gender"
               v-model="formData.gender"
               required
-              :class="{ 'input-error': errors.gender, 'input-focus': focusedInput === 'gender' }"
+              :class="{
+                'input-error': errors.gender,
+                'input-focus': focusedInput === 'gender',
+              }"
               class="form-select"
               @focus="focusedInput = 'gender'"
               @blur="focusedInput = null"
@@ -157,7 +177,10 @@
               v-model="formData.email"
               :placeholder="t('email-placeholder')"
               required
-              :class="{ 'input-error': errors.email, 'input-focus': focusedInput === 'email' }"
+              :class="{
+                'input-error': errors.email,
+                'input-focus': focusedInput === 'email',
+              }"
               @focus="focusedInput = 'email'"
               @blur="focusedInput = null"
             />
@@ -177,7 +200,10 @@
               v-model="formData.phone"
               :placeholder="t('phone-placeholder')"
               required
-              :class="{ 'input-error': errors.phone, 'input-focus': focusedInput === 'phone' }"
+              :class="{
+                'input-error': errors.phone,
+                'input-focus': focusedInput === 'phone',
+              }"
               @focus="focusedInput = 'phone'"
               @blur="focusedInput = null"
             />
@@ -200,7 +226,10 @@
               v-model="formData.password"
               :placeholder="t('password-placeholder')"
               required
-              :class="{ 'input-error': errors.password, 'input-focus': focusedInput === 'password' }"
+              :class="{
+                'input-error': errors.password,
+                'input-focus': focusedInput === 'password',
+              }"
               @focus="focusedInput = 'password'"
               @blur="focusedInput = null"
             />
@@ -216,7 +245,9 @@
                 <EyeClosedIcon v-else />
               </i>
             </button>
-            <span v-if="errors.password" class="error-message">{{ errors.password }}</span>
+            <span v-if="errors.password" class="error-message">{{
+              errors.password
+            }}</span>
             <div v-if="focusedInput === 'password'" class="key-hint">
               <div class="keyboard-key">A-Z</div>
               <div class="keyboard-key">0-9</div>
@@ -273,7 +304,10 @@
               v-model="formData.confirmPassword"
               :placeholder="t('confirm-password-placeholder')"
               required
-              :class="{ 'input-error': errors.confirmPassword, 'input-focus': focusedInput === 'confirmPassword' }"
+              :class="{
+                'input-error': errors.confirmPassword,
+                'input-focus': focusedInput === 'confirmPassword',
+              }"
               @focus="focusedInput = 'confirmPassword'"
               @blur="focusedInput = null"
             />
@@ -289,7 +323,9 @@
                 <EyeClosedIcon v-else />
               </i>
             </button>
-            <span v-if="errors.confirmPassword" class="error-message">{{ errors.confirmPassword }}</span>
+            <span v-if="errors.confirmPassword" class="error-message">{{
+              errors.confirmPassword
+            }}</span>
             <div v-if="focusedInput === 'confirmPassword'" class="key-hint">
               <div class="keyboard-key">A-Z</div>
               <div class="keyboard-key">0-9</div>
@@ -297,7 +333,6 @@
             </div>
           </div>
         </div>
-
         <div class="form-group terms-group">
           <label class="checkbox-container">
             <input type="checkbox" v-model="formData.termsAccepted" required />
@@ -309,9 +344,10 @@
               <a href="#" @click.prevent="showPrivacy">{{ t("privacy-policy") }}</a>
             </span>
           </label>
-          <span v-if="errors.termsAccepted" class="error-message">{{ errors.termsAccepted }}</span>
+          <span v-if="errors.termsAccepted" class="error-message">{{
+            errors.termsAccepted
+          }}</span>
         </div>
-
         <button type="submit" class="register-btn" :disabled="isSubmitting">
           <span v-if="isSubmitting">
             <i class="spinner-icon">
@@ -333,7 +369,14 @@
       <div class="modal-content success-modal" @click.stop>
         <div class="success-icon">
           <svg viewBox="0 0 50 50" width="50" height="50">
-            <circle cx="25" cy="25" r="23" fill="none" stroke="#19ADCF" stroke-width="4" />
+            <circle
+              cx="25"
+              cy="25"
+              r="23"
+              fill="none"
+              stroke="#19ADCF"
+              stroke-width="4"
+            />
             <path d="M14,27L22,35L36,16" fill="none" stroke="#19ADCF" stroke-width="4" />
           </svg>
         </div>
@@ -359,111 +402,152 @@ const { currentLanguage, t } = useTranslation();
 const router = useRouter();
 const globalStore = useGlobalStore();
 
-const UserIcon = () => h('svg', {
-  width: '20',
-  height: '20',
-  viewBox: '0 0 20 20',
-  fill: 'currentColor'
-}, [
-  h('path', {
-    'fill-rule': 'evenodd',
-    d: 'M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z',
-    'clip-rule': 'evenodd'
-  })
-]);
+const UserIcon = () =>
+  h(
+    "svg",
+    {
+      width: "20",
+      height: "20",
+      viewBox: "0 0 20 20",
+      fill: "currentColor",
+    },
+    [
+      h("path", {
+        "fill-rule": "evenodd",
+        d: "M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z",
+        "clip-rule": "evenodd",
+      }),
+    ]
+  );
 
-const PhoneIcon = () => h('svg', {
-  width: '20',
-  height: '20',
-  viewBox: '0 0 20 20',
-  fill: 'currentColor'
-}, [
-  h('path', {
-    d: 'M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z'
-  })
-]);
+const PhoneIcon = () =>
+  h(
+    "svg",
+    {
+      width: "20",
+      height: "20",
+      viewBox: "0 0 20 20",
+      fill: "currentColor",
+    },
+    [
+      h("path", {
+        d:
+          "M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z",
+      }),
+    ]
+  );
 
-const EyeOpenIcon = () => h('svg', {
-  width: '20',
-  height: '20',
-  viewBox: '0 0 20 20',
-  fill: 'currentColor'
-}, [
-  h('path', { d: 'M10 12a2 2 0 100-4 2 2 0 000 4z' }),
-  h('path', {
-    'fill-rule': 'evenodd',
-    d: 'M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z',
-    'clip-rule': 'evenodd'
-  })
-]);
+const EyeOpenIcon = () =>
+  h(
+    "svg",
+    {
+      width: "20",
+      height: "20",
+      viewBox: "0 0 20 20",
+      fill: "currentColor",
+    },
+    [
+      h("path", { d: "M10 12a2 2 0 100-4 2 2 0 000 4z" }),
+      h("path", {
+        "fill-rule": "evenodd",
+        d:
+          "M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z",
+        "clip-rule": "evenodd",
+      }),
+    ]
+  );
 
-const EyeClosedIcon = () => h('svg', {
-  width: '20',
-  height: '20',
-  viewBox: '0 0 20 20',
-  fill: 'currentColor'
-}, [
-  h('path', {
-    'fill-rule': 'evenodd',
-    d: 'M3.707 2.293a1 1 0 00-1.414 1.414l14 14a1 1 0 001.414-1.414l-1.473-1.473A10.014 10.014 0 0019.542 10C18.268 5.943 14.478 3 10 3a9.958 9.958 0 00-4.512 1.074l-1.78-1.781zm4.261 4.26l1.514 1.515a2.003 2.003 0 012.45 2.45l1.514 1.514a4 4 0 00-5.478-5.478z',
-    'clip-rule': 'evenodd'
-  }),
-  h('path', {
-    d: 'M12.454 16.697L9.75 13.992a4 4 0 01-3.742-3.741L2.335 6.578A9.98 9.98 0 00.458 10c1.274 4.057 5.065 7 9.542 7 .847 0 1.669-.105 2.454-.303z'
-  })
-]);
+const EyeClosedIcon = () =>
+  h(
+    "svg",
+    {
+      width: "20",
+      height: "20",
+      viewBox: "0 0 20 20",
+      fill: "currentColor",
+    },
+    [
+      h("path", {
+        "fill-rule": "evenodd",
+        d:
+          "M3.707 2.293a1 1 0 00-1.414 1.414l14 14a1 1 0 001.414-1.414l-1.473-1.473A10.014 10.014 0 0019.542 10C18.268 5.943 14.478 3 10 3a9.958 9.958 0 00-4.512 1.074l-1.78-1.781zm4.261 4.26l1.514 1.515a2.003 2.003 0 012.45 2.45l1.514 1.514a4 4 0 00-5.478-5.478z",
+        "clip-rule": "evenodd",
+      }),
+      h("path", {
+        d:
+          "M12.454 16.697L9.75 13.992a4 4 0 01-3.742-3.741L2.335 6.578A9.98 9.98 0 00.458 10c1.274 4.057 5.065 7 9.542 7 .847 0 1.669-.105 2.454-.303z",
+      }),
+    ]
+  );
 
-const CheckIcon = () => h('svg', {
-  width: '16',
-  height: '16',
-  viewBox: '0 0 20 20',
-  fill: '#4CAF50'
-}, [
-  h('path', {
-    'fill-rule': 'evenodd',
-    d: 'M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z',
-    'clip-rule': 'evenodd'
-  })
-]);
+const CheckIcon = () =>
+  h(
+    "svg",
+    {
+      width: "16",
+      height: "16",
+      viewBox: "0 0 20 20",
+      fill: "#4CAF50",
+    },
+    [
+      h("path", {
+        "fill-rule": "evenodd",
+        d:
+          "M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z",
+        "clip-rule": "evenodd",
+      }),
+    ]
+  );
 
-const CircleIcon = () => h('svg', {
-  width: '16',
-  height: '16',
-  viewBox: '0 0 20 20',
-  fill: '#9CA3AF'
-}, [
-  h('circle', {
-    cx: '10',
-    cy: '10',
-    r: '7.5',
-    fill: 'none',
-    stroke: 'currentColor',
-    'stroke-width': '1.5'
-  })
-]);
+const CircleIcon = () =>
+  h(
+    "svg",
+    {
+      width: "16",
+      height: "16",
+      viewBox: "0 0 20 20",
+      fill: "#9CA3AF",
+    },
+    [
+      h("circle", {
+        cx: "10",
+        cy: "10",
+        r: "7.5",
+        fill: "none",
+        stroke: "currentColor",
+        "stroke-width": "1.5",
+      }),
+    ]
+  );
 
-const SpinnerIcon = () => h('svg', {
-  class: 'animate-spin',
-  width: '20',
-  height: '20',
-  viewBox: '0 0 24 24',
-  fill: 'none',
-  stroke: 'currentColor'
-}, [
-  h('circle', {
-    class: 'opacity-25',
-    cx: '12',
-    cy: '12',
-    r: '10',
-    stroke: 'currentColor',
-    'stroke-width': '4'
-  }),
-  h('path', {
-    class: 'opacity-75',
-    d: 'M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z',
-    fill: 'currentColor'
-  })
-]);
+const SpinnerIcon = () =>
+  h(
+    "svg",
+    {
+      class: "animate-spin",
+      width: "20",
+      height: "20",
+      viewBox: "0 0 24 24",
+      fill: "none",
+      stroke: "currentColor",
+    },
+    [
+      h("circle", {
+        class: "opacity-25",
+        cx: "12",
+        cy: "12",
+        r: "10",
+        stroke: "currentColor",
+        "stroke-width": "4",
+      }),
+      h("path", {
+        class: "opacity-75",
+        d:
+          "M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z",
+        fill: "currentColor",
+      }),
+    ]
+  );
 
 const focusedInput = ref(null);
 const isSubmitting = ref(false);
@@ -502,7 +586,9 @@ const errors = reactive({
 const passwordHasLength = computed(() => formData.password.length >= 8);
 const passwordHasUpper = computed(() => /[A-Z]/.test(formData.password));
 const passwordHasLower = computed(() => /[a-z]/.test(formData.password));
-const passwordHasSpecial = computed(() => /[!@#$%^&*(),.?":{}|<>]/.test(formData.password));
+const passwordHasSpecial = computed(() =>
+  /[!@#$%^&*(),.?":{}|<>]/.test(formData.password)
+);
 
 const passwordStrength = computed(() => {
   if (!formData.password) return 0;
@@ -698,7 +784,8 @@ const registerUser = async () => {
       });
     } else {
       await globalStore.onCheckError(error);
-      const errorMessage = error.response?.data?.message || error.message || t("registration-error");
+      const errorMessage =
+        error.response?.data?.message || error.message || t("registration-error");
       alert(errorMessage);
     }
   } finally {
