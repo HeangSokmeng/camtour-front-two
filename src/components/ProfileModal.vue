@@ -815,7 +815,7 @@ export default {
           new_password_confirmation: passwordData.new_password_confirmation,
         };
 
-        const response = await axios.post(
+        const response = await axios.put(
           "/api/profile/pass",
           passwordFormData,
           globalStore.getAxiosHeader()
